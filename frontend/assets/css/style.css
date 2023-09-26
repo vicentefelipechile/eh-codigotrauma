@@ -1,7 +1,7 @@
 @font-face{
     font-family: 'roboto_medium_regular';
-    src: url('../webfonts/roboto-medium-webfont.woff2') format('woff2'),
-         url('../webfonts/roboto-medium-webfont.woff') format('woff');
+    src: url('../fonts/roboto-medium-webfont.woff2') format('woff2'),
+         url('../fonts/roboto-medium-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 
@@ -9,17 +9,17 @@
 
 @font-face{
     font-family: 'roboto_condensed_light';
-    src: url('../webfonts/robotocondensed-light-webfont.woff2') format('woff2'),
-         url('../webfonts/robotocondensed-light-webfont.woff') format('woff'),
-         url('../webfonts/robotocondensed-light-webfont.ttf') format('truetype');
+    src: url('../fonts/robotocondensed-light-webfont.woff2') format('woff2'),
+         url('../fonts/robotocondensed-light-webfont.woff') format('woff'),
+         url('../fonts/robotocondensed-light-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face{
     font-family: 'roboto_condensed_regular';
-    src: url('../webfonts/robotocondensed-regular-webfont.woff2') format('woff2'),
-         url('../webfonts/robotocondensed-regular-webfont.woff') format('woff');
+    src: url('../fonts/robotocondensed-regular-webfont.woff2') format('woff2'),
+         url('../fonts/robotocondensed-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 
@@ -27,10 +27,10 @@
 
 @font-face{
 	font-family: 'poppinsregular';
-	src: url('../webfonts/popins/poppins-regular-webfont.eot');
-	src: url('../webfonts/popins/poppins-regular-webfont.woff2') format('woff2'),
-		 url('../webfonts/popins/poppins-regular-webfont.woff') format('woff'),
-		 url('../webfonts/popins/poppins-regular-webfont.ttf') format('truetype');
+	src: url('../fonts/popins/poppins-regular-webfont.eot');
+	src: url('../fonts/popins/poppins-regular-webfont.woff2') format('woff2'),
+		 url('../fonts/popins/poppins-regular-webfont.woff') format('woff'),
+		 url('../fonts/popins/poppins-regular-webfont.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
