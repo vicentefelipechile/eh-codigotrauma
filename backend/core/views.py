@@ -7,6 +7,8 @@ import json
 # Create your views here.
 def home(request: WSGIRequest) -> JsonResponse:
     return JsonResponse({
-        'message': f'Bienvenido a {DOMAIN_NAME}',
+        'message': f'Bienvenido a ',
         'method': request.method
     })
+def index(request):
+    return render(request, 'index.html')
