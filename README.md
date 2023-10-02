@@ -7,8 +7,10 @@
 
 Toda la informacion de configuracion se encuentra en el archivo `config.json` en el directorio principal del proyecto.
 
-```
-eh-codigotrauma/config.json
+```shell
+# eh-codigotrauma/...
+
+./config.json
 ```
 
 # Ejecucion
