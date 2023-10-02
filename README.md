@@ -17,7 +17,7 @@ Toda la informacion de configuracion se encuentra en el archivo `config.json` en
 
 ## Backend
 
-Para ejecutar el proyecto, se debe ejecutar el archivo `__backend__.py` en el directorio principal del proyecto.
+Para iniciar el backend, se debe ejecutar el archivo `__backend__.py` en el directorio principal del proyecto.
 
 ```bash
 # eh-codigotrauma/...
