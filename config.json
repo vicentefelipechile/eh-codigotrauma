@@ -1,8 +1,20 @@
 {
     "projectName": "Codigo Trauma",
-    "alwaysOpenBrowser": true,
+    "alwaysOpenBrowser": false,
 
     "backend": {
-        "MAIN_PATH": "./backend/"
+        "MAIN_PATH": "./backend/",
+
+        "DOMAIN_NAME": "Proyecto Hospital",
+        "DOMAIN_SHORTNAME": "Proy.Hosp.",
+
+        "DB_IP": "127.0.0.0",
+        "DB_PORT": "5432",
+
+        "LANGUAGE_CODE": "es",
+        "TIME_ZONE": "UTC",
+
+        "databaseRemota": false,
+        "modoDebug": true
     }
 }

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,12 +27,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =============== CONFIGURACION PRINCIPAL ===============
 # =======================================================
 
+Configuracion: dict = {}
 
-DOMAIN_NAME = "Proyecto Hospital"
-DOMAIN_SHORTNAME = "Proy Hosp"
+try:
+    with open(f"{BASE_DIR}\\./../config.json", 'r') as Configuracion:
+        Configuracion: dict = json.load(Configuracion)
+except FileNotFoundError:
+    print("=====================================")
+    print("No se ha encontrado el archivo de configuracion")
+    print("=====================================")
 
-DB_IP = "127.0.0.0"
-DB_PORT = "5432"
+    exit()
+
+DOMAIN_NAME = Configuracion["backend"]["DOMAIN_NAME"]
+DOMAIN_SHORTNAME = Configuracion["backend"]["DOMAIN_SHORTNAME"]
+
+DB_IP = Configuracion["backend"]["DB_IP"]
+DB_PORT = Configuracion["backend"]["DB_PORT"]
 
 
 # =======================================================
@@ -46,7 +58,7 @@ DB_PORT = "5432"
 SECRET_KEY = 'django-insecure-xwvb&p9y2hx74u_%*uf_2u)*n81fij_ww8!00*1s28(a570--v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = Configuracion["backend"]["modoDebug"]
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -110,7 +122,7 @@ DATABASES = {
     }
 }
 
-if True:
+if not Configuracion["backend"]["databaseRemota"]:
     DATABASES["default"] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -139,9 +151,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = Configuracion["backend"]["LANGUAGE_CODE"]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = Configuracion["backend"]["TIME_ZONE"]
 
 USE_I18N = True
 
