@@ -18,5 +18,7 @@ eh-codigotrauma/config.json
 Para ejecutar el proyecto, se debe ejecutar el archivo `__backend__.py` en el directorio principal del proyecto.
 
 ```bash
-python eh-codigotrauma/__backend__.py
+# eh-codigotrauma/...
+
+python ./__backend__.py
 ```
