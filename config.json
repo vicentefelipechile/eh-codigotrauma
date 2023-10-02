@@ -1,6 +1,6 @@
 {
     "projectName": "Codigo Trauma",
-    "alwaysOpenBrowser": false,
+    "alwaysOpenBrowser": true,
 
     "backend": {
         "MAIN_PATH": "./backend/",
