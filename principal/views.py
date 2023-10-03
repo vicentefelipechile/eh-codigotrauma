@@ -7,4 +7,4 @@ from django.core.handlers.wsgi import WSGIRequest
 
 def index(request: WSGIRequest) -> HttpResponse:
 
-    return HttpResponse("<h1>Hello World</h1>")
+    return render(request, 'principal/index.html')
