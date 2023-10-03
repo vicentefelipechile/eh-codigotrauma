@@ -11,19 +11,47 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+MAIN_PATH: str = str(Path(__file__).parent.parent.absolute()) + "/"
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+# =======================================================
+# =============== CONFIGURACION PRINCIPAL ===============
+# =======================================================
+
+
+Configuracion: dict = None
+
+try:
+    with open(MAIN_PATH + './config.json', 'r') as Configuracion:
+        Configuracion = json.load(Configuracion)
+except FileNotFoundError:
+    print("-> No se ha encontrado el archivo de configuracion")
+
+    exit()
+
+DOMAIN_NAME = Configuracion["backend"]["DOMAIN_NAME"]
+DOMAIN_SHORTNAME = Configuracion["backend"]["DOMAIN_SHORTNAME"]
+
+DB_IP = Configuracion["backend"]["DB_IP"]
+DB_PORT = Configuracion["backend"]["DB_PORT"]
+
+
+# =======================================================
+# ========== FIN DE LA CONFIGURACION PRINCIPAL ==========
+# =======================================================
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-eznd3=eh3-xr2u-r-!4n@)i@f#lg-&5ekr1d=ba+=mfo1&fewb'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Configuracion["backend"]["modoDebug"]
 
 ALLOWED_HOSTS = []
 
@@ -103,9 +131,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = Configuracion["backend"]["LANGUAGE_CODE"]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = Configuracion["backend"]["TIME_ZONE"]
 
 USE_I18N = True
 
