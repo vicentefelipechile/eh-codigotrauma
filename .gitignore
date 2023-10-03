@@ -1,3 +1,5 @@
 .vscode/*
-*.pyc
+Lib/*
+
 db.sqlite3
+*.pyc
