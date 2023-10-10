@@ -1,3 +1,4 @@
+# Librerias importantes
 from django.shortcuts import render
 
 # Fuerte tipado librerias
@@ -6,5 +7,4 @@ from django.core.handlers.wsgi import WSGIRequest
 
 
 def index(request: WSGIRequest) -> HttpResponse:
-
-    return render(request, 'templates/index.html')
+    return render(request, 'index.html')

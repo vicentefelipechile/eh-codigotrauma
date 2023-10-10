@@ -83,7 +83,7 @@ ROOT_URLCONF = 'codigotrauma.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [MAIN_PATH + './templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
