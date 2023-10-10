@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from principal.views import index
+from principal.views import PaginaPrincipal
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', PaginaPrincipal, name='PaginaPrincipal'),
     path('admin/', admin.site.urls),
 ]
