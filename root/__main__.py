@@ -15,7 +15,7 @@ MAIN_PATH: str = str(pathlib.Path(__file__).parent.parent.absolute()) + "/"
 Configuracion: dict = None
 
 try:
-    with open(MAIN_PATH + './config.json', 'r') as Configuracion:
+    with open(MAIN_PATH + './root/config.json', 'r') as Configuracion:
         Configuracion: dict = json.load(Configuracion)
 except FileNotFoundError:
     print("=====================================")
@@ -37,8 +37,8 @@ except ImportError:
     print("=====================================")
 
     # Nuevo formato utilizando MAIN_PATH
-    print(f" > {sys.executable} -m pip install -r {MAIN_PATH}requirements.txt")
-    os.system(f'{sys.executable} -m pip install -r {MAIN_PATH}requirements.txt')
+    print(f" > {sys.executable} -m pip install django")
+    os.system(f"{sys.executable} -m pip install django")
 
 print("=====================================")
 print("Caracteristicas necesarias instaladas")

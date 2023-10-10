@@ -1,26 +1,21 @@
 # Requisitos
 
-* Python 3.10 o mayor
-  * Django (En caso de no tener instalado, ejecutar el archivo `__backend__.py`)
+1. **Python 3.10** o mayor
 
-# Configuracion
+# Instalación
 
-Toda la informacion de configuracion se encuentra en el archivo `config.json` en el directorio principal del proyecto.
-
-```shell
-# eh-codigotrauma/...
-
-./config.json
-```
-
-# Ejecucion
-
-## Backend
-
-Para iniciar el backend, se debe ejecutar el archivo `__backend__.py` en el directorio principal del proyecto.
+Para instalar el proyecto, se debe clonar el repositorio y luego instalar las dependencias, se puede realizar ejecutando el directorio root de la siguiente forma:
 
 ```bash
-# eh-codigotrauma/...
-
-python ./__backend__.py
+# ./  =>  Directorio principal
+python ./root
 ```
+
+# Configuración
+
+Toda la configuracion se encuentra ubicado en la misma carpeta root, en el archivo **config.json**. En este archivo se puede configurar aspectos importantes del proyecto.
+
+1. **host**: Host del servidor
+2. **nombre**: Nombre del proyecto
+3. **directorio**: Directorio principal donde se encuentra el proyecto
+4. **abrirNavegador**: Abrir el navegador al iniciar el servidor

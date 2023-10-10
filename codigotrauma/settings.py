@@ -29,7 +29,7 @@ MAIN_PATH: str = str(Path(__file__).parent.parent.absolute()) + "/"
 Configuracion: dict = None
 
 try:
-    with open(MAIN_PATH + './config.json', 'r') as Configuracion:
+    with open(MAIN_PATH + './root/config.json', 'r') as Configuracion:
         Configuracion = json.load(Configuracion)
 except FileNotFoundError:
     print("-> No se ha encontrado el archivo de configuracion")
