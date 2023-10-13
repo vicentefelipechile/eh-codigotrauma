@@ -1,93 +1,171 @@
-from django.db import models
+# ====================================================
+# ================ Librerias y Clases ================
+# ====================================================
 
-class HistorialEmergencias(models.Model):
-    emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.CASCADE)
-    fecha_registro = models.DateTimeField()
-    detalles = models.TextField()
+from django.db import models
+from django.db.models import Model
+import json
+
+
+# ===========================================
+# ==== Funcion Json para todas las clases ===
+# ===========================================
+
+def GetJson(self: Model = None, Atributos: list = None) -> str:
+    if not Atributos:
+        Atributos = []
+
+    JsonResponse = {}
+    
+    for Atributo in Atributos:
+        JsonResponse[Atributo] = self.__dict__[Atributo]
+
+    return json.dumps(JsonResponse)
+
+
+
+# ===========================================
+# ==== Clases de Registros de Emergencia ====
+# ===========================================
+
+class HistorialEmergencias(Model):
+    Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.CASCADE)
+    FechaRegistro = models.DateTimeField()
+    Detalles = models.TextField()
 
     def __str__(self):
-        return f"Historial de Emergencia: {self.emergencia}, Fecha de Registro: {self.fecha_registro}"
+        return f"Historial de Emergencia: {self.Emergencia}, Fecha de Registro: {self.FechaRegistro}"
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["Emergencia", "FechaRegistro", "Detalles"])
 
-class RegistroEmergencias(models.Model):
-    id = models.CharField(primary_key=True, max_length=8)
-    descripcion = models.TextField(max_length=50)
-    codigoColor = models.TextField(max_length=20)
-    fecha = models.DateTimeField(max_length=30)
-    nro_pacientes = models.IntegerField()
-    doctores = models.ManyToManyField('doctorClave', through='HistorialDoctoresEmergencia')
+
+
+class RegistroEmergencias(Model):
+    ID = models.CharField(primary_key=True, max_length=8)
+    Descripcion = models.TextField(max_length=50)
+    CodigoColor = models.TextField(max_length=20)
+    Fecha = models.DateTimeField(max_length=30)
+    NumeroPacientes = models.IntegerField()
+    Doctores = models.ManyToManyField('DoctorClave', through='HistorialDoctoresEmergencia')
 
     def __str__(self):
         return self.id
     
-class Paciente(models.Model):
-    rut = models.IntegerField(primary_key=True, max_length=8)
-    dv = models.CharField(max_length=1)
-    nombre = models.TextField(max_length=20)
-    seg_nombre = models.TextField(max_length=20)
-    apellido = models.TextField(max_length=20)
-    seg_apellido = models.TextField(max_length=20)
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["ID", "Descripcion", "CodigoColor", "Fecha", "NumeroPacientes"])
+
+
+
+class HistorialDoctoresEmergencia(Model):
+    Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.SET_NULL, null=True)
+    Doctor = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=True)
+    FechaAsignacion = models.DateTimeField()
 
     def __str__(self):
-        return str(self.rut)
+        return f"Historial - Emergencia: {self.Emergencia}, Doctor: {self.Doctor}, Fecha: {self.FechaAsignacion}"
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["Emergencia", "Doctor", "FechaAsignacion"])
 
-class HistorialDoctoresEmergencia(models.Model):
-    emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.SET_NULL, null=True)
-    doctor = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=True)
-    fecha_asignacion = models.DateTimeField()
 
-    def __str__(self):
-        return f"Historial - Emergencia: {self.emergencia}, Doctor: {self.doctor}, Fecha: {self.fecha_asignacion}"
 
-class Secretario(models.Model):
-    rut = models.IntegerField(primary_key=True, max_length=8)
-    dv = models.CharField(max_length=1)
-    nombre = models.TextField(max_length=20)
-    seg_nombre = models.TextField(max_length=20)
-    apellido = models.TextField(max_length=20)
-    seg_apellido = models.TextField(max_length=20)
+# ===========================================
+# ============== Clases Persona =============
+# ===========================================
 
-class Administrador(models.Model):
-    rut = models.IntegerField(primary_key=True, max_length=8)
-    dv = models.CharField(max_length=1)
-    nombre = models.TextField(max_length=20)
-    seg_nombre = models.TextField(max_length=20)
-    apellido = models.TextField(max_length=20)
-    seg_apellido = models.TextField(max_length=20)
+class Persona(Model):
+    Rut = models.IntegerField(primary_key=True, max_length=8)
+    Dv = models.CharField(max_length=1)
+    PrimerNombre = models.TextField(max_length=20)
+    SegundoNombre = models.TextField(max_length=20, null=True)
+    ApellidoPaterno = models.TextField(max_length=20)
+    ApellidoMaterno = models.TextField(max_length=20, null=True)
 
-# Creamos las clases pertinentes para formar un horario
+    def GetAllAttributes(self, AtributosExtra: list = None) -> list:
+        AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
 
-class Horario(models.Model):
-    dia = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
-    hora = models.ForeignKey('HoraDia',on_delete=models.SET_NULL, null=True)
-    clase = models.CharField(max_length=100)
+        if not AtributosExtra:
+            AtributosExtra = []
+        
+        for Atributo in AtributosExtra:
+            AllAttributes.append(Atributo)
 
-    def __str__(self):
-        return f"{self.dia.nombre} - {str(self.hora)}: {self.clase}"
+        return AllAttributes
 
-class DiaSemana(models.Model):
-    nombre = models.CharField(max_length=20)
+    def JsonResponse(self) -> str:
+        return GetJson(self, self.GetAllAttributes())
 
     def __str__(self):
-        return self.nombre
+        return f"Primer Nombre: {self.PrimerNombre}, Apellido Paterno: {self.ApellidoPaterno}, Rut: {self.Rut}-{self.Dv}"
 
-class HoraDia(models.Model):
-    hora_inicio = models.TimeField()
-    hora_fin = models.TimeField()
+
+
+# Todos los atributos de la clase Persona
+# ya estan incluidos en esta clase
+class Paciente(Persona):
+    ...
+
+
+
+class Secretario(Persona):
+    ...
+
+
+
+class Administrador(Persona):
+    ...
+
+
+
+# ===========================================
+# ============== Clases Fechas ==============
+# ===========================================
+
+class Horario(Model):
+    DiaSemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
+    DiaHora = models.ForeignKey('HoraDia',on_delete=models.SET_NULL, null=True)
+    Clase = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.hora_inicio.strftime('%H:%M')} - {self.hora_fin.strftime('%H:%M')}"
+        return f"{self.DiaSemana.Nombre} - {str(self.DiaHora)}: {self.Clase}"
+
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["DiaSemana", "DiaHora", "Clase"])
+
+
+class DiaSemana(Model):
+    Nombre = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.Nombre
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["Nombre"])
+
+
+
+class HoraDia(Model):
+    HoraInicio = models.TimeField()
+    HoraFin = models.TimeField()
+
+    def __str__(self):
+        return f"{self.HoraInicio.strftime('%H:%M')} - {self.HoraFin.strftime('%H:%M')}"
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["HoraInicio", "HoraFin"])
+
+
 
 # Creamos la clase "doctorClave" y la asociamos a la clase horario.
 
-class DoctorClave(models.Model):
-    rut = models.IntegerField(primary_key=True, max_length=8)
-    dv = models.CharField(max_length=1)
-    nombre = models.TextField(max_length=20)
-    seg_nombre = models.TextField(max_length=20)
-    apellido = models.TextField(max_length=20)
-    seg_apellido = models.TextField(max_length=20)
-    area = models.TextField(max_length=30)
-    horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
+class DoctorClave(Persona):
+    Area = models.TextField(max_length=30)
+    Horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.rut)
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
+
