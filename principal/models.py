@@ -31,8 +31,8 @@ class Paciente(models.Model):
         return str(self.rut)
 
 class HistorialDoctoresEmergencia(models.Model):
-    emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.CASCADE)
-    doctor = models.ForeignKey('doctorClave', on_delete=models.CASCADE)
+    emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.SET_NULL, null=True)
+    doctor = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=True)
     fecha_asignacion = models.DateTimeField()
 
     def __str__(self):
@@ -57,8 +57,8 @@ class Administrador(models.Model):
 # Creamos las clases pertinentes para formar un horario
 
 class Horario(models.Model):
-    dia = models.ForeignKey('DiaSemana', on_delete=models.CASCADE)
-    hora = models.ForeignKey('HoraDia', on_delete=models.CASCADE)
+    dia = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
+    hora = models.ForeignKey('HoraDia',on_delete=models.SET_NULL, null=True)
     clase = models.CharField(max_length=100)
 
     def __str__(self):
@@ -79,7 +79,7 @@ class HoraDia(models.Model):
 
 # Creamos la clase "doctorClave" y la asociamos a la clase horario.
 
-class doctorClave(models.Model):
+class DoctorClave(models.Model):
     rut = models.IntegerField(primary_key=True, max_length=8)
     dv = models.CharField(max_length=1)
     nombre = models.TextField(max_length=20)
