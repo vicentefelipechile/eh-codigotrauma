@@ -1,4 +1,12 @@
+{# ============================================ #}
+{# ============= Cargar Variables ============= #}
+{# ============================================ #}
+
 {% load static %}
+
+{# ============================================ #}
+{# ============== Inicio de HTML ============== #}
+{# ============================================ #}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -8,19 +16,19 @@
 	<title>Hospital Melipilla</title>
 
 	<!-- Normalize V8.0.1 -->
-	<link rel="stylesheet" href="./assets/css/normalize.css">
+	<link rel="stylesheet" href={% static 'css/normalize.css' %}>
 
 	<!-- MDBootstrap V5 -->
-	<link rel="stylesheet" href="./assets/css/mdb.min.css">
+	<link rel="stylesheet" href={% static 'css/mdb.min.css' %}>
 
 	<!-- Font Awesome V5.15.1 -->
-	<link rel="stylesheet" href="./assets/css/all.css">
+	<link rel="stylesheet" href={% static 'css/all.css' %}>
 
 	<!-- Sweet Alert V10.13.0 -->
-	<script src="./assets/js/sweetalert2.js" ></script>
+	<script src={% static 'js/sweetalert2.js' %} ></script>
 
 	<!-- General Styles -->
-	<link rel="stylesheet" href="./assets/css/style.css">
+	<link rel="stylesheet" href={% static 'css/style.css' %}>
 
 	<link rel="icon" type="image/x-icon" href=".{% static 'favicon.ico' %}" >
 
@@ -31,7 +39,7 @@
 	<header class="header full-box">
 	    <div class="header-brand text-center full-box">
 	        <a href="index.html">
-	            <img src="./assets/img/logo.png" alt="logo" class="img-fluid">
+				<img src={% static 'img/logo.png' %} alt="logo" class="img-fluid">
 	        </a>
 	    </div>
 
@@ -42,7 +50,7 @@
 	                    <a href="/" >Inicio<span class="full-box" ></span></a>
 	                </li>
 	                <li>
-	                    <a href="contacto.html" >Contactanos<span class="full-box" ></span></a>
+	                    <a href="contacto/" >Contactanos<span class="full-box" ></span></a>
 	                </li>
 	            </ul>
 	        </nav>
@@ -64,7 +72,7 @@
 	                    </p>
 	                </form>
 	                <hr>
-	                <p class="text-center full-box">¿No tienes cuenta? <a href="registration.html">Regístrate aquí</a></p>
+	                <p class="text-center full-box">¿No tienes cuenta? <a href="registration/">Regístrate aquí</a></p>
 	                
 	            </div>
 	        </div>
@@ -112,7 +120,7 @@
 	    <div class="container-cards full-box">
 
 	        <div class="card shadow-1-strong">
-	            <img class="card-img-top" src="./assets/img/rana.jpg" alt="nombre_platillo">
+				<img class="card-img-top" src={% static 'img/rana.jpg' %} alt="nombre_platillo">
 	            <div class="card-body text-center">
 	                <h5 class="card-title font-weight-bold">emoticon de Rocio Preocupada💗</h5>
 	               
@@ -124,7 +132,7 @@
 	        </div>
 
 	        <div class="card shadow-1-strong">
-	            <img class="card-img-top" src="./assets/img/medico.jpg" alt="nombre_platillo">
+				<img class="card-img-top" src={% static 'img/medico.jpg' %} alt="nombre_platillo">
 	            <div class="card-body text-center">
 	                <h5 class="card-title font-weight-bold">Juan Guzman</h5>
 	               
@@ -136,7 +144,7 @@
 	        </div>
 
 	        <div class="card shadow-1-strong">
-	            <img class="card-img-top" src="./assets/img/dog.jpg" alt="nombre_platillo">
+				<img class="card-img-top" src={% static 'img/perro.jpg' %} alt="nombre_platillo">
 	            <div class="card-body text-center">
 	                <h5 class="card-title font-weight-bold">Doctor Perro</h5>
 	              
@@ -158,7 +166,7 @@
 	    <div class="row justify-content-md-center">
 	        <div class="col-12 col-md-6">
 	            <figure class="full-box">
-	                <img src="./assets/img/hospital.jpg" alt="registration" class="img-fluid">
+					<img src={% static 'img/hospital.jpg' %} alt="nombre_platillo">
 	            </figure>
 	        </div>
 	        <div class="w-100"></div>
@@ -217,9 +225,9 @@
 
 
 	<!-- MDBootstrap V5 -->
-	<script src="./assets/js/mdb.min.js" ></script>
+	<script src={% static 'js/mdb.min.js' %} ></script>
 
 	<!-- General scripts -->
-	<script src="./assets/js/main.js" ></script>
+	<script src={% static 'js/main.js' %} ></script>
 </body>
 </html>

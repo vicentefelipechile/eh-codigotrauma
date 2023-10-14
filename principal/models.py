@@ -75,7 +75,7 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut = models.IntegerField(primary_key=True, max_length=8)
+    Rut = models.IntegerField(primary_key=True)
     Dv = models.CharField(max_length=1)
     PrimerNombre = models.TextField(max_length=20)
     SegundoNombre = models.TextField(max_length=20, null=True)
@@ -103,18 +103,21 @@ class Persona(Model):
 
 # Todos los atributos de la clase Persona
 # ya estan incluidos en esta clase
-class Paciente(Persona):
-    ...
+class Paciente(Model):
+    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+    ID = models.IntegerField(primary_key=True)
 
 
 
-class Secretario(Persona):
-    ...
+class Secretario(Model):
+    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+    ID = models.IntegerField(primary_key=True)
 
 
 
-class Administrador(Persona):
-    ...
+class Administrador(Model):
+    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+    ID = models.IntegerField(primary_key=True)
 
 
 

@@ -1,4 +1,12 @@
+{# ============================================ #}
+{# ============= Cargar Variables ============= #}
+{# ============================================ #}
+
 {% load static %}
+
+{# ============================================ #}
+{# ============== Inicio de HTML ============== #}
+{# ============================================ #}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -8,21 +16,21 @@
 	<title>Hospital Melipilla</title>
 
 	<!-- Normalize V8.0.1 -->
-	<link rel="stylesheet" href="./assets/css/normalize.css">
+	<link rel="stylesheet" href={% static 'css/normalize.css' %}>
 
 	<!-- MDBootstrap V5 -->
-	<link rel="stylesheet" href="./assets/css/mdb.min.css">
+	<link rel="stylesheet" href={% static 'css/mdb.min.css' %}>
 
 	<!-- Font Awesome V5.15.1 -->
-	<link rel="stylesheet" href="./assets/css/all.css">
+	<link rel="stylesheet" href={% static 'css/all.css' %}>
 
 	<!-- Sweet Alert V10.13.0 -->
-	<script src="./assets/js/sweetalert2.js" ></script>
+	<script src={% static 'js/sweetalert2.js' %} ></script>
 
 	<!-- General Styles -->
-	<link rel="stylesheet" href="./assets/css/style.css">
-	<link rel="stylesheet" href="./assets/css/pagina_contacto.css" media="screen">
-	<link rel="stylesheet" href="./assets/css/contacto.css" media="screen">
+	<link rel="stylesheet" href={% static 'css/style.css' %}>
+	<link rel="stylesheet" href={% static 'css/pagina_contacto.css' %} media="screen">
+	<link rel="stylesheet" href={% static 'css/contacto.css' %} media="screen">
 
 	<link rel="icon" type="image/x-icon" href=".{% static 'favicon.ico' %}" >
 </head>

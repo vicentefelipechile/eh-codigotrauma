@@ -21,5 +21,6 @@ from principal.views import PaginaPrincipal
 
 urlpatterns = [
     path('', PaginaPrincipal, name='PaginaPrincipal'),
+    path('contacto/', PaginaPrincipal, name='PaginaContacto'),
     path('admin/', admin.site.urls),
 ]
