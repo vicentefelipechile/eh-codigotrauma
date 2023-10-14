@@ -2,11 +2,13 @@
     "projectName": "Codigo Trauma",
     "alwaysOpenBrowser": true,
 
+    "DOMAIN_NAME": "Hospital Melipilla",
+    "DOMAIN_SHORTNAME": "Proy.Hosp.",
+
+    "passwordRegEx": "[a-zA-Z0-9$@.-]{7,100}",
+
     "backend": {
         "MAIN_PATH": "./backend/",
-
-        "DOMAIN_NAME": "Proyecto Hospital",
-        "DOMAIN_SHORTNAME": "Proy.Hosp.",
 
         "DB_IP": "127.0.0.0",
         "DB_PORT": "5432",
@@ -16,5 +18,9 @@
 
         "databaseRemota": false,
         "modoDebug": true
+    },
+
+    "frontend": {
+        "TEMPLATES": "./templates"
     }
 }

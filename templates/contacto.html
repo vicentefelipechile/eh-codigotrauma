@@ -39,8 +39,8 @@
 	<!-- Header -->
 	<header class="header full-box">
 	    <div class="header-brand text-center full-box">
-	        <a href="index.html">
-	            <img src="./assets/img/logo.png" alt="logo" class="img-fluid">
+	        <a href={% url 'PaginaPrincipal' %} class="float-left">
+				<img srf={% static 'img/logo.png' %} alt="logo" class="img-fluid" >
 	        </a>
 	    </div>
 
@@ -48,10 +48,10 @@
 	        <nav class="header-navbar full-box poppins-regular font-weight-bold" >
 	            <ul class="list-unstyled full-box">
 	                <li>
-	                    <a href="index.html" >Inicio<span class="full-box" ></span></a>
+						<a href={% url 'PaginaPrincipal' %} >Inicio<span class="full-box" ></span></a>
 	                </li>
 	                <li>
-	                    <a href="contacto.html" >Contactanos<span class="full-box" ></span></a>
+						<a href={% url 'PaginaContacto' %} >Contactanos<span class="full-box" ></span></a>
 	                </li>
 	            </ul>
 	        </nav>
@@ -73,7 +73,7 @@
 	                    </p>
 	                </form>
 	                <hr>
-	                <p class="text-center full-box">¿No tienes cuenta? <a href="registration.html">Regístrate aquí</a></p>
+	                <p class="text-center full-box">¿No tienes cuenta? <a href={% url 'PaginaRegistro' %}>Regístrate aquí</a></p>
 	                
 	            </div>
 	        </div>

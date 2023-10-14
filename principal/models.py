@@ -162,8 +162,9 @@ class HoraDia(Model):
 
 # Creamos la clase "doctorClave" y la asociamos a la clase horario.
 
-class DoctorClave(Persona):
+class DoctorClave(Model):
     Area = models.TextField(max_length=30)
+    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
     Horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):

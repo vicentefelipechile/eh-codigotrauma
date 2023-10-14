@@ -37,11 +37,13 @@ except FileNotFoundError:
 
     exit()
 
-DOMAIN_NAME = Configuracion["backend"]["DOMAIN_NAME"]
-DOMAIN_SHORTNAME = Configuracion["backend"]["DOMAIN_SHORTNAME"]
+DOMAIN_NAME = Configuracion["DOMAIN_NAME"]
+DOMAIN_SHORTNAME = Configuracion["DOMAIN_SHORTNAME"]
 
 DB_IP = Configuracion["backend"]["DB_IP"]
 DB_PORT = Configuracion["backend"]["DB_PORT"]
+
+PASSWORD_REGEX = Configuracion["passwordRegEx"]
 
 
 # =======================================================
@@ -149,11 +151,11 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/img/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/assets/'
+STATIC_ROOT = BASE_DIR / 'static'
+STATIC_URL = '/templates/assets/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'templates/assets'),
+    BASE_DIR / 'templates/assets',
 )
 
 # Default primary key field type
