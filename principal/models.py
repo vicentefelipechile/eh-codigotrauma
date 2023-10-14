@@ -1,7 +1,7 @@
 # ====================================================
 # ================ Librerias y Clases ================
 # ====================================================
-
+from django.utils import timezone
 from django.db import models
 from django.db.models import Model
 import json
@@ -30,7 +30,7 @@ def GetJson(self: Model = None, Atributos: list = None) -> str:
 
 class HistorialEmergencias(Model):
     Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.CASCADE)
-    FechaRegistro = models.DateTimeField()
+    FechaRegistro = models.DateTimeField(default=timezone.now)
     Detalles = models.TextField()
 
     def __str__(self):
@@ -45,7 +45,7 @@ class RegistroEmergencias(Model):
     ID = models.CharField(primary_key=True, max_length=8)
     Descripcion = models.TextField(max_length=50)
     CodigoColor = models.TextField(max_length=20)
-    Fecha = models.DateTimeField(max_length=30)
+    Fecha = models.DateTimeField(max_length=30, default=timezone.now)
     NumeroPacientes = models.IntegerField()
     Doctores = models.ManyToManyField('DoctorClave', through='HistorialDoctoresEmergencia')
 
@@ -60,7 +60,7 @@ class RegistroEmergencias(Model):
 class HistorialDoctoresEmergencia(Model):
     Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.SET_NULL, null=True)
     Doctor = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=True)
-    FechaAsignacion = models.DateTimeField()
+    FechaAsignacion = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Historial - Emergencia: {self.Emergencia}, Doctor: {self.Doctor}, Fecha: {self.FechaAsignacion}"
@@ -75,7 +75,7 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut = models.IntegerField(primary_key=True)
+    Rut = models.IntegerField(primary_key=True, max_length=8)
     Dv = models.CharField(max_length=1)
     PrimerNombre = models.TextField(max_length=20)
     SegundoNombre = models.TextField(max_length=20, null=True)
@@ -149,8 +149,8 @@ class DiaSemana(Model):
 
 
 class HoraDia(Model):
-    HoraInicio = models.TimeField()
-    HoraFin = models.TimeField()
+    HoraInicio = models.TimeField(default=timezone.now)
+    HoraFin = models.TimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.HoraInicio.strftime('%H:%M')} - {self.HoraFin.strftime('%H:%M')}"
