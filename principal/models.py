@@ -75,7 +75,8 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
+    Rut = models.IntegerField()
     Dv = models.CharField(max_length=1)
     PrimerNombre = models.TextField(max_length=20)
     SegundoNombre = models.TextField(max_length=20, null=True)
