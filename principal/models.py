@@ -101,8 +101,6 @@ class Persona(Model):
 
 
 
-# Todos los atributos de la clase Persona
-# ya estan incluidos en esta clase
 class Paciente(Model):
     Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
     ID = models.IntegerField(primary_key=True)
