@@ -15,8 +15,8 @@ def GetJson(self: Model = None, Atributos: list = None) -> str:
     if not Atributos:
         Atributos = []
 
-    JsonResponse = {}
-    
+    JsonResponse: dict = {}
+
     for Atributo in Atributos:
         JsonResponse[Atributo] = self.__dict__[Atributo]
 
