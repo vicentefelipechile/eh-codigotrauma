@@ -75,7 +75,7 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut = models.IntegerField(primary_key=True, max_length=8)
+    Rut = models.IntegerField(unique=True)
     Dv = models.CharField(max_length=1)
     PrimerNombre = models.TextField(max_length=20)
     SegundoNombre = models.TextField(max_length=20, null=True)
@@ -98,23 +98,23 @@ class Persona(Model):
 
     def __str__(self):
         return f"Primer Nombre: {self.PrimerNombre}, Apellido Paterno: {self.ApellidoPaterno}, Rut: {self.Rut}-{self.Dv}"
+    
+    class Meta:
+        abstract = True
 
 
 
-class Paciente(Model):
-    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+class Paciente(Persona):
     ID = models.IntegerField(primary_key=True)
 
 
 
-class Secretario(Model):
-    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+class Secretario(Persona):
     ID = models.IntegerField(primary_key=True)
 
 
 
-class Administrador(Model):
-    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
+class Administrador(Persona):
     ID = models.IntegerField(primary_key=True)
 
 
@@ -160,9 +160,8 @@ class HoraDia(Model):
 
 # Creamos la clase "doctorClave" y la asociamos a la clase horario.
 
-class DoctorClave(Model):
+class DoctorClave(Persona):
     Area = models.TextField(max_length=30)
-    Persona = models.OneToOneField(Persona, on_delete=models.CASCADE)
     Horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):

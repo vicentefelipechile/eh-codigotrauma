@@ -5,6 +5,7 @@
 import os
 import sys
 import json
+import faker
 import pathlib
 from shutil import rmtree
 
@@ -106,7 +107,14 @@ class Main:
         print(f" > rmdir /s /q {self.MAIN_PATH}principal/migrations")
         if ( os.path.exists(self.MAIN_PATH + "principal/migrations") ):
             rmtree(self.MAIN_PATH + "principal/migrations")
+        
+        print("Sincronizando base de datos...")
+        print(f" > python {self.MAIN_PATH}manage.py makemigrations")
+        os.system(f"python {self.MAIN_PATH}manage.py makemigrations")
+        print(f" > python {self.MAIN_PATH}manage.py migrate --run-syncdb")
+        os.system(f"python {self.MAIN_PATH}manage.py migrate --run-syncdb")
 
+    def generardatos(self: object) -> None: ...
 
     def ayuda(self: object) -> None:
         print(f"""                Ayuda
