@@ -6,6 +6,9 @@ from django.db import models
 from django.db.models import Model
 import json
 
+import hashlib
+
+from django.contrib.auth.hashers import make_password, check_password
 
 # ===========================================
 # ==== Funcion Json para todas las clases ===
@@ -111,11 +114,29 @@ class Paciente(Persona):
 
 class Secretario(Persona):
     ID = models.IntegerField(primary_key=True)
+    CuentaUsuario = models.TextField(max_length=20)
+    CuentaContrasena = models.TextField(max_length=64)
+
+    # La contraseña se guarda encriptada en la base de datos.
+    def SetContrasena(self, Contrasena: str) -> None:
+        self.CuentaContrasena = make_password(Contrasena)
+
+    # Se comprueba que la contraseña ingresada sea la misma que la guardada en la base de datos.
+    def ComprobarContrasena(self, Contrasena: str) -> bool:
+        return check_password(Contrasena, self.CuentaContrasena)
 
 
 
 class Administrador(Persona):
     ID = models.IntegerField(primary_key=True)
+    CuentaUsuario = models.TextField(max_length=20)
+    CuentaContrasena = models.TextField(max_length=64)
+
+    def SetContrasena(self, Contrasena: str) -> None:
+        self.CuentaContrasena = make_password(Contrasena)
+
+    def ComprobarContrasena(self, Contrasena: str) -> bool:
+        return check_password(Contrasena, self.CuentaContrasena)
 
 
 
@@ -170,3 +191,8 @@ class DoctorClave(Persona):
     def JsonResponse(self) -> str:
         return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
 
+
+
+# ===========================================
+# ========= Guardado de Contraseñas =========
+# ===========================================

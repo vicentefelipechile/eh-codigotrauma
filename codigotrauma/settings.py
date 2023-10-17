@@ -45,6 +45,8 @@ DB_PORT = Configuracion["backend"]["DB_PORT"]
 
 PASSWORD_REGEX = Configuracion["passwordRegEx"]
 
+API_CONFIG = Configuracion["API"]
+
 
 # =======================================================
 # ========== FIN DE LA CONFIGURACION PRINCIPAL ==========
@@ -76,7 +78,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -99,6 +101,17 @@ TEMPLATES = [
         },
     },
 ]
+
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+]
+
+
 
 WSGI_APPLICATION = 'codigotrauma.wsgi.application'
 

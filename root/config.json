@@ -9,18 +9,29 @@
 
     "backend": {
         "MAIN_PATH": "./backend/",
-
         "DB_IP": "127.0.0.0",
         "DB_PORT": "5432",
-
         "LANGUAGE_CODE": "es",
         "TIME_ZONE": "UTC",
-
         "databaseRemota": false,
         "modoDebug": true
     },
 
     "frontend": {
         "TEMPLATES": "./templates"
+    },
+
+    "API": {
+        "Usuario": {
+            "Header-Usuario": "EH-Usuario",
+            "Header-Contrasena": "EH-Contrasena",
+            "Header-TipoUsuario": "EH-TipoUsuario",
+            "TipoUsuarios": {
+                "Administrador": true
+            }
+        },
+        "Emergencias": {
+            "Header-EmergenciaID": "EH-Emergencia"
+        }
     }
 }

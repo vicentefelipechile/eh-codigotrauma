@@ -10,6 +10,7 @@ from django.urls import path
 import principal.views as Principal
 
 
+
 # =======================================================
 # ================== Librerias y Clases =================
 # =======================================================
@@ -19,4 +20,7 @@ urlpatterns = [
     path('contacto/', Principal.PaginaContacto, name='PaginaContacto'),
     path('registro/', Principal.PaginaRegistro, name='PaginaRegistro'),
     path('admin/', admin.site.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+    # API
+    path('v1/usuario/', Principal.API.ValidarUsuario)
+] 
