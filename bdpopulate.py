@@ -1,7 +1,11 @@
+# ============================================================
+#   Librerias
+# ============================================================
 
 import os
 import django
 from django.contrib.auth.hashers import make_password
+from faker import Faker
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "codigotrauma.settings")
 django.setup()
@@ -9,19 +13,31 @@ django.setup()
 
 from principal.models import Paciente, RegistroEmergencias
 
-from faker import Faker
-fake = Faker('es_ES')
+
+from principal.models import Paciente
+
+# ============================================================
+#   Generador de datos
+# ============================================================
+
+Faker.seed(1337)
+fake = Faker("es_CL")
 
 
 def crear_pacientes_falsos(cantidad):
     for _ in range(cantidad):
+        RUN: str = fake.person_rut()
+        
+        rut: str = int( RUN.split("-")[0].replace(".", "") )
+        dv: str = RUN.split("-")[1]
+        
         paciente = Paciente(
-            Rut=fake.random_int(min=1000000, max=9999999),  # Ejemplo de generación de un número aleatorio
-            Dv=fake.random_element(elements=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'K']),
-            PrimerNombre=fake.first_name(),
-            SegundoNombre=fake.first_name(),
-            ApellidoPaterno=fake.last_name(),
-            ApellidoMaterno=fake.last_name(),
+            Rut     =   rut,
+            Dv      =   dv,
+            PrimerNombre    =   fake.first_name(),
+            SegundoNombre   =   fake.first_name(),
+            ApellidoPaterno =   fake.last_name(),
+            ApellidoMaterno =   fake.last_name(),
         )
         paciente.save()
 
