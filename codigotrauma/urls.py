@@ -16,6 +16,7 @@ import principal.views as Principal
 # =======================================================
 
 urlpatterns = [
+    # Paginas
     path('', Principal.PaginaPrincipal, name='PaginaPrincipal'),
     path('contacto/', Principal.PaginaContacto, name='PaginaContacto'),
     path('registro/', Principal.PaginaRegistro, name='PaginaRegistro'),

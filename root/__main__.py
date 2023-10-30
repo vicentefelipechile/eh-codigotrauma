@@ -5,7 +5,6 @@
 import os
 import sys
 import json
-import faker
 import pathlib
 from shutil import rmtree
 
@@ -39,18 +38,28 @@ class Main:
         # ============================================================
         # Verificar que esta instalado django en el entorno virtual
         # ============================================================
+        
+        print("=====================================")
 
         try:
             import django
+            print(" > Django instalado")
         except ImportError:
-            print("=====================================")
             print("No se ha encontrado Django instalado")
             print("Instalando Django...")
-            print("=====================================")
 
-            # Nuevo formato utilizando self.MAIN_PATH
             print(f" > {sys.executable} -m pip install django")
             os.system(f"{sys.executable} -m pip install django")
+        
+        try:
+            import faker
+            print(" > Faker instalado")
+        except ImportError:
+            print("No se ha encontrado Faker instalado")
+            print("Instalando Faker...")
+
+            print(f" > {sys.executable} -m pip install faker")
+            os.system(f"{sys.executable} -m pip install faker")
 
         print("=====================================")
         print("Caracteristicas necesarias instaladas")

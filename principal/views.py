@@ -62,7 +62,6 @@ def RespuestaCorta(EsError: bool = True, Mensaje: str = "Error", Codigo: int = 4
     return JsonResponse({ "error": EsError, "mensaje": Mensaje }, status=Codigo)
 
 
-print(settings.API_CONFIG)
 
 class API():
 
