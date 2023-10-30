@@ -71,7 +71,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'codigotrauma',
-    'principal'
+    'principal',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
