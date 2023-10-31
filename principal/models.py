@@ -9,6 +9,7 @@
 # ====================================================
 
 from django.contrib.auth.hashers import make_password, check_password
+
 from django.utils import timezone
 from django.db import models
 from django.db.models import Model
@@ -123,7 +124,7 @@ class Secretario(Persona):
     CuentaContrasena = models.TextField(max_length=64)
 
     # La contraseña se guarda encriptada en la base de datos.
-    def SetContrasena(self, Contrasena: str = None) -> None:
+    def SetContrasena(self, Contrasena: str) -> None:
         self.CuentaContrasena = make_password(Contrasena)
 
     # Se comprueba que la contraseña ingresada sea la misma que la guardada en la base de datos.
@@ -195,3 +196,9 @@ class DoctorClave(Persona):
     
     def JsonResponse(self) -> str:
         return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
+
+class Area:
+    ID = models.IntegerField(primary_key=True)
+    Nombre = models.TextField(max_length=30)
+    def __str__(self):
+        return self.Nombre
