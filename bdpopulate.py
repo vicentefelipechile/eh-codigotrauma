@@ -11,7 +11,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "codigotrauma.settings")
 django.setup()
 
 
-from principal.models import Paciente, RegistroEmergencias
+from principal.models import Paciente, RegistroEmergencias, HistorialEmergencias, Administrador, Secretario, DoctorClave, HistorialDoctoresEmergencia
 
 
 from principal.models import Paciente
@@ -113,3 +113,6 @@ def crear_administradores_falsos(cantidad):
         administrador.save()
 
 crear_administradores_falsos(100)
+
+def crear_doctoresclave_falsos(cantidad):
+    
