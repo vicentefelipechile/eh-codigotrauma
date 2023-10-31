@@ -15,6 +15,9 @@ from django.db import models
 from django.db.models import Model
 import json
 
+from django.db.models import TextField, IntegerField, DateTimeField, CharField
+from django.db.models import ForeignKey
+
 
 # ===========================================
 # ==== Funcion Json para todas las clases ===
@@ -42,7 +45,7 @@ class HistorialEmergencias(Model):
     FechaRegistro = models.DateTimeField(default=timezone.now)
     Detalles = models.TextField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Historial de Emergencia: {self.Emergencia}, Fecha de Registro: {self.FechaRegistro}"
     
     def JsonResponse(self) -> str:
@@ -84,12 +87,12 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut = models.IntegerField(unique=True)
-    Dv = models.CharField(max_length=1)
-    PrimerNombre = models.TextField(max_length=20)
-    SegundoNombre = models.TextField(max_length=20, null=True)
-    ApellidoPaterno = models.TextField(max_length=20)
-    ApellidoMaterno = models.TextField(max_length=20, null=True)
+    Rut: IntegerField = models.IntegerField(unique=True)
+    Dv: CharField = models.CharField(max_length=1)
+    PrimerNombre: TextField = models.TextField(max_length=20)
+    SegundoNombre: TextField = models.TextField(max_length=20, null=True)
+    ApellidoPaterno: TextField = models.TextField(max_length=20)
+    ApellidoMaterno: TextField = models.TextField(max_length=20, null=True)
 
     def GetAllAttributes(self, AtributosExtra: list = None) -> list:
         AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
@@ -107,7 +110,7 @@ class Persona(Model):
 
     def __str__(self):
         return f"Primer Nombre: {self.PrimerNombre}, Apellido Paterno: {self.ApellidoPaterno}, Rut: {self.Rut}-{self.Dv}"
-    
+
     class Meta:
         abstract = True
 
@@ -152,7 +155,7 @@ class Administrador(Persona):
 
 class Horario(Model):
     DiaSemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
-    DiaHora = models.ForeignKey('HoraDia',on_delete=models.SET_NULL, null=True)
+    DiaHora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True)
     Clase = models.CharField(max_length=100)
 
     def __str__(self):
