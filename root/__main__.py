@@ -7,6 +7,8 @@ import sys
 import json
 import pathlib
 from shutil import rmtree
+from faker import Faker
+
 
 # ============================================================
 # Clase Principal
@@ -104,7 +106,7 @@ class Main:
     # Tipo de ejecucion
     # ============================================================
 
-    def restaurar(self: object) -> None:
+    def restaurar(self: object, Argumento: any = None) -> None:
         # Eliminar el archivo "db.sqlite3" en ./
 
         print("Eliminando base de datos...")
@@ -123,9 +125,36 @@ class Main:
         print(f" > python {self.MAIN_PATH}manage.py migrate --run-syncdb")
         os.system(f"python {self.MAIN_PATH}manage.py migrate --run-syncdb")
 
-    def generardatos(self: object) -> None: ...
 
-    def ayuda(self: object) -> None:
+
+    def generardatos(self: object, Semilla: str = None) -> None:
+        if not Semilla:
+            Semilla = "1337"
+        
+        Resultado: int = 0
+        for Caracter in Semilla:
+            Resultado += ord(Caracter)
+            
+        print(f"Semilla: {Resultado}")
+        
+        Faker.seed(Semilla)
+        
+        print("Generando datos...")
+        
+        # Si no existe la carpeta sqlscript la crea
+        if not os.path.exists(self.MAIN_PATH + "root/sqlscript"):
+            os.mkdir(self.MAIN_PATH + "root/sqlscript")
+    
+    
+    
+    def shell(self: object, Argumento: any = None) -> None:
+        print("Iniciando shell...")
+        print(f" > python {self.MAIN_PATH}manage.py shell")
+        os.system(f"python {self.MAIN_PATH}manage.py shell")
+
+
+
+    def ayuda(self: object, Argumento: any = None) -> None:
         print(f"""                Ayuda
 =====================================
 
@@ -134,7 +163,9 @@ el proyecto de Django de la forma mas sencilla posible.
 
 Argumentos disponibles:
     > ayuda  
-    > restaurar""")
+    > restaurar
+    > generardatos [Semilla]
+    > shell""")
 
 
     # ============================================================
@@ -143,10 +174,11 @@ Argumentos disponibles:
 
     def EjecucionEspecial(self: object, Argumentos: list = None) -> None:
         Tipo: str = Argumentos[1]
+        Extra: str = Argumentos[2] if len(Argumentos) > 2 else None
 
         print("=====================================")
         if hasattr(self, Tipo):
-            getattr(self, Tipo)()
+            getattr(self, Tipo)(Extra)
         else:
             print("No se ha encontrado la funcion")
 

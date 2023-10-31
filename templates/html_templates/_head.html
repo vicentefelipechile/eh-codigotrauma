@@ -20,9 +20,15 @@
 	<script src="{% static 'js/sweetalert2.js' %}" ></script>
 
 	<!-- General Styles -->
-	<link rel="stylesheet" href="/{% static 'css/style.css' %}">
-	<link rel="stylesheet" href="/{% static 'css/pagina_contacto.css' %}" media="screen">
-	<link rel="stylesheet" href="/{% static 'css/contacto.css' %}" media="screen">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pagina_contacto.css' %}" media="screen">
+	<link rel="stylesheet" href="{% static 'css/contacto.css' %}" media="screen">
+
+    <!-- Si esta la variable "contacto" entonces carga el css de la pagina de contacto -->
+    {% if contacto %}
+        <link rel="stylesheet" href="{% static 'css/pagina_contacto.css' %}" media="screen">
+        <link rel="stylesheet" href="{% static 'css/contacto.css' %}" media="screen">
+    {% endif %}
 
 	<link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" >
 </head>
@@ -31,7 +37,7 @@
     <!-- Header -->
     <header class="header full-box">
         <div class="header-brand text-center full-box">
-            <a href={% url 'PaginaPrincipal' %} class="float-left">
+            <a href="{% url 'PaginaPrincipal' %}" class="float-left">
                 <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" >
             </a>
         </div>
@@ -40,10 +46,10 @@
             <nav class="header-navbar full-box poppins-regular font-weight-bold" >
                 <ul class="list-unstyled full-box">
                     <li>
-                        <a href={% url 'PaginaPrincipal' %} >Inicio<span class="full-box" ></span></a>
+                        <a href="{% url 'PaginaPrincipal' %}" >Inicio<span class="full-box" ></span></a>
                     </li>
                     <li>
-                        <a href={% url 'PaginaContacto' %} >Contactanos<span class="full-box" ></span></a>
+                        <a href="{% url 'PaginaContacto' %}" >Contactanos<span class="full-box" ></span></a>
                     </li>
                 </ul>
             </nav>
