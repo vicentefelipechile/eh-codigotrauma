@@ -23,58 +23,43 @@
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	<link rel="stylesheet" href="{% static 'css/pagina_contacto.css' %}" media="screen">
 	<link rel="stylesheet" href="{% static 'css/contacto.css' %}" media="screen">
-
-    <!-- Si esta la variable "contacto" entonces carga el css de la pagina de contacto -->
-    {% if contacto %}
-        <link rel="stylesheet" href="{% static 'css/pagina_contacto.css' %}" media="screen">
-        <link rel="stylesheet" href="{% static 'css/contacto.css' %}" media="screen">
-    {% endif %}
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 
 	<link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" >
 </head>
 <body>
 
     <!-- Header -->
-    <header class="header full-box">
-        <div class="header-brand text-center full-box">
-            <a href="{% url 'PaginaPrincipal' %}" class="float-left">
-                <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid" >
-            </a>
-        </div>
+    <header class="header w-100" style="height: 90px">
 
-        <div class="header-options full-box">
-            <nav class="header-navbar full-box poppins-regular font-weight-bold" >
-                <ul class="list-unstyled full-box">
-                    <li>
-                        <a href="{% url 'PaginaPrincipal' %}" >Inicio<span class="full-box" ></span></a>
-                    </li>
-                    <li>
-                        <a href="{% url 'PaginaContacto' %}" >Contactanos<span class="full-box" ></span></a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="header-button full-box text-center btn-login-menu" >
-                <i class="fas fa-user-alt" onclick="show_popup_login()" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Login" ></i>
-                <div class="div-bordered popup-login">
+        <div class="container d-flex mb-3 align-items-center justify-content-evenl" style="height: 100px">
 
-                    <!-- Inicio de sesion -->
-                    <span class="text-center poppins-regular font-weight-bold">Inicio de sesión</span>
-                    <form class="full-box" action="">
-                        <div class="form-outline mb-4">
-                            <input type="email" class="form-control" name="login_email_cliente" id="login_email" maxlength="70" required="" placeholder="Email" >
-                        </div>
-                        <div class="form-outline mb-4">
-                            <input type="password" class="form-control" name="login_clave_cliente" id="login_password" pattern="[a-zA-Z0-9$@.-]{7,100}" maxlength="100" required="" placeholder="Contraseña" >
-                        </div>
-                        <p class="text-center">
-                            <button class="btn btn-info btn-sm w-100">Iniciar sesión</button>
-                        </p>
-                    </form>
-                    <hr>
-                    <p class="text-center full-box">¿No tienes cuenta? <a href={% url 'PaginaRegistro' %}>Regístrate aquí</a></p>
-                    
+            <!-- Boton de inicio -->
+            <div class="me-auto p-2">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" class="img-fluid" style="height: 70px">
+            </div>
+
+            <!-- Boton de inicio -->
+            <div class="p-2">
+                <a href="{% url 'PaginaPrincipal' %}" class="btn btn-lg btn-primary">
+                    <i class="fa fa-home"></i> Inicio
+                </a>
+            </div>
+
+            <!-- Boton de Contacto -->
+            <div class="p-2">
+                <a href="{% url 'PaginaContacto' %}" class="btn btn-lg btn-outline-success">
+                    <i class="fa fa-phone"></i> Contactanos
+                </a>
+            </div>
+
+            <!-- Boton de inicio de sesion -->
+            <div class="class">
+                <div class="btn btn-lg">
+                    <i class="fa fa-user"></i>
                 </div>
             </div>
-        
         </div>
+        
+
     </header>
