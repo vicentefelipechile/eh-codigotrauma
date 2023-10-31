@@ -166,6 +166,9 @@ Argumentos disponibles:
     > restaurar
     > generardatos [Semilla]
     > shell""")
+        
+    def iniciar(self: object, Argumento: any = None) -> None:
+        self.NormalEjecucion()
 
 
     # ============================================================
