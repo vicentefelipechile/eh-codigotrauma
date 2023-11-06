@@ -107,13 +107,14 @@ def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
     Inicio: float = perf_counter()
 
     for id in range(Cantidad):
-        
+        color = fake.color_name(ext_word_list=["Rojo", "Amarillo", "Verde", "Negro", "Blanco"])
+            
         try:
             # Crea una instancia de RegistroEmergencias
             Registro = RegistroEmergencias(
                 ID          =       GeneradorDatos().UniqueID(),
                 Descripcion =       fake.text(max_nb_chars=50),
-                CodigoColor =       fake.color_name(),
+                CodigoColor =       color,
                 Fecha       =       GeneradorDatos().Fecha(),
                 NumeroPacientes =   fake.random_int(min=1, max=100),
             )
