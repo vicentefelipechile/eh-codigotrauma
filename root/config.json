@@ -12,7 +12,7 @@
         "DB_IP": "127.0.0.0",
         "DB_PORT": "5432",
         "LANGUAGE_CODE": "es",
-        "TIME_ZONE": "UTC",
+        "TIME_ZONE": "America/Santiago",
         "databaseRemota": false,
         "modoDebug": true
     },

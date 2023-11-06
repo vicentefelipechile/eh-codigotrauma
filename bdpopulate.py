@@ -4,6 +4,7 @@
 
 import os
 import django
+from time import perf_counter
 from django.contrib.auth.hashers import make_password
 from faker import Faker
 
@@ -11,177 +12,381 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "codigotrauma.settings")
 django.setup()
 
 
-from principal.models import Paciente, RegistroEmergencias, HistorialEmergencias, Administrador, Secretario, DoctorClave, HistorialDoctoresEmergencia, HoraDia, Horario, DiaSemana, Area
-
-
 from principal.models import Paciente
+from principal.models import RegistroEmergencias
+from principal.models import HistorialEmergencias
+from principal.models import Administrador
+from principal.models import Secretario
+from principal.models import DoctorClave
+from principal.models import HistorialDoctoresEmergencia
+from principal.models import Area
+from principal.models import HoraDia, Horario, DiaSemana
+
+
 
 # ============================================================
 #   Generador de datos
 # ============================================================
+# Zona horaria UTC-3
 
 Faker.seed(1337)
 fake = Faker("es_CL")
 
 
-def crear_pacientes_falsos(cantidad):
-    for _ in range(cantidad):
+# ============================================================
+#   Funciones varias
+# ============================================================
+
+class GeneradorDatos:
+    
+    def Rut(self, Numeros: bool = False) -> str | int:
         RUN: str = fake.person_rut()
         
-        rut: str = int( RUN.split("-")[0].replace(".", "") )
+        rut: str | int = int( RUN.split("-")[0].replace(".", "") ) if Numeros else RUN.split("-")[0]
         dv: str = RUN.split("-")[1]
         
-        paciente = Paciente(
-            Rut     =   rut,
-            Dv      =   dv,
-            PrimerNombre    =   fake.first_name(),
-            SegundoNombre   =   fake.first_name(),
-            ApellidoPaterno =   fake.last_name(),
-            ApellidoMaterno =   fake.last_name(),
-        )
-        paciente.save()
+        return rut, dv
 
-crear_pacientes_falsos(100)  
+    def Fecha(self, Inicio: str = "-1y") -> str:
+        return fake.date_time_between(start_date=Inicio, end_date="now").strftime("%Y-%m-%d %H:%M:%S")
+    
+    def UniqueID(self, Digitos: int = 8) -> str:
+        return str( fake.unique.random_number(digits=Digitos) )
 
 
-def crear_registros_emergencias_falsos(cantidad):
-    for _ in range(cantidad):
-        # Genera un ID ficticio (puedes ajustarlo según tus necesidades)
-        id_ficticio = fake.unique.random_number(digits=8)
-        
-        # Genera una descripción ficticia
-        descripcion_ficticia = fake.text(max_nb_chars=50)
-        
-        # Genera un código de color ficticio
-        codigo_color_ficticio = fake.color_name()
-        
-        # Genera una fecha ficticia
-        fecha_ficticia = fake.date_time_between(start_date="-1y", end_date="now")
-        
-        # Genera un número de pacientes ficticio
-        numero_pacientes_ficticio = fake.random_int(min=1, max=100)
-        
-        # Crea una instancia de RegistroEmergencias
-        registro_emergencias = RegistroEmergencias(
-            ID=str(id_ficticio),
-            Descripcion=descripcion_ficticia,
-            CodigoColor=codigo_color_ficticio,
-            Fecha=fecha_ficticia,
-            NumeroPacientes=numero_pacientes_ficticio,
-        )
-        registro_emergencias.save()
+# ============================================================
+#   Funciones varias
+# ============================================================
 
-crear_registros_emergencias_falsos(100)  
 
-def crear_historiales_emergencias_falsos(cantidad):
-    for _ in range(cantidad):
-        # Genera una fecha de registro ficticia
-        fecha_registro_ficticia = fake.date_time_between(start_date="-1y", end_date="now")
-        
-        # Genera detalles ficticios
-        detalles_ficticios = fake.text(max_nb_chars=200)
-        
-        # Selecciona una emergencia aleatoria
-        emergencia_aleatoria = RegistroEmergencias.objects.order_by("?").first()
+def GenerarDatosPacientes(Cantidad: int = 10) -> None:
+    print(" > Generando datos de pacientes...                ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
 
-        # Crea una instancia de HistorialEmergencias
-        historial_emergencias = HistorialEmergencias(
-            Emergencia=emergencia_aleatoria,
-            FechaRegistro=fecha_registro_ficticia,
-            Detalles=detalles_ficticios,
-        )
-        historial_emergencias.save()
+    Inicio: float = perf_counter()
 
-crear_historiales_emergencias_falsos(100)
+    for id in range(Cantidad):
+        try:
+            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
 
-def crear_administradores_falsos(cantidad):
-    for _ in range(cantidad):
-        # Genera un nombre de usuario ficticio
-        nombre_usuario_ficticio = fake.user_name()
-        
-        # Genera una contraseña ficticia
-        contrasena_ficticia = fake.password()
-        
-        # Crea una instancia de Administrador
-        administrador = Administrador(
-            CuentaUsuario=nombre_usuario_ficticio,
-        )
-        
-        # Encripta la contraseña ficticia antes de guardarla
-        administrador.SetContrasena(contrasena_ficticia)
-        
-        administrador.save()
+            NewPaciente: Paciente = Paciente(
+                Rut     =   Rut,
+                Dv      =   Dv,
+                PrimerNombre    =   fake.first_name(),
+                SegundoNombre   =   fake.first_name(),
+                ApellidoPaterno =   fake.last_name(),
+                ApellidoMaterno =   fake.last_name(),
+            )
+            
+            NewPaciente.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
 
-crear_administradores_falsos(100)
 
-def crear_doctoresclave_falsos(cantidad):
-    for _ in range(cantidad):
+
+
+def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
+    print(" > Generando datos de registros de emergencias... ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+        
+        try:
+            # Crea una instancia de RegistroEmergencias
+            Registro = RegistroEmergencias(
+                ID          =       GeneradorDatos().UniqueID(),
+                Descripcion =       fake.text(max_nb_chars=50),
+                CodigoColor =       fake.color_name(),
+                Fecha       =       GeneradorDatos().Fecha(),
+                NumeroPacientes =   fake.random_int(min=1, max=100),
+            )
+            Registro.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
+    print(" > Generando datos de historial de emergencias... ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+
+        try:
+            # Crea una instancia de HistorialEmergencias
+            historial_emergencias = HistorialEmergencias(
+                Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
+                FechaRegistro   =   GeneradorDatos().Fecha(),
+                Detalles        =   fake.text(max_nb_chars=200)
+            )
+
+            historial_emergencias.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+
+def GenerarAdministradores(Cantidad: int = 10) -> None:
+    print(" > Generando datos de administradores...          ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+        
+        try:
+            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            
+            # Crea una instancia de Administrador
+            administrador = Administrador(
+                Rut     =   Rut,
+                Dv      =   Dv,
+                PrimerNombre    =   fake.first_name(),
+                SegundoNombre   =   fake.first_name(),
+                ApellidoPaterno =   fake.last_name(),
+                ApellidoMaterno =   fake.last_name(),
+                CuentaUsuario = fake.user_name()
+            )
+            
+            # Encripta la contraseña ficticia antes de guardarla
+            administrador.SetContrasena(fake.password())
+            administrador.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+def crear_doctoresclave_falsos(Cantidad: int = 10) -> None:
+
+    for id in range(Cantidad):
+
          nombre_usuario_ficticio = fake.user_name()
-        
-        
-        
-def crear_horas_dia_falsas(cantidad):
-    for _ in range(cantidad):
-        # Genera horas de inicio y fin ficticias
-        hora_inicio_ficticia = fake.time_object(end_datetime=None)
-        
-        # Asegura que la hora de fin sea posterior a la hora de inicio
-        hora_fin_ficticia = fake.time_object(end_datetime=None)
-        while hora_fin_ficticia <= hora_inicio_ficticia:
+
+
+
+
+def GenerarHorasDias(Cantidad: int = 10) -> None:
+    print(" > Generando datos de horas del día...            ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+
+        try:
+            # Genera horas de inicio y fin ficticias
+            hora_inicio_ficticia = fake.time_object(end_datetime=None)
+            
+            # Asegura que la hora de fin sea posterior a la hora de inicio
             hora_fin_ficticia = fake.time_object(end_datetime=None)
-        
-        # Crea una instancia de HoraDia
-        hora_dia = HoraDia(
-            HoraInicio=hora_inicio_ficticia,
-            HoraFin=hora_fin_ficticia,
-        )
-        hora_dia.save()
+            while hora_fin_ficticia <= hora_inicio_ficticia:
+                hora_fin_ficticia = fake.time_object(end_datetime=None)
+            
+            # Crea una instancia de HoraDia
+            hora_dia = HoraDia(
+                HoraInicio=hora_inicio_ficticia,
+                HoraFin=hora_fin_ficticia,
+            )
+            hora_dia.save()
+            
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
 
-crear_horas_dia_falsas(100)
 
-def crear_dias_semana_falsos(cantidad):
-    for _ in range(cantidad):
-        # Genera un nombre de día ficticio
-        nombre_ficticio = fake.day_of_week()
-        
-        # Crea una instancia de DiaSemana
-        dia_semana = DiaSemana(
-            Nombre=nombre_ficticio,
-        )
-        dia_semana.save()
 
-crear_dias_semana_falsos(100)
 
-def crear_horarios_falsos(cantidad):
-    for _ in range(cantidad):
-        # Genera una referencia ficticia a un día de la semana
-        dia_semana_ficticio = DiaSemana.objects.order_by("?").first()
-        
-        # Genera una referencia ficticia a una hora del día
-        dia_hora_ficticio = HoraDia.objects.order_by("?").first()
-        
-        # Genera una descripción de clase ficticia
-        clase_ficticia = fake.job()
-        
-        # Crea una instancia de Horario
-        horario = Horario(
-            DiaSemana=dia_semana_ficticio,
-            DiaHora=dia_hora_ficticio,
-            Clase=clase_ficticia,
-        )
-        horario.save()
+def GenerarDiasSemana() -> None:
+    print(" > Generando datos de días de la semana...        ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
 
-crear_horarios_falsos(100)
+    Inicio: float = perf_counter()
+    
+    Semanas: list[str] = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
+    
+    for dia in Semanas:
+        try:
+            dia_semana = DiaSemana(Nombre=dia)
+            dia_semana.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
 
-def crear_areas_falsas(cantidad):
-    for _ in range(cantidad):
-        # Genera un nombre de área ficticio
-        nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
-        
-        # Crea una instancia de Area
-        area = Area(
-            Nombre=nombre_area_ficticio,
-        )
-        area.save()
 
-crear_areas_falsas(100)
+
+
+def GenerarHorarios(Cantidad: int = 10) -> None:
+    print(" > Generando datos de horarios...                 ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+
+        try:
+            # Genera una referencia ficticia a un día de la semana
+            dia_semana_ficticio = DiaSemana.objects.order_by("?").first()
+            
+            # Genera una referencia ficticia a una hora del día
+            dia_hora_ficticio = HoraDia.objects.order_by("?").first()
+            
+            # Genera una descripción de clase ficticia
+            clase_ficticia = fake.job()
+            
+            # Crea una instancia de Horario
+            horario = Horario(
+                DiaSemana=dia_semana_ficticio,
+                DiaHora=dia_hora_ficticio,
+                Clase=clase_ficticia,
+            )
+            horario.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+
+def GenerarAreas(Cantidad: int = 10) -> None:
+    print(" > Generando datos de áreas...                    ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+        try:
+            # Genera un nombre de área ficticio
+            nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
+            
+            # Crea una instancia de Area
+            area = Area(
+                Nombre=nombre_area_ficticio,
+            )
+            area.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+# ============================================================
+#   Ejecución
+# ============================================================
+
+print("=====================================")
+print("     Generacion de datos falsos")
+print("=====================================")
+
+Inicio: float = perf_counter()
+
+GenerarDatosPacientes(100)
+GenerarAdministradores(100)
+GenerarRegistrosEmergencias(100)
+GenerarHistorialEmergencias(100)
+GenerarHorasDias(100)
+GenerarDiasSemana()
+GenerarHorarios(100)
+GenerarAreas(100)
+
+Termino: float = perf_counter()
+
+print(f"Tarea completada en {round(Termino - Inicio, 2)}s")
+
+print("=====================================")

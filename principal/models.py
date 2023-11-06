@@ -200,7 +200,7 @@ class DoctorClave(Persona):
     def JsonResponse(self) -> str:
         return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
 
-class Area:
+class Area(Model):
     ID = models.IntegerField(primary_key=True)
     Nombre = models.TextField(max_length=30)
     def __str__(self):
