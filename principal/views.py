@@ -5,6 +5,8 @@
 from django.shortcuts import render
 from django.template import loader
 from django.conf import settings
+from django.contrib.auth.forms import UserCreationForm
+
 from pathlib import Path
 
 from django.http import HttpResponse, JsonResponse
@@ -27,6 +29,9 @@ CONTEXTO: dict = {
     "ContrasenaRegex": settings.PASSWORD_REGEX,
 }
 
+FORMULARIO: dict = CONTEXTO.copy()
+FORMULARIO["form"] = UserCreationForm
+
 
 
 # ============================================================
@@ -43,11 +48,11 @@ def PaginaPrincipal(request: WSGIRequest) -> HttpResponse:
 def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
     HTML: Template = loader.get_template("registro.html")
 
-    return HttpResponse( HTML.render(CONTEXTO, request) )
+    return HttpResponse( HTML.render(FORMULARIO, request) )
 
 
 def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
-    HTML: Template = loader.get_template("signin.html")
+    HTML: Template = loader.get_template("iniciar-sesion.html")
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
@@ -99,6 +104,18 @@ class API():
 
 
             return RespuestaCorta(False, "Usuario valido", 200)
+
+        # ============================================================
+        # =================== Metodos no permitidos ==================
+        # ============================================================
+        else:
+            return RespuestaCorta(True, "Metodo no permitido", 405)
+
+
+
+    def RegistrarUsuario(request: WSGIRequest) -> JsonResponse:
+        if request.method == "POST":
+            return RespuestaCorta(False, "Usuario registrado", 200)
 
         # ============================================================
         # =================== Metodos no permitidos ==================
