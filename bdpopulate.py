@@ -165,7 +165,7 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de emergencias... ", end="")
+    print(" > Generando datos de historial de doctores clave... ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -180,7 +180,7 @@ def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
             historial_doctores = HistorialDoctoresEmergencia(
                 Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
                 Doctor          =   DoctorClave.objects.order_by("?").first(),
-                FechaAsignación =   GeneradorDatos().Fecha(),
+                FechaAsignacion =   GeneradorDatos().Fecha(),
             )
 
             historial_doctores.save()
@@ -292,7 +292,6 @@ def GenerarDoctoresClave(Cantidad):
                 ApellidoPaterno=fake.last_name(),
                 ApellidoMaterno=fake.last_name(),
                 Area=nombre_area_ficticio,
-                Horario = horario_aleatorio,
                 CuentaUsuario=fake.user_name()
             )
             doctorclave.SetContrasena(fake.password())
