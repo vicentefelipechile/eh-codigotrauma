@@ -9,6 +9,14 @@
 {# ============== Inicio de HTML ============== #}
 {# ============================================ #}
 
+<div class="container">
+    <form action="/api/v1/registrar/usuario" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary">Iniciar Sesion</button>
+    </form>
+    <br>
+</div>
 
 
 {# ============================================ #}
