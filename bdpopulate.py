@@ -164,6 +164,38 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
+def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
+    print(" > Generando datos de historial de emergencias... ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for id in range(Cantidad):
+
+        try:
+            # Crea una instancia de HistorialEmergencias
+            historial_doctores = HistorialDoctoresEmergencia(
+                Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
+                Doctor          =   DoctorClave.objects.order_by("?").first(),
+                FechaAsignación =   GeneradorDatos().Fecha(),
+            )
+
+            historial_doctores.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
 
 
 
@@ -207,14 +239,78 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
+def GenerarSecretarios(Cantidad):
+    print("Generando datos de Secretarios...")
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
 
-
-def crear_doctoresclave_falsos(Cantidad: int = 10) -> None:
-
+    Inicio: float = perf_counter()
     for id in range(Cantidad):
+        
+        try: 
+            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            secretario = Secretario(
+                Rut     =   Rut,
+                Dv      =   Dv,
+                PrimerNombre    =   fake.first_name(),
+                SegundoNombre   =   fake.first_name(),
+                ApellidoPaterno =   fake.last_name(),
+                ApellidoMaterno =   fake.last_name(),
+                CuentaUsuario = fake.user_name()
+            )
+            secretario.SetContrasena(fake.password())
+            secretario.save()
+        except Exception as Error:
+                    Fallo = True
+                    FalloCantidad += 1
+                    FalloMensaje = Error
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+        
+        
+def GenerarDoctoresClave(Cantidad):
+    print("Generando datos DoctoresClave...")
+    Fallo = False
+    FalloCantidad = 0
+    FalloMensaje = ""
 
-         nombre_usuario_ficticio = fake.user_name()
+    Inicio = perf_counter()
+    for id in range(Cantidad):
+        nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
+        try:
+            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            doctorclave = DoctorClave(
+                Rut=Rut,
+                Dv=Dv,
+                PrimerNombre=fake.first_name(),
+                SegundoNombre=fake.first_name(),
+                ApellidoPaterno=fake.last_name(),
+                ApellidoMaterno=fake.last_name(),
+                Area=nombre_area_ficticio,
+                Horario = horario_aleatorio,
+                CuentaUsuario=fake.user_name()
+            )
+            doctorclave.SetContrasena(fake.password())
+            horario_aleatorio = Horario.objects.order_by("?").first()
+            doctorclave.Horario = horario_aleatorio
+            doctorclave.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    Termino = perf_counter()
 
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+        
 
 
 
@@ -365,7 +461,8 @@ def GenerarAreas(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 
-
+    
+    
 # ============================================================
 #   Ejecución
 # ============================================================
@@ -378,12 +475,15 @@ Inicio: float = perf_counter()
 
 GenerarDatosPacientes(100)
 GenerarAdministradores(100)
+GenerarDoctoresClave(100)
+GenerarSecretarios(100)
 GenerarRegistrosEmergencias(100)
 GenerarHistorialEmergencias(100)
 GenerarHorasDias(100)
 GenerarDiasSemana()
 GenerarHorarios(100)
 GenerarAreas(100)
+GenerarHistorialDoctoresClave(100)
 
 Termino: float = perf_counter()
 

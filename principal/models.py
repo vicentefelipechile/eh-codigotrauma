@@ -193,12 +193,19 @@ class HoraDia(Model):
 class DoctorClave(Persona):
     Area = models.TextField(max_length=30)
     Horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
-
+    CuentaUsuario = models.TextField(max_length=20)
+    CuentaContrasena = models.TextField(max_length=64)
     def __str__(self):
         return str(self.rut)
     
     def JsonResponse(self) -> str:
         return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
+    def SetContrasena(self, Contrasena: str) -> None:
+        self.CuentaContrasena = make_password(Contrasena)
+
+    def ComprobarContrasena(self, Contrasena: str) -> bool:
+        return check_password(Contrasena, self.CuentaContrasena)
+
 
 class Area(Model):
     ID = models.IntegerField(primary_key=True)
