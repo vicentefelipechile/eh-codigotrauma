@@ -3,6 +3,7 @@
 # ============================================================
 
 import os
+import random
 import django
 from time import perf_counter
 from django.contrib.auth.hashers import make_password
@@ -107,14 +108,14 @@ def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
     Inicio: float = perf_counter()
 
     for id in range(Cantidad):
-        color = fake.color_name(ext_word_list=["Rojo", "Amarillo", "Verde", "Negro", "Blanco"])
+        colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
             
         try:
             # Crea una instancia de RegistroEmergencias
             Registro = RegistroEmergencias(
                 ID          =       GeneradorDatos().UniqueID(),
                 Descripcion =       fake.text(max_nb_chars=50),
-                CodigoColor =       color,
+                CodigoColor =       random.choice(colores_disponibles),
                 Fecha       =       GeneradorDatos().Fecha(),
                 NumeroPacientes =   fake.random_int(min=1, max=100),
             )
