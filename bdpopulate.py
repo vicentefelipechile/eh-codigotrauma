@@ -406,13 +406,12 @@ def GenerarHorarios(Cantidad: int = 10) -> None:
             dia_hora_ficticio = HoraDia.objects.order_by("?").first()
             
             # Genera una descripción de clase ficticia
-            clase_ficticia = fake.job()
             
             # Crea una instancia de Horario
             horario = Horario(
                 DiaSemana=dia_semana_ficticio,
                 DiaHora=dia_hora_ficticio,
-                Clase=clase_ficticia,
+                
             )
             horario.save()
         except Exception as Error:
