@@ -40,15 +40,14 @@ def PaginaPrincipal(request: WSGIRequest) -> HttpResponse:
 
 
 
-def PaginaContacto(request: WSGIRequest) -> HttpResponse:
-    HTML: Template = loader.get_template("contacto.html")
+def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
+    HTML: Template = loader.get_template("registro.html")
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
 
-
-def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
-    HTML: Template = loader.get_template("registro.html")
+def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
+    HTML: Template = loader.get_template("signin.html")
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
