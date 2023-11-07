@@ -3,6 +3,7 @@
 # ============================================================
 
 import os
+import random
 import django
 from time import perf_counter
 from django.contrib.auth.hashers import make_password
@@ -107,13 +108,14 @@ def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
     Inicio: float = perf_counter()
 
     for id in range(Cantidad):
-        
+        colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
+            
         try:
             # Crea una instancia de RegistroEmergencias
             Registro = RegistroEmergencias(
                 ID          =       GeneradorDatos().UniqueID(),
                 Descripcion =       fake.text(max_nb_chars=50),
-                CodigoColor =       fake.color_name(),
+                CodigoColor =       random.choice(colores_disponibles),
                 Fecha       =       GeneradorDatos().Fecha(),
                 NumeroPacientes =   fake.random_int(min=1, max=100),
             )
@@ -165,7 +167,7 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de emergencias... ", end="")
+    print(" > Generando datos de historial de doctores clave... ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -180,7 +182,7 @@ def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
             historial_doctores = HistorialDoctoresEmergencia(
                 Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
                 Doctor          =   DoctorClave.objects.order_by("?").first(),
-                FechaAsignación =   GeneradorDatos().Fecha(),
+                FechaAsignacion =   GeneradorDatos().Fecha(),
             )
 
             historial_doctores.save()
@@ -292,7 +294,6 @@ def GenerarDoctoresClave(Cantidad):
                 ApellidoPaterno=fake.last_name(),
                 ApellidoMaterno=fake.last_name(),
                 Area=nombre_area_ficticio,
-                Horario = horario_aleatorio,
                 CuentaUsuario=fake.user_name()
             )
             doctorclave.SetContrasena(fake.password())
@@ -405,13 +406,12 @@ def GenerarHorarios(Cantidad: int = 10) -> None:
             dia_hora_ficticio = HoraDia.objects.order_by("?").first()
             
             # Genera una descripción de clase ficticia
-            clase_ficticia = fake.job()
             
             # Crea una instancia de Horario
             horario = Horario(
                 DiaSemana=dia_semana_ficticio,
                 DiaHora=dia_hora_ficticio,
-                Clase=clase_ficticia,
+                
             )
             horario.save()
         except Exception as Error:

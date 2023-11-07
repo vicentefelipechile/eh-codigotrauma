@@ -150,7 +150,7 @@ class Administrador(Persona):
 class Horario(Model):
     DiaSemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
     DiaHora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True)
-    Clase = models.CharField(max_length=100)
+
 
     def __str__(self):
         return f"{self.DiaSemana.Nombre} - {str(self.DiaHora)}: {self.Clase}"
