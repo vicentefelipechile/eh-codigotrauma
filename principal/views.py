@@ -2,7 +2,7 @@
 # ==================== Librerias y Clases ====================
 # ============================================================
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
@@ -104,7 +104,14 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
                 RegistroContext["success"] = True
                 RegistroContext["success_mensaje"] = "Usuario encontrado"
                 
+                # Redireccionar a "/empleados/"
+                return redirect("/empleados/")
+            else:
+                RegistroContext["error"] = True
+                RegistroContext["error_mensaje"] = "Contraseña incorrecta"
+                
                 return HttpResponse( HTML.render(RegistroContext, request) )
+                
         except Exception as Error:
             print("Ai un error")
         

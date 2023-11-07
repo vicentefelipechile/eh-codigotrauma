@@ -209,6 +209,24 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
     FalloMensaje: str = ""
 
     Inicio: float = perf_counter()
+    
+    try:
+        administrador_principal = Administrador(
+            Rut     =   20000000,
+            Dv      =   0,
+            PrimerNombre    =   "Administrador",
+            SegundoNombre   =   "Principal",
+            ApellidoPaterno =   "Principal",
+            ApellidoMaterno =   "Principal",
+            CuentaUsuario   =   "admin"
+        )
+        
+        administrador_principal.SetContrasena("password")
+        administrador_principal.save()
+    except Exception as Error:
+        Fallo = True
+        FalloCantidad += 1
+        FalloMensaje = Error
 
     for id in range(Cantidad):
         
@@ -233,24 +251,6 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
-    
-    try:
-        administrador_principal = Administrador(
-            Rut     =   20000000,
-            Dv      =   0,
-            PrimerNombre    =   "Administrador",
-            SegundoNombre   =   "Principal",
-            ApellidoPaterno =   "Principal",
-            ApellidoMaterno =   "Principal",
-            CuentaUsuario   =   "admin"
-        )
-        
-        administrador_principal.SetContrasena("password")
-        administrador_principal.save()
-    except Exception as Error:
-        Fallo = True
-        FalloCantidad += 1
-        FalloMensaje = Error
     
     Termino: float = perf_counter()
     
