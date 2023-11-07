@@ -24,7 +24,7 @@ urlpatterns = [
     path("iniciarsesion/", Principal.PaginaIniciarSesion, name="PaginaIniciarSesion"),
     path("empleados/", Principal.PaginaEmpleados, name="PaginaEmpleados"),
     path("admin/", admin.site.urls),
-    path("lista-pacientes/", Principal.PaginaPacientes, name="PaginaPacientes" ),
+    path("lista_pacientes/", Principal.PaginaPacientes, name="PaginaPacientes" ),
 
     ## === API === ##
     
