@@ -260,7 +260,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 def GenerarSecretarios(Cantidad):
-    print("Generando datos de Secretarios...")
+    print(" > Generando datos de Secretarios...              ", end="")
     Fallo: bool = False
     FalloCantidad: int = 0
     FalloMensaje: str = ""
@@ -294,7 +294,7 @@ def GenerarSecretarios(Cantidad):
         
         
 def GenerarDoctoresClave(Cantidad):
-    print("Generando datos DoctoresClave...")
+    print(" > Generando datos DoctoresClave...               ", end="")
     Fallo = False
     FalloCantidad = 0
     FalloMensaje = ""
