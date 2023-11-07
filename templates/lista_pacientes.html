@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Lista de Pacientes</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 </head>
 <body>
 
@@ -40,12 +41,21 @@
             </div>
         </nav>
 
-        <h1>Lista de Pacientes</h1>
-        <ul>
+        <!-- Botones de ordenamiento -->
+        <div class="order-buttons">
+            <button id="ascending-order">Ordenar Ascendente</button>
+            <button id="descending-order">Ordenar Descendente</button>
+        </div>
+
+        <!-- Lista de Pacientes en cajas -->
+        <div class="patient-boxes" id="patient-boxes">
             {% for paciente in Pacientes %}
-                <li>{{ paciente.PrimerNombre }} - {{ paciente.SegundoNombre }} - {{ paciente.ApellidoPaterno }} - {{ paciente.ApellidoMaterno }}</li>
+                <div class="patient-box">
+                    <p>Nombre: {{ paciente.PrimerNombre }} {{ paciente.SegundoNombre }} {{ paciente.ApellidoPaterno }} {{ paciente.ApellidoMaterno }}</p>
+                    <!-- Agregar más datos del paciente según sea necesario -->
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 
     {# ============================================ #}
@@ -54,5 +64,6 @@
 
     {% include "html_templates/_footer_no.html" %}
 
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>
