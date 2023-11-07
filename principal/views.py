@@ -13,6 +13,7 @@ from pathlib import Path
 from django.http import HttpResponse, JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.template.backends.django import Template
+from django.db.models.query import QuerySet
 
 
 from principal.models import Administrador, DoctorClave, Secretario, Paciente
@@ -74,6 +75,41 @@ def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
 
 def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
     HTML: Template = loader.get_template("iniciar-sesion.html")
+    
+    
+    if request.method == "POST":
+
+        RegistroContext: dict = FORMULARIO.copy()
+
+        if not request.POST["username"]:
+            RegistroContext["error"] = True
+            RegistroContext["error_mensaje"] = "No se ha especificado el usuario"
+            
+            return HttpResponse( HTML.render(RegistroContext, request) )
+
+
+        if not request.POST["password"]:
+            RegistroContext["error"] = True
+            RegistroContext["error_mensaje"] = "No se ha especificado la contraseña"
+            
+            return HttpResponse( HTML.render(RegistroContext, request) )
+        
+        # Buscar usuario y verificar contraseña
+        # Si no existe, mostrar error
+
+        try:
+            User: Administrador = Administrador.objects.get(CuentaUsuario=request.POST["username"])
+            
+            if User.ComprobarContrasena(request.POST["password"]):
+                
+                RegistroContext["success"] = True
+                RegistroContext["success_mensaje"] = "Usuario encontrado"
+                
+                return HttpResponse( HTML.render(RegistroContext, request) )
+        except Exception as Error:
+            print("Ai un error")
+        
+        return HttpResponse( HTML.render(RegistroContext, request) )
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
