@@ -47,12 +47,39 @@ def PaginaPrincipal(request: WSGIRequest) -> HttpResponse:
 
 def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
     HTML: Template = loader.get_template("registro.html")
+    
+    if request.method == "POST":
+        RegistroContext: dict = FORMULARIO.copy()
+
+        if not request.POST["username"]:
+            RegistroContext["error"] = True
+            RegistroContext["error_mensaje"] = "No se ha especificado el usuario"
+            
+            return HttpResponse( HTML.render(RegistroContext, request) )
+
+
+        if not request.POST["password1"] == request.POST["password2"]:
+            RegistroContext["error"] = True
+            RegistroContext["error_mensaje"] = "Las contraseñas no coinciden"
+            
+            return HttpResponse( HTML.render(RegistroContext, request) )
+        
+        RegistroContext["registered"] = True
+        
+        return HttpResponse( HTML.render(RegistroContext, request) )
 
     return HttpResponse( HTML.render(FORMULARIO, request) )
 
 
 def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
     HTML: Template = loader.get_template("iniciar-sesion.html")
+
+    return HttpResponse( HTML.render(CONTEXTO, request) )
+
+
+
+def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
+    HTML: Template = loader.get_template("empleados.html")
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
@@ -69,56 +96,30 @@ def RespuestaCorta(EsError: bool = True, Mensaje: str = "Error", Codigo: int = 4
 
 class API():
 
-    def ValidarUsuario(request: WSGIRequest) -> JsonResponse:
-        if request.method == "POST":
-
-            # Utilizamos el Bearer Token para validar la sesion (Como en OpenAI)
-            if "HTTP_AUTHORIZATION" not in request.META:
-                return RespuestaCorta(True, "No se ha especificado el identificador de sesion", 401)
+    def BuscarUsuario(request: WSGIRequest) -> JsonResponse | HttpResponse:
+        ...
 
 
-            # Verificamos si el usuario existe en la base de datos
-            # Si no existe, se devuelve un error
-            Usuario: str = request.headers.get(settings.API_CONFIG["Usuario"]["Header-Usuario"])
-            Contrasena: str = request.headers.get(settings.API_CONFIG["Usuario"]["Header-Contrasena"])
-            TipoUsuario: str = request.headers.get(settings.API_CONFIG["Usuario"]["Header-TipoUsuario"])
+    def RegistrarUsuario(request: WSGIRequest) -> JsonResponse | HttpResponse:
+        print(request.method)
+        if not ( request.method == "POST"):
+            return PaginaRegistro(request)
 
 
-            if not Usuario:
-                return RespuestaCorta(True, "No se ha especificado el usuario", 400)
+        UserContext: dict = FORMULARIO.copy()
+        
+        if not request.POST["username"]:
+            UserContext["error"] = True
+            UserContext["error_mensaje"] = "No se ha especificado el usuario"
+            
+            return RespuestaCorta(True, "No se ha especificado el usuario", 400)
 
-
-            if not Contrasena:
-                return RespuestaCorta(True, "No se ha especificado la contraseña", 400)
-
-
-            if not TipoUsuario:
-                return RespuestaCorta(True, "No se ha especificado el tipo de usuario", 400)
-
-
-            if ( settings.API_CONFIG["Usuario"]["TipoUsuario"].get(TipoUsuario) ):
-                try:
-                    Usuario = Administrador.objects.get(CuentaUsuario=Usuario)
-                except:
-                    return RespuestaCorta(True, "Usuario no encontrado", 404)
-
-
-            return RespuestaCorta(False, "Usuario valido", 200)
-
-        # ============================================================
-        # =================== Metodos no permitidos ==================
-        # ============================================================
-        else:
-            return RespuestaCorta(True, "Metodo no permitido", 405)
-
-
-
-    def RegistrarUsuario(request: WSGIRequest) -> JsonResponse:
-        if request.method == "POST":
-            return RespuestaCorta(False, "Usuario registrado", 200)
-
-        # ============================================================
-        # =================== Metodos no permitidos ==================
-        # ============================================================
-        else:
-            return RespuestaCorta(True, "Metodo no permitido", 405)
+        if not request.POST["password1"] == request.POST["password2"]:
+            UserContext["error"] = True
+            UserContext["error_mensaje"] = "Las contraseñas no coinciden"
+            
+            return RespuestaCorta(True, "Las contraseñas no coinciden", 400)
+        
+        UserContext["registered"] = True
+        
+        return RespuestaCorta(False, "Usuario registrado", 200)

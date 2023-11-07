@@ -21,6 +21,7 @@ urlpatterns = [
     path("", Principal.PaginaPrincipal, name="PaginaPrincipal"),
     path("registro/", Principal.PaginaRegistro, name="PaginaRegistro"),
     path("iniciarsesion/", Principal.PaginaIniciarSesion, name="PaginaIniciarSesion"),
+    path("empleados/", Principal.PaginaEmpleados, name="PaginaEmpleados"),
     path("admin/", admin.site.urls),
 
 
@@ -28,7 +29,7 @@ urlpatterns = [
     ## === API === ##
     
     # Validadores
-    path("api/v1/usuario/", Principal.API.ValidarUsuario),
+    path("api/v1/usuario/", Principal.API.BuscarUsuario),
     
     # Registrar
     path("api/v1/registrar/usuario", Principal.API.RegistrarUsuario),

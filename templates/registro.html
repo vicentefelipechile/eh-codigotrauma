@@ -9,8 +9,35 @@
 {# ============== Inicio de HTML ============== #}
 {# ============================================ #}
 
+{# Si el usuario ha sido registrado #}
+{% if registered %}
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Usuario Registrado',
+            text: 'El usuario ha sido registrado exitosamente',
+            confirmButtonText: 'Aceptar',
+        })
+    </script>
+{% endif %}
+
+{# El usuario no es valido #}
+{% if error %}
+
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{error_mensaje}}',
+            confirmButtonText: 'Aceptar',
+        })
+    </script>
+
+{% endif %}
+
+{# Formulario de registro de usuario #}
 <div class="container">
-    <form action="/api/v1/registrar/usuario" method="POST">
+    <form action="/registro/" method="POST" >
         {% csrf_token %}
         {{form.as_p}}
         <button type="submit" class="btn btn-primary">Iniciar Sesion</button>

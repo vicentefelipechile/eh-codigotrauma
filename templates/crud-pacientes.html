@@ -1,0 +1,70 @@
+{# ============================================ #}
+{# ============= Cargar Variables ============= #}
+{# ============================================ #}
+
+{% load static %}
+{% include "html_templates/_head.html" %}
+
+{# ============================================ #}
+{# ============== Inicio de HTML ============== #}
+{# ============================================ #}
+
+{# Si el usuario ha sido registrado #}
+{% if registered %}
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Usuario Registrado',
+            text: 'El usuario ha sido registrado exitosamente',
+            confirmButtonText: 'Aceptar',
+        })
+    </script>
+{% endif %}
+
+{# El usuario no es valido #}
+{% if error %}
+
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{error_mensaje}}',
+            confirmButtonText: 'Aceptar',
+        })
+    </script>
+
+{% endif %}
+
+{# Formulario de registro de usuario #}
+<div class="container mt-5 mb-5">
+    <!--
+    Crear una interfaz a la derecha con las siguientes opciones:
+    - Registrar paciente
+    - Modificar paciente
+    - Borrar paciente
+    - Mostrar listado de pacientes
+    -->
+
+    <div class="row">
+        <div class="col-4">
+            <!-- Botones de un CRUD de los pacientes junto con un espaciado entre cada boton, ademas de que el boton sea grande -->
+            <div class="btn-group-vertical btn-group-lg" role="group" aria-label="Vertical button group">
+                <button type="button" class="btn btn-primary mb-1">Registrar paciente</button>
+                <button type="button" class="btn btn-primary mb-1">Modificar paciente</button>
+                <button type="button" class="btn btn-primary mb-1">Borrar paciente</button>
+                <button type="button" class="btn btn-primary">Mostrar listado de pacientes</button>
+            </div>
+        </div>
+        
+        <!-- Crear un contenedor donde cargara la pagina por defecto "Crear paciente"
+        Al presionar un boton, se cargara la pagina correspondiente
+        -->
+    </div>
+</div>
+
+
+{# ============================================ #}
+{# ================ Pie de HTML =============== #}
+{# ============================================ #}
+
+{% include "html_templates/_footer_no.html" %}

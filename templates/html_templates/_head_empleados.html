@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Hospital Melipilla</title>
+
+	<!-- Normalize V8.0.1 -->
+	<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+
+	<!-- MDBootstrap V5 -->
+	<link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+
+	<!-- Font Awesome V5.15.1 -->
+	<link rel="stylesheet" href="{% static 'css/all.css' %}">
+
+	<!-- Sweet Alert V10.13.0 -->
+	<script src="{% static 'js/sweetalert2.js' %}" ></script>
+
+	<!-- General Styles -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pagina_contacto.css' %}" media="screen">
+	<link rel="stylesheet" href="{% static 'css/contacto.css' %}" media="screen">
+
+	<link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" >
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header w-100" style="height: 90px">
+
+        <div class="container d-flex mb-3 align-items-center justify-content-evenl" style="height: 100px">
+
+            <!-- Boton de inicio -->
+            <div class="me-auto p-2">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" class="img-fluid" style="height: 70px">
+            </div>
+
+            <!-- Boton de inicio -->
+            <div class="p-2">
+                <a href="{% url 'PaginaPrincipal' %}" class="btn btn-lg btn-primary">
+                    <i class="fa fa-home"></i> Principal
+                </a>
+            </div>
+
+            <!-- Boton de Contacto -->
+            <div class="p-2">
+                <a href="{% url 'PaginaIniciarSesion' %}" class="btn btn-lg btn-outline-success">
+                    <i class="fa fa-arrow-right-to-bracket"></i> Iniciar Sesion
+                </a>
+            </div>
+
+            <!-- Boton de inicio de sesion -->
+            <div class="class">
+                <div class="btn btn-lg">
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </div>
+        
+
+    </header>
