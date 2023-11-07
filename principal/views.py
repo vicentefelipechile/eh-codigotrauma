@@ -119,9 +119,10 @@ def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
-def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
-    HTML: Template = loader.get_template("lista_pacientes.html")
-    return HttpResponse(HTML.render(CONTEXTO, request))
+def PaginaPacientes(request):
+    pacientes = Paciente.objects.all()
+    context = {'Pacientes': pacientes}
+    return render(request, 'lista_pacientes.html', context)
 
 # ============================================================
 # ====================== Peticiones HTTP =====================
