@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>Lista de Pacientes</title>
+    {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
 </head>
 <body>
 
@@ -51,7 +53,7 @@
         <div class="patient-boxes" id="patient-boxes">
             {% for paciente in Pacientes %}
                 <div class="patient-box">
-                    <p>Nombre: {{ paciente.PrimerNombre }} {{ paciente.SegundoNombre }} {{ paciente.ApellidoPaterno }} {{ paciente.ApellidoMaterno }}</p>
+                    <p>{{paciente.Rut}} - {{paciente.Dv}} {{ paciente.PrimerNombre }} {{ paciente.SegundoNombre }} {{ paciente.ApellidoPaterno }} {{ paciente.ApellidoMaterno }}</p>
                     <!-- Agregar más datos del paciente según sea necesario -->
                 </div>
             {% endfor %}
