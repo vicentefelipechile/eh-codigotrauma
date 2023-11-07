@@ -234,6 +234,24 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             FalloCantidad += 1
             FalloMensaje = Error
     
+    try:
+        administrador_principal = Administrador(
+            Rut     =   20000000,
+            Dv      =   0,
+            PrimerNombre    =   "Administrador",
+            SegundoNombre   =   "Principal",
+            ApellidoPaterno =   "Principal",
+            ApellidoMaterno =   "Principal",
+            CuentaUsuario   =   "admin"
+        )
+        
+        administrador.SetContrasena("password")
+        administrador.save()
+    except Exception as Error:
+        Fallo = True
+        FalloCantidad += 1
+        FalloMensaje = Error
+    
     Termino: float = perf_counter()
     
     if Fallo:
