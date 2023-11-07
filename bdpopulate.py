@@ -61,7 +61,7 @@ class GeneradorDatos:
 
 
 def GenerarDatosPacientes(Cantidad: int = 10) -> None:
-    print(" > Generando datos de pacientes...                ", end="")
+    print(" > Generando datos de pacientes...                    ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -99,7 +99,7 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
 
 
 def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
-    print(" > Generando datos de registros de emergencias... ", end="")
+    print(" > Generando datos de registros de emergencias...     ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -135,7 +135,7 @@ def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
 
 
 def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de emergencias... ", end="")
+    print(" > Generando datos de historial de emergencias...     ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -167,7 +167,7 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de doctores clave... ", end="")
+    print(" > Generando datos de historial de doctores clave...  ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -202,7 +202,7 @@ def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
 
 
 def GenerarAdministradores(Cantidad: int = 10) -> None:
-    print(" > Generando datos de administradores...          ", end="")
+    print(" > Generando datos de administradores...              ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -245,8 +245,8 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             CuentaUsuario   =   "admin"
         )
         
-        administrador.SetContrasena("password")
-        administrador.save()
+        administrador_principal.SetContrasena("password")
+        administrador_principal.save()
     except Exception as Error:
         Fallo = True
         FalloCantidad += 1
@@ -260,7 +260,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 def GenerarSecretarios(Cantidad):
-    print(" > Generando datos de Secretarios...              ", end="")
+    print(" > Generando datos de Secretarios...                  ", end="")
     Fallo: bool = False
     FalloCantidad: int = 0
     FalloMensaje: str = ""
@@ -294,7 +294,7 @@ def GenerarSecretarios(Cantidad):
         
         
 def GenerarDoctoresClave(Cantidad):
-    print(" > Generando datos DoctoresClave...               ", end="")
+    print(" > Generando datos DoctoresClave...                   ", end="")
     Fallo = False
     FalloCantidad = 0
     FalloMensaje = ""
@@ -334,7 +334,7 @@ def GenerarDoctoresClave(Cantidad):
 
 
 def GenerarHorasDias(Cantidad: int = 10) -> None:
-    print(" > Generando datos de horas del día...            ", end="")
+    print(" > Generando datos de horas del día...                ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -376,7 +376,7 @@ def GenerarHorasDias(Cantidad: int = 10) -> None:
 
 
 def GenerarDiasSemana() -> None:
-    print(" > Generando datos de días de la semana...        ", end="")
+    print(" > Generando datos de días de la semana...            ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -406,7 +406,7 @@ def GenerarDiasSemana() -> None:
 
 
 def GenerarHorarios(Cantidad: int = 10) -> None:
-    print(" > Generando datos de horarios...                 ", end="")
+    print(" > Generando datos de horarios...                     ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
@@ -448,7 +448,7 @@ def GenerarHorarios(Cantidad: int = 10) -> None:
 
 
 def GenerarAreas(Cantidad: int = 10) -> None:
-    print(" > Generando datos de áreas...                    ", end="")
+    print(" > Generando datos de áreas...                        ", end="")
     
     Fallo: bool = False
     FalloCantidad: int = 0
