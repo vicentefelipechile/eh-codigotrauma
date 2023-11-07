@@ -24,9 +24,7 @@ urlpatterns = [
     path("iniciarsesion/", Principal.PaginaIniciarSesion, name="PaginaIniciarSesion"),
     path("empleados/", Principal.PaginaEmpleados, name="PaginaEmpleados"),
     path("admin/", admin.site.urls),
-    path("lista-pacientes/", )
-
-
+    path("lista-pacientes/", Principal.PaginaPacientes, name="PaginaPacientes" ),
 
     ## === API === ##
     
@@ -41,6 +39,5 @@ urlpatterns = [
 
     # Historial
     # path("api/v1/historial/", Principal.API.HistorialEmergencias),
-    
-    
+       
 ] 
