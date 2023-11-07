@@ -491,17 +491,17 @@ print("=====================================")
 
 Inicio: float = perf_counter()
 
-GenerarDatosPacientes(100)
-GenerarAdministradores(100)
-GenerarDoctoresClave(100)
+GenerarDatosPacientes(4000)
+GenerarAdministradores(50)
+GenerarDoctoresClave(1000)
 GenerarSecretarios(100)
-GenerarRegistrosEmergencias(100)
-GenerarHistorialEmergencias(100)
+GenerarRegistrosEmergencias(1000)
+GenerarHistorialEmergencias(1000)
 GenerarHorasDias(100)
 GenerarDiasSemana()
 GenerarHorarios(100)
 GenerarAreas(100)
-GenerarHistorialDoctoresClave(100)
+GenerarHistorialDoctoresClave(1000)
 
 Termino: float = perf_counter()
 

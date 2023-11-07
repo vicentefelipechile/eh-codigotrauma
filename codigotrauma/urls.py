@@ -8,7 +8,8 @@ from django.contrib import admin
 from django.urls import path
 
 import principal.views as Principal
-
+from django.urls import path
+from principal.views import lista_pacientes
 
 
 # =======================================================
@@ -23,6 +24,7 @@ urlpatterns = [
     path("iniciarsesion/", Principal.PaginaIniciarSesion, name="PaginaIniciarSesion"),
     path("empleados/", Principal.PaginaEmpleados, name="PaginaEmpleados"),
     path("admin/", admin.site.urls),
+    path("lista-pacientes/", )
 
 
 
@@ -39,4 +41,6 @@ urlpatterns = [
 
     # Historial
     # path("api/v1/historial/", Principal.API.HistorialEmergencias),
+    
+    
 ] 

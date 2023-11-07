@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Pacientes</title>
+</head>
+<body>
+    <h1>Lista de Pacientes</h1>
+    <ul>
+        {% for paciente in Pacientes %}
+            <li>{{ paciente.PrimerNombre }} - {{ paciente.SegundoNombre }} - {{ paciente.ApellidoPaterno}} - {{paciente.ApellidoMaterno}}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

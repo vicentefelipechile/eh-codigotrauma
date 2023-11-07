@@ -12,7 +12,6 @@ import json
 from django.db.models import TextField, IntegerField, DateTimeField, CharField
 from django.db.models import ForeignKey
 
-
 # ===========================================
 # ==== Funcion Json para todas las clases ===
 # ===========================================

@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.template import loader
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
-
+from django.shortcuts import render
+from principal.models import Paciente
 from pathlib import Path
 
 from django.http import HttpResponse, JsonResponse
@@ -83,7 +84,9 @@ def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
-
+def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
+    HTML: Template = loader.get_template("lista_pacientes.html")
+    return HttpResponse(HTML.render(CONTEXTO, request))
 
 # ============================================================
 # ====================== Peticiones HTTP =====================
@@ -123,3 +126,9 @@ class API():
         UserContext["registered"] = True
         
         return RespuestaCorta(False, "Usuario registrado", 200)
+    
+
+
+
+
+    
