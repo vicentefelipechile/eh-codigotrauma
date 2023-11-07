@@ -9,7 +9,6 @@ from django.urls import path
 
 import principal.views as Principal
 from django.urls import path
-from principal.views import lista_pacientes
 
 
 # =======================================================

@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.template import loader
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render
 from principal.models import Paciente
 from pathlib import Path
 
