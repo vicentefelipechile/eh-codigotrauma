@@ -24,19 +24,5 @@ urlpatterns = [
     path("empleados/", Principal.PaginaEmpleados, name="PaginaEmpleados"),
     path("admin/", admin.site.urls),
     path("lista_pacientes/", Principal.PaginaPacientes, name="PaginaPacientes" ),
-
-    ## === API === ##
-    
-    # Validadores
-    path("api/v1/usuario/", Principal.API.BuscarUsuario),
-    
-    # Registrar
-    path("api/v1/registrar/usuario", Principal.API.RegistrarUsuario),
-    # path("api/v1/registrar/doctor", Principal.API.RegistrarDoctor),
-    # path("api/v1/registrar/secretario", Principal.API.RegistrarSecretario),
-    # path("api/v1/registrar/paciente", Principal.API.RegistrarPaciente),
-
-    # Historial
-    # path("api/v1/historial/", Principal.API.HistorialEmergencias),
        
 ] 
