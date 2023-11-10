@@ -15,11 +15,11 @@ django.setup()
 
 from principal.models import Paciente
 from principal.models import Emergencia
-from principal.models import HistorialEmergencias
+from principal.models import HistorialEmergencia
 from principal.models import Administrador
 from principal.models import Secretario
-from principal.models import DoctorClave
-from principal.models import HistorialDoctoresEmergencia
+from principal.models import Doctor
+from principal.models import HistorialDoctorEmergencia
 from principal.models import Area
 from principal.models import HoraDia, Horario, DiaSemana
 
@@ -33,12 +33,14 @@ from principal.models import HoraDia, Horario, DiaSemana
 Faker.seed(1337)
 fake = Faker("es_CL")
 
+colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
+
+AreasLista: list[str] = ["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"]
+DiasSemana: list[str] = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
 
 # ============================================================
 #   Funciones varias
 # ============================================================
-
-colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
 
 class GeneradorDatos:
     
@@ -57,7 +59,7 @@ class GeneradorDatos:
         return str( fake.unique.random_number(digits=Digitos) )
     
     def Contrasena(self, UsarFaker: bool = False) -> str:
-        return fake.password() if UsarFaker else "password"
+        return make_password( fake.password() if UsarFaker else "password" )
 
 
 # ============================================================
@@ -110,23 +112,27 @@ def GenerarDoctoresClave(Cantidad):
 
     Inicio = perf_counter()
     for id in range(Cantidad):
-        nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
         try:
             Rut, Dv = GeneradorDatos().Rut(Numeros=True)
-            doctorclave = DoctorClave(
-                Rut=Rut,
-                Dv=Dv,
-                PrimerNombre=fake.first_name(),
-                SegundoNombre=fake.first_name(),
-                ApellidoPaterno=fake.last_name(),
-                ApellidoMaterno=fake.last_name(),
-                Area=nombre_area_ficticio,
-                CuentaUsuario=fake.user_name()
+            pnombre = fake.first_name()
+            snombre = fake.first_name()
+            
+            username = pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]
+
+            doctor = Doctor(
+                rut     =   Rut,
+                dv      =   Dv,
+                primernombre    =   pnombre,
+                segundonombre   =   snombre,
+                apellidopaterno =   fake.last_name(),
+                apellidomaterno =   fake.last_name(),
+                doc_area_id     =   Area.objects.order_by("?").first(),
+                doc_hor_id      =   Horario.objects.order_by("?").first(),
+                doc_cuentausuario   =   username,
+                doc_cuentacontrasena=   GeneradorDatos().Contrasena()
             )
-            doctorclave.SetContrasena( GeneradorDatos().Contrasena() )
-            horario_aleatorio = Horario.objects.order_by("?").first()
-            doctorclave.Horario = horario_aleatorio
-            doctorclave.save()
+            doctor.save()
+
         except Exception as Error:
             Fallo = True
             FalloCantidad += 1
@@ -153,17 +159,19 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
     for id in range(Cantidad):
             
         try:
-            pac_id: int = Paciente.objects.order_by("?").first().pac_id
-            doc_id: int = DoctorClave.objects.order_by("?").first().doc_id
+            pac_id: int = Paciente.objects.order_by("?").first()
+            doc_id: int = Doctor.objects.order_by("?").first()
             
             # Crea una instancia de Emergencia
             Registro = Emergencia(
                 emerg_desc      =       fake.text(max_nb_chars=50),
                 emerg_color     =       random.choice(colores_disponibles),
-                emerg_fecha     =       GeneradorDatos().Fecha(),
-                emerg_pac_id    =       pac_id,
-                emerg_doc_id    =       doc_id
+                emerg_fecha     =       GeneradorDatos().Fecha()
             )
+            
+            Registro.emerg_pac_id = pac_id
+            Registro.emerg_doc_id = doc_id
+            
             Registro.save()
         except Exception as Error:
             Fallo = True
@@ -179,7 +187,7 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
 
 
 
-def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
+def GenerarHistorialEmergencia(Cantidad: int = 10) -> None:
     print(" > Generando datos de historial de emergencias...     ", end="")
     
     Fallo: bool = False
@@ -191,11 +199,11 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
     for id in range(Cantidad):
 
         try:
-            # Crea una instancia de HistorialEmergencias
-            historial_emergencias = HistorialEmergencias(
-                Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
-                FechaRegistro   =   GeneradorDatos().Fecha(),
-                Detalles        =   fake.text(max_nb_chars=200)
+            # Crea una instancia de HistorialEmergencia
+            historial_emergencias = HistorialEmergencia(
+                hist_emerg_id   =   Emergencia.objects.order_by("?").first(),
+                hist_fecha      =   GeneradorDatos().Fecha(),
+                hist_detalle    =   fake.text(max_nb_chars=200)
             )
 
             historial_emergencias.save()
@@ -211,7 +219,7 @@ def GenerarHistorialEmergencias(Cantidad: int = 10) -> None:
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
-def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
+def GenerarHistorialDoctor(Cantidad: int = 10) -> None:
     print(" > Generando datos de historial de doctores clave...  ", end="")
     
     Fallo: bool = False
@@ -223,11 +231,11 @@ def GenerarHistorialDoctoresClave(Cantidad: int = 10) -> None:
     for id in range(Cantidad):
 
         try:
-            # Crea una instancia de HistorialEmergencias
-            historial_doctores = HistorialDoctoresEmergencia(
-                Emergencia      =   RegistroEmergencias.objects.order_by("?").first(),
-                Doctor          =   DoctorClave.objects.order_by("?").first(),
-                FechaAsignacion =   GeneradorDatos().Fecha(),
+            # Crea una instancia de HistorialEmergencia
+            historial_doctores = HistorialDoctorEmergencia(
+                histdoct_emerg_id   =   Emergencia.objects.order_by("?").first(),
+                histdoct_doc_id     =   Doctor.objects.order_by("?").first(),
+                histdoct_fecha      =   GeneradorDatos().Fecha(),
             )
 
             historial_doctores.save()
@@ -257,16 +265,15 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
     
     try:
         administrador_principal = Administrador(
-            Rut     =   20000000,
-            Dv      =   0,
-            PrimerNombre    =   "Administrador",
-            SegundoNombre   =   "Principal",
-            ApellidoPaterno =   "Principal",
-            ApellidoMaterno =   "Principal",
-            CuentaUsuario   =   "admin"
+            rut     =   20000000,
+            dv      =   0,
+            primernombre    =   "Administrador",
+            segundonombre   =   "Principal",
+            apellidopaterno =   "Principal",
+            apellidomaterno =   "Principal",
+            adm_cuentausuario       =   "admin",
+            adm_cuentacontrasena    =  "password"
         )
-        
-        administrador_principal.SetContrasena("password")
         administrador_principal.save()
     except Exception as Error:
         Fallo = True
@@ -277,16 +284,21 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
         
         try:
             Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            pnombre = fake.first_name()
+            snombre = fake.first_name()
+            
+            username = pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]
             
             # Crea una instancia de Administrador
             administrador = Administrador(
-                Rut     =   Rut,
-                Dv      =   Dv,
-                PrimerNombre    =   fake.first_name(),
-                SegundoNombre   =   fake.first_name(),
-                ApellidoPaterno =   fake.last_name(),
-                ApellidoMaterno =   fake.last_name(),
-                CuentaUsuario = fake.user_name()
+                rut     =   Rut,
+                dv      =   Dv,
+                primernombre    =   pnombre,
+                segundonombre   =   snombre,
+                apellidopaterno =   fake.last_name(),
+                apellidomaterno =   fake.last_name(),
+                adm_cuentausuario       =   username,
+                adm_cuentacontrasena    =  GeneradorDatos().Contrasena()
             )
             
             # Encripta la contraseña ficticia antes de guardarla
@@ -317,16 +329,21 @@ def GenerarSecretarios(Cantidad):
         
         try: 
             Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            pnombre = fake.first_name()
+            snombre = fake.first_name()
+            
+            username = pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]
+            
             secretario = Secretario(
-                Rut     =   Rut,
-                Dv      =   Dv,
-                PrimerNombre    =   fake.first_name(),
-                SegundoNombre   =   fake.first_name(),
-                ApellidoPaterno =   fake.last_name(),
-                ApellidoMaterno =   fake.last_name(),
-                CuentaUsuario = fake.user_name()
+                rut     =   Rut,
+                dv      =   Dv,
+                primernombre    =   pnombre,
+                segundonombre   =   snombre,
+                apellidopaterno =   fake.last_name(),
+                apellidomaterno =   fake.last_name(),
+                sec_cuentausuario   =   username,
+                sec_cuentacontrasena =  GeneradorDatos().Contrasena()
             )
-            secretario.SetContrasena(fake.password())
             secretario.save()
         except Exception as Error:
                     Fallo = True
@@ -363,8 +380,8 @@ def GenerarHorasDias(Cantidad: int = 10) -> None:
             
             # Crea una instancia de HoraDia
             hora_dia = HoraDia(
-                HoraInicio=hora_inicio_ficticia,
-                HoraFin=hora_fin_ficticia,
+                hordia_inicio   =   hora_inicio_ficticia,
+                hordia_fin      =   hora_fin_ficticia
             )
             hora_dia.save()
             
@@ -392,11 +409,9 @@ def GenerarDiasSemana() -> None:
 
     Inicio: float = perf_counter()
     
-    Semanas: list[str] = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"]
-    
-    for dia in Semanas:
+    for dia in DiasSemana:
         try:
-            dia_semana = DiaSemana(Nombre=dia)
+            dia_semana = DiaSemana(sem_nombre = dia)
             dia_semana.save()
         except Exception as Error:
             Fallo = True
@@ -425,19 +440,13 @@ def GenerarHorarios(Cantidad: int = 10) -> None:
     for id in range(Cantidad):
 
         try:
-            # Genera una referencia ficticia a un día de la semana
             dia_semana_ficticio = DiaSemana.objects.order_by("?").first()
-            
-            # Genera una referencia ficticia a una hora del día
             dia_hora_ficticio = HoraDia.objects.order_by("?").first()
             
-            # Genera una descripción de clase ficticia
-            
             # Crea una instancia de Horario
-            horario = Horario(
-                DiaSemana=dia_semana_ficticio,
-                DiaHora=dia_hora_ficticio,
-                
+            horario = Horario( 
+                hor_diasemana   =   dia_semana_ficticio,
+                hor_diahora     =   dia_hora_ficticio,
             )
             horario.save()
         except Exception as Error:
@@ -464,14 +473,11 @@ def GenerarAreas(Cantidad: int = 10) -> None:
 
     Inicio: float = perf_counter()
 
-    for id in range(Cantidad):
+    for area in AreasLista:
         try:
-            # Genera un nombre de área ficticio
-            nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
-            
             # Crea una instancia de Area
             area = Area(
-                Nombre=nombre_area_ficticio,
+                area_nombre = area,
             )
             area.save()
         except Exception as Error:
@@ -499,17 +505,22 @@ print("=====================================")
 
 Inicio: float = perf_counter()
 
-GenerarDatosPacientes(4000)
-GenerarAdministradores(50)
-GenerarDoctoresClave(1000)
-GenerarSecretarios(100)
-GenerarRegistrosEmergencias(1000)
-GenerarHistorialEmergencias(1000)
-GenerarHorasDias(100)
+# Valores fijos
 GenerarDiasSemana()
+GenerarAreas()
+
+# Valores ficticios
+GenerarDatosPacientes(1500)
+GenerarDoctoresClave(500)
+GenerarEmergencias(3000)
+GenerarHistorialEmergencia(1000)
+GenerarHorasDias(100)
 GenerarHorarios(100)
-GenerarAreas(100)
-GenerarHistorialDoctoresClave(1000)
+GenerarHistorialDoctor(1000)
+
+# Extra
+GenerarAdministradores(50)
+GenerarSecretarios(100)
 
 Termino: float = perf_counter()
 

@@ -15,7 +15,7 @@ from django.template.backends.django import Template
 from django.db.models.query import QuerySet
 
 
-from principal.models import Administrador, DoctorClave, Secretario, Paciente
+from principal.models import Administrador, Doctor, Secretario, Paciente
 
 
 # ============================================================

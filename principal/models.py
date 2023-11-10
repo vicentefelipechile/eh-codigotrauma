@@ -34,13 +34,13 @@ def GetJson(self: Model = None, Atributos: list = None) -> str:
 # ===========================================
 
 class Emergencia(Model):
-    emerg_id = models.AutoField(primary_key=True, max_length=8)
+    emerg_id = models.AutoField(primary_key=True)
     emerg_desc = models.TextField(max_length=50)
     emerg_color = models.TextField(max_length=20)
     emerg_fecha = models.DateTimeField(max_length=30, default=timezone.now)
 
     emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True)
-    emerg_doc_id = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, to_field="doc_id")
+    emerg_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True)
 
     def __str__(self):
         return self.emerg_id
@@ -50,9 +50,9 @@ class Emergencia(Model):
 
 
 
-class HistorialEmergencias(Model):
-    hist_id = models.AutoField(primary_key=True, max_length=8)
-    hist_emerg_id = models.ForeignKey('Emergencia', on_delete=models.CASCADE, null=False, to_field="emerg_id")
+class HistorialEmergencia(Model):
+    hist_id = models.AutoField(primary_key=True)
+    hist_emerg_id = models.ForeignKey('Emergencia', on_delete=models.CASCADE, null=True,to_field="emerg_id")
     hist_fecha = models.DateTimeField(default=timezone.now)
     hist_detalle = models.TextField()
 
@@ -64,10 +64,10 @@ class HistorialEmergencias(Model):
 
 
 
-class HistorialDoctoresEmergencia(Model):
-    histdoct_id = models.AutoField(primary_key=True, max_length=8)
-    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=False, to_field="emerg_id")
-    histdoct_doc_id = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=False, to_field="doc_id")
+class HistorialDoctorEmergencia(Model):
+    histdoct_id = models.AutoField(primary_key=True)
+    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=True,to_field="emerg_id")
+    histdoct_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, null=True,to_field="doc_id")
     histdoct_fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -113,12 +113,12 @@ class Persona(Model):
 
 
 class Paciente(Persona):
-    pac_id = models.AutoField(primary_key=True, max_length=8)
+    pac_id = models.AutoField(primary_key=True)
 
 
 
 class Secretario(Persona):
-    sec_id = models.AutoField(primary_key=True, max_length=8)
+    sec_id = models.AutoField(primary_key=True)
     sec_cuentausuario = models.TextField(max_length=20)
     sec_cuentacontrasena = models.TextField(max_length=64)
     
@@ -139,7 +139,7 @@ class Secretario(Persona):
 
 
 class Administrador(Persona):
-    adm_id = models.AutoField(primary_key=True, max_length=8)
+    adm_id = models.AutoField(primary_key=True)
     adm_cuentausuario = models.TextField(max_length=20)
     adm_cuentacontrasena = models.TextField(max_length=64)
     
@@ -156,10 +156,10 @@ class Administrador(Persona):
         return check_password(Contrasena, self.adm_cuentacontrasena)
 
 
-class DoctorClave(Persona):
-    doc_id = models.AutoField(primary_key=True, max_length=8)
-    doc_area = models.TextField(max_length=30)
-    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=False, to_field="hor_id")
+class Doctor(Persona):
+    doc_id = models.AutoField(primary_key=True)
+    doc_area_id = models.ForeignKey('Area', on_delete=models.SET_NULL, null=True,to_field="area_id")
+    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True,to_field="hor_id")
     doc_cuentausuario = models.TextField(max_length=20)
     doc_cuentacontrasena = models.TextField(max_length=64)
 
@@ -177,7 +177,7 @@ class DoctorClave(Persona):
 
 
 class Area(Model):
-    area_id = models.AutoField(primary_key=True, max_length=8)
+    area_id = models.AutoField(primary_key=True)
     area_nombre = models.TextField(max_length=30)
 
     def __str__(self):
@@ -190,9 +190,9 @@ class Area(Model):
 # ===========================================
 
 class Horario(Model):
-    hor_id = models.AutoField(primary_key=True, max_length=8)
-    hor_diasemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
-    hor_diahora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True)
+    hor_id = models.AutoField(primary_key=True)
+    hor_diasemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True,to_field="sem_id")
+    hor_diahora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True,to_field="hordia_id")
 
 
     def __str__(self):
@@ -204,7 +204,7 @@ class Horario(Model):
 
 
 class DiaSemana(Model):
-    sem_id = models.AutoField(primary_key=True, max_length=8)
+    sem_id = models.AutoField(primary_key=True)
     sem_nombre = models.CharField(max_length=20)
 
     def __str__(self):
@@ -216,7 +216,7 @@ class DiaSemana(Model):
 
 
 class HoraDia(Model):
-    hordia_id = models.AutoField(primary_key=True, max_length=8)
+    hordia_id = models.AutoField(primary_key=True)
     hordia_inicio = models.TimeField(default=timezone.now)
     hordia_fin = models.TimeField(default=timezone.now)
 
