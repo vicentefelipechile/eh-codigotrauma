@@ -14,7 +14,7 @@ django.setup()
 
 
 from principal.models import Paciente
-from principal.models import RegistroEmergencias
+from principal.models import Emergencia
 from principal.models import HistorialEmergencias
 from principal.models import Administrador
 from principal.models import Secretario
@@ -38,6 +38,8 @@ fake = Faker("es_CL")
 #   Funciones varias
 # ============================================================
 
+colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
+
 class GeneradorDatos:
     
     def Rut(self, Numeros: bool = False) -> str | int:
@@ -53,6 +55,9 @@ class GeneradorDatos:
     
     def UniqueID(self, Digitos: int = 8) -> str:
         return str( fake.unique.random_number(digits=Digitos) )
+    
+    def Contrasena(self, UsarFaker: bool = False) -> str:
+        return fake.password() if UsarFaker else "password"
 
 
 # ============================================================
@@ -74,12 +79,12 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
             Rut, Dv = GeneradorDatos().Rut(Numeros=True)
 
             NewPaciente: Paciente = Paciente(
-                Rut     =   Rut,
-                Dv      =   Dv,
-                PrimerNombre    =   fake.first_name(),
-                SegundoNombre   =   fake.first_name(),
-                ApellidoPaterno =   fake.last_name(),
-                ApellidoMaterno =   fake.last_name(),
+                rut     =   Rut,
+                dv      =   Dv,
+                primernombre    =   fake.first_name(),
+                segundonombre   =   fake.first_name(),
+                apellidopaterno =   fake.last_name(),
+                apellidomaterno =   fake.last_name(),
             )
             
             NewPaciente.save()
@@ -97,8 +102,46 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
 
 
 
+def GenerarDoctoresClave(Cantidad):
+    print(" > Generando datos DoctoresClave...                   ", end="")
+    Fallo = False
+    FalloCantidad = 0
+    FalloMensaje = ""
 
-def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
+    Inicio = perf_counter()
+    for id in range(Cantidad):
+        nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
+        try:
+            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            doctorclave = DoctorClave(
+                Rut=Rut,
+                Dv=Dv,
+                PrimerNombre=fake.first_name(),
+                SegundoNombre=fake.first_name(),
+                ApellidoPaterno=fake.last_name(),
+                ApellidoMaterno=fake.last_name(),
+                Area=nombre_area_ficticio,
+                CuentaUsuario=fake.user_name()
+            )
+            doctorclave.SetContrasena( GeneradorDatos().Contrasena() )
+            horario_aleatorio = Horario.objects.order_by("?").first()
+            doctorclave.Horario = horario_aleatorio
+            doctorclave.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    Termino = perf_counter()
+
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
+
+
+def GenerarEmergencias(Cantidad: int = 10) -> None:
     print(" > Generando datos de registros de emergencias...     ", end="")
     
     Fallo: bool = False
@@ -108,16 +151,18 @@ def GenerarRegistrosEmergencias(Cantidad: int = 10) -> None:
     Inicio: float = perf_counter()
 
     for id in range(Cantidad):
-        colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
             
         try:
-            # Crea una instancia de RegistroEmergencias
-            Registro = RegistroEmergencias(
-                ID          =       GeneradorDatos().UniqueID(),
-                Descripcion =       fake.text(max_nb_chars=50),
-                CodigoColor =       random.choice(colores_disponibles),
-                Fecha       =       GeneradorDatos().Fecha(),
-                NumeroPacientes =   fake.random_int(min=1, max=100),
+            pac_id: int = Paciente.objects.order_by("?").first().pac_id
+            doc_id: int = DoctorClave.objects.order_by("?").first().doc_id
+            
+            # Crea una instancia de Emergencia
+            Registro = Emergencia(
+                emerg_desc      =       fake.text(max_nb_chars=50),
+                emerg_color     =       random.choice(colores_disponibles),
+                emerg_fecha     =       GeneradorDatos().Fecha(),
+                emerg_pac_id    =       pac_id,
+                emerg_doc_id    =       doc_id
             )
             Registro.save()
         except Exception as Error:
@@ -245,7 +290,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             )
             
             # Encripta la contraseña ficticia antes de guardarla
-            administrador.SetContrasena(fake.password())
+            administrador.SetContrasena( GeneradorDatos().Contrasena() )
             administrador.save()
         except Exception as Error:
             Fallo = True
@@ -258,6 +303,8 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
         print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
+
+
 
 def GenerarSecretarios(Cantidad):
     print(" > Generando datos de Secretarios...                  ", end="")
@@ -291,45 +338,6 @@ def GenerarSecretarios(Cantidad):
         print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
-        
-        
-def GenerarDoctoresClave(Cantidad):
-    print(" > Generando datos DoctoresClave...                   ", end="")
-    Fallo = False
-    FalloCantidad = 0
-    FalloMensaje = ""
-
-    Inicio = perf_counter()
-    for id in range(Cantidad):
-        nombre_area_ficticio = fake.word(ext_word_list=["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"])
-        try:
-            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
-            doctorclave = DoctorClave(
-                Rut=Rut,
-                Dv=Dv,
-                PrimerNombre=fake.first_name(),
-                SegundoNombre=fake.first_name(),
-                ApellidoPaterno=fake.last_name(),
-                ApellidoMaterno=fake.last_name(),
-                Area=nombre_area_ficticio,
-                CuentaUsuario=fake.user_name()
-            )
-            doctorclave.SetContrasena(fake.password())
-            horario_aleatorio = Horario.objects.order_by("?").first()
-            doctorclave.Horario = horario_aleatorio
-            doctorclave.save()
-        except Exception as Error:
-            Fallo = True
-            FalloCantidad += 1
-            FalloMensaje = Error
-    Termino = perf_counter()
-
-    if Fallo:
-        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
-    else:
-        print(f"OK ({round(Termino - Inicio, 2)}s)")
-
-        
 
 
 

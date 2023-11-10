@@ -33,45 +33,48 @@ def GetJson(self: Model = None, Atributos: list = None) -> str:
 # ==== Clases de Registros de Emergencia ====
 # ===========================================
 
+class Emergencia(Model):
+    emerg_id = models.AutoField(primary_key=True, max_length=8)
+    emerg_desc = models.TextField(max_length=50)
+    emerg_color = models.TextField(max_length=20)
+    emerg_fecha = models.DateTimeField(max_length=30, default=timezone.now)
+
+    emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True)
+    emerg_doc_id = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, to_field="doc_id")
+
+    def __str__(self):
+        return self.emerg_id
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["emerg_id", "emerg_desc", "emerg_color", "emerg_fecha", "emerg_pac_id", "emerg_doc_id"])
+
+
+
 class HistorialEmergencias(Model):
-    Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.CASCADE)
-    FechaRegistro = models.DateTimeField(default=timezone.now)
-    Detalles = models.TextField()
+    hist_id = models.AutoField(primary_key=True, max_length=8)
+    hist_emerg_id = models.ForeignKey('Emergencia', on_delete=models.CASCADE, null=False, to_field="emerg_id")
+    hist_fecha = models.DateTimeField(default=timezone.now)
+    hist_detalle = models.TextField()
 
     def __str__(self) -> str:
         return f"Historial de Emergencia: {self.Emergencia}, Fecha de Registro: {self.FechaRegistro}"
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["Emergencia", "FechaRegistro", "Detalles"])
-
-
-
-class RegistroEmergencias(Model):
-    ID = models.CharField(primary_key=True, max_length=8)
-    Descripcion = models.TextField(max_length=50)
-    CodigoColor = models.TextField(max_length=20)
-    Fecha = models.DateTimeField(max_length=30, default=timezone.now)
-    NumeroPacientes = models.IntegerField()
-    Doctores = models.ManyToManyField('DoctorClave', through='HistorialDoctoresEmergencia')
-
-    def __str__(self):
-        return self.id
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["ID", "Descripcion", "CodigoColor", "Fecha", "NumeroPacientes"])
+        return GetJson(self, ["hist_emerg_id", "hist_fecha", "hist_detalle"])
 
 
 
 class HistorialDoctoresEmergencia(Model):
-    Emergencia = models.ForeignKey('RegistroEmergencias', on_delete=models.SET_NULL, null=True)
-    Doctor = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=True)
-    FechaAsignacion = models.DateTimeField(default=timezone.now)
+    histdoct_id = models.AutoField(primary_key=True, max_length=8)
+    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=False, to_field="emerg_id")
+    histdoct_doc_id = models.ForeignKey('DoctorClave', on_delete=models.SET_NULL, null=False, to_field="doc_id")
+    histdoct_fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"Historial - Emergencia: {self.Emergencia}, Doctor: {self.Doctor}, Fecha: {self.FechaAsignacion}"
+        return f"Historial - Emergencia: {self.histdoct_emerg_id}, Doctor: {self.histdoct_doc_id}, Fecha: {self.histdoct_fecha}"
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["Emergencia", "Doctor", "FechaAsignacion"])
+        return GetJson(self, ["histdoct_emerg_id", "histdoct_doc_id", "histdoct_fecha"])
 
 
 
@@ -80,12 +83,12 @@ class HistorialDoctoresEmergencia(Model):
 # ===========================================
 
 class Persona(Model):
-    Rut: IntegerField = models.IntegerField(unique=True)
-    Dv: CharField = models.CharField(max_length=1)
-    PrimerNombre: TextField = models.TextField(max_length=20)
-    SegundoNombre: TextField = models.TextField(max_length=20, null=True)
-    ApellidoPaterno: TextField = models.TextField(max_length=20)
-    ApellidoMaterno: TextField = models.TextField(max_length=20, null=True)
+    rut: IntegerField = models.IntegerField(unique=True)
+    dv: CharField = models.CharField(max_length=1)
+    primernombre: TextField = models.TextField(max_length=20)
+    segundonombre: TextField = models.TextField(max_length=20, null=True)
+    apellidopaterno: TextField = models.TextField(max_length=20)
+    apellidomaterno: TextField = models.TextField(max_length=20, null=True)
 
     def GetAllAttributes(self, AtributosExtra: list = None) -> list:
         AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
@@ -102,7 +105,7 @@ class Persona(Model):
         return GetJson(self, self.GetAllAttributes())
 
     def __str__(self):
-        return f"Primer Nombre: {self.PrimerNombre}, Apellido Paterno: {self.ApellidoPaterno}, Rut: {self.Rut}-{self.Dv}"
+        return f"Primer Nombre: {self.primernombre}, Apellido Paterno: {self.apellidopaterno}, Rut: {self.rut}-{self.dv}"
 
     class Meta:
         abstract = True
@@ -110,35 +113,75 @@ class Persona(Model):
 
 
 class Paciente(Persona):
-    ID = models.IntegerField(primary_key=True)
+    pac_id = models.AutoField(primary_key=True, max_length=8)
 
 
 
 class Secretario(Persona):
-    ID = models.IntegerField(primary_key=True)
-    CuentaUsuario = models.TextField(max_length=20)
-    CuentaContrasena = models.TextField(max_length=64)
+    sec_id = models.AutoField(primary_key=True, max_length=8)
+    sec_cuentausuario = models.TextField(max_length=20)
+    sec_cuentacontrasena = models.TextField(max_length=64)
+    
+    def __str__(self):
+        return str(self.rut)
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["sec_id"])
 
     # La contraseña se guarda encriptada en la base de datos.
     def SetContrasena(self, Contrasena: str) -> None:
-        self.CuentaContrasena = make_password(Contrasena)
+        self.sec_cuentacontrasena = make_password(Contrasena)
 
     # Se comprueba que la contraseña ingresada sea la misma que la guardada en la base de datos.
     def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.CuentaContrasena)
+        return check_password(Contrasena, self.sec_cuentacontrasena)
 
 
 
 class Administrador(Persona):
-    ID = models.IntegerField(primary_key=True)
-    CuentaUsuario = models.TextField(max_length=20)
-    CuentaContrasena = models.TextField(max_length=64)
+    adm_id = models.AutoField(primary_key=True, max_length=8)
+    adm_cuentausuario = models.TextField(max_length=20)
+    adm_cuentacontrasena = models.TextField(max_length=64)
+    
+    def __str__(self):
+        return str(self.rut)
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, ["adm_id", "adm_cuentausuario", "adm_cuentacontrasena"])
 
     def SetContrasena(self, Contrasena: str) -> None:
-        self.CuentaContrasena = make_password(Contrasena)
+        self.adm_cuentacontrasena = make_password(Contrasena)
 
     def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.CuentaContrasena)
+        return check_password(Contrasena, self.adm_cuentacontrasena)
+
+
+class DoctorClave(Persona):
+    doc_id = models.AutoField(primary_key=True, max_length=8)
+    doc_area = models.TextField(max_length=30)
+    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=False, to_field="hor_id")
+    doc_cuentausuario = models.TextField(max_length=20)
+    doc_cuentacontrasena = models.TextField(max_length=64)
+
+    def __str__(self):
+        return str(self.rut)
+    
+    def JsonResponse(self) -> str:
+        return GetJson(self, self.GetAllAttributes(["doct_area", "doct_horario"]))
+
+    def SetContrasena(self, Contrasena: str) -> None:
+        self.doct_cuentacontrasena = make_password(Contrasena)
+
+    def ComprobarContrasena(self, Contrasena: str) -> bool:
+        return check_password(Contrasena, self.doct_cuentacontrasena)
+
+
+class Area(Model):
+    area_id = models.AutoField(primary_key=True, max_length=8)
+    area_nombre = models.TextField(max_length=30)
+
+    def __str__(self):
+        return self.area_nombre
 
 
 
@@ -147,8 +190,9 @@ class Administrador(Persona):
 # ===========================================
 
 class Horario(Model):
-    DiaSemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
-    DiaHora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True)
+    hor_id = models.AutoField(primary_key=True, max_length=8)
+    hor_diasemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True)
+    hor_diahora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True)
 
 
     def __str__(self):
@@ -158,50 +202,26 @@ class Horario(Model):
         return GetJson(self, ["DiaSemana", "DiaHora", "Clase"])
 
 
+
 class DiaSemana(Model):
-    Nombre = models.CharField(max_length=20)
+    sem_id = models.AutoField(primary_key=True, max_length=8)
+    sem_nombre = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.Nombre
+        return f"{self.sem_id} - {self.sem_nombre}"
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["Nombre"])
+        return GetJson(self, ["sem_id", "sem_nombre"])
 
 
 
 class HoraDia(Model):
-    HoraInicio = models.TimeField(default=timezone.now)
-    HoraFin = models.TimeField(default=timezone.now)
+    hordia_id = models.AutoField(primary_key=True, max_length=8)
+    hordia_inicio = models.TimeField(default=timezone.now)
+    hordia_fin = models.TimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.HoraInicio.strftime('%H:%M')} - {self.HoraFin.strftime('%H:%M')}"
+        return f"{self.hordia_inicio.strftime('%H:%M')} - {self.hordia_fin.strftime('%H:%M')}"
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["HoraInicio", "HoraFin"])
-
-
-
-# Creamos la clase "doctorClave" y la asociamos a la clase horario.
-
-class DoctorClave(Persona):
-    Area = models.TextField(max_length=30)
-    Horario = models.OneToOneField(Horario, on_delete=models.SET_NULL, null=True)
-    CuentaUsuario = models.TextField(max_length=20)
-    CuentaContrasena = models.TextField(max_length=64)
-    def __str__(self):
-        return str(self.rut)
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, self.GetAllAttributes(["Area", "Horario"]))
-    def SetContrasena(self, Contrasena: str) -> None:
-        self.CuentaContrasena = make_password(Contrasena)
-
-    def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.CuentaContrasena)
-
-
-class Area(Model):
-    ID = models.IntegerField(primary_key=True)
-    Nombre = models.TextField(max_length=30)
-    def __str__(self):
-        return self.Nombre
+        return GetJson(self, ["hordia_inicio", "hordia_fin"])
