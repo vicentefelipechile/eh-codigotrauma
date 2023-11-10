@@ -39,8 +39,8 @@ class Emergencia(Model):
     emerg_color = models.TextField(max_length=20)
     emerg_fecha = models.DateTimeField(max_length=30, default=timezone.now)
 
-    emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True)
-    emerg_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True)
+    emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
+    emerg_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
 
     def __str__(self):
         return self.emerg_id
@@ -66,8 +66,8 @@ class HistorialEmergencia(Model):
 
 class HistorialDoctorEmergencia(Model):
     histdoct_id = models.AutoField(primary_key=True)
-    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=True,to_field="emerg_id")
-    histdoct_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, null=True,to_field="doc_id")
+    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=True, to_field="emerg_id", name="histdoct_emerg_id")
+    histdoct_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, null=True, to_field="doc_id", name="histdoct_doc_id")
     histdoct_fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -158,8 +158,8 @@ class Administrador(Persona):
 
 class Doctor(Persona):
     doc_id = models.AutoField(primary_key=True)
-    doc_area_id = models.ForeignKey('Area', on_delete=models.SET_NULL, null=True,to_field="area_id")
-    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True,to_field="hor_id")
+    doc_area_id = models.ForeignKey('Area', on_delete=models.SET_NULL, null=True, to_field="area_id", name="doc_area_id")
+    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True, to_field="hor_id", name="doc_hor_id")
     doc_cuentausuario = models.TextField(max_length=20)
     doc_cuentacontrasena = models.TextField(max_length=64)
 
@@ -191,8 +191,8 @@ class Area(Model):
 
 class Horario(Model):
     hor_id = models.AutoField(primary_key=True)
-    hor_diasemana = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True,to_field="sem_id")
-    hor_diahora = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True,to_field="hordia_id")
+    hor_sem_id = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True, to_field="sem_id", name="hor_sem_id")
+    hor_horadia_id = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True, to_field="hordia_id", name="hor_horadia_id")
 
 
     def __str__(self):
