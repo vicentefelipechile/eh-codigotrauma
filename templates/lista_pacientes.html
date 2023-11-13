@@ -73,8 +73,8 @@
                     <td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
                     <td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
                     <td>
-                        <a href="/detalles_paciente/{{ paciente.rut }}" class="btn btn-primary">Ver</a>
-                        <a href="/detalles_paciente/{{ paciente.rut }}/editar" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'detalles_paciente' paciente.rut %}" class="btn btn-primary">Ver</a>
+                        <a class="btn btn-warning">Editar</a>
                         <a class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>

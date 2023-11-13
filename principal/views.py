@@ -2,7 +2,7 @@
 # ==================== Librerias y Clases ====================
 # ============================================================
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.template import loader
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
@@ -174,7 +174,10 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     doctores = Doctor.objects.all()
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
-
+def detalles_paciente(request, pac_id):
+    
+    paciente = get_object_or_404(Paciente, pk=pac_id)
+    return render(request, 'detalles_paciente.html', {'paciente': paciente})
 # ============================================================
 # ====================== Peticiones HTTP =====================
 # ============================================================
