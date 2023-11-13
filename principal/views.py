@@ -131,6 +131,10 @@ def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     context = {'pacientes': pacientes}
     return render(request, 'lista_pacientes.html', context)
 
+def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
+    doctores = Doctor.objects.all()
+    context = {'doctores': doctores}
+    return render(request, 'empleados.html', context)
 # ============================================================
 # ====================== Peticiones HTTP =====================
 # ============================================================
