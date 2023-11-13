@@ -46,7 +46,15 @@
         
 
         <!-- <p> <h1>{{paciente.pac_id}}</h1> {{paciente.rut}} - {{paciente.dv}} {{ paciente.primernombre }} {{ paciente.segundonombre }} {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</p> -->
-        <!-- Listado de Pacientes utilizando tablas -->
+        <!-- Listado de Pacientes utilizando tablas
+        Tambien añadir una barra de busqueda para filtrar los pacientes por su rut
+        -->
+        <h1>Lista de Pacientes</h1>
+        <form class="d-flex" method="GET">
+            <input class="form-control me-2" type="search" placeholder="Buscar persona por caracteristica" name="buscarpaciente" autocorrect="off" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Buscar</button>
+        </form>
+
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
