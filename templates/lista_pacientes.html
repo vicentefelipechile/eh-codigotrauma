@@ -48,10 +48,12 @@
         <!-- <p> <h1>{{paciente.pac_id}}</h1> {{paciente.rut}} - {{paciente.dv}} {{ paciente.primernombre }} {{ paciente.segundonombre }} {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</p> -->
         <!-- Listado de Pacientes utilizando tablas
         Tambien añadir una barra de busqueda para filtrar los pacientes por su rut
+
+        Si existe la variable "configruacionanterior" utilizar la variable "busqueda" y establecerla como valor del input
         -->
         <h1>Lista de Pacientes</h1>
         <form class="d-flex" method="GET">
-            <input class="form-control me-2" type="search" placeholder="Buscar persona por caracteristica" name="buscarpaciente" autocorrect="off" aria-label="Search">
+            <input class="form-control me-2" type="search" placeholder="Buscar persona por caracteristica" name="buscarpaciente" autocorrect="off" aria-label="Search" value="{{ configuracionanterior.busqueda }}">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
 
@@ -71,14 +73,16 @@
                     <td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
                     <td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
                     <td>
-                        <a class="btn btn-primary">Ver</a>
-                        <a class="btn btn-warning">Editar</a>
+                        <a href="/detalles_paciente/{{ paciente.rut }}" class="btn btn-primary">Ver</a>
+                        <a href="/detalles_paciente/{{ paciente.rut }}/editar" class="btn btn-warning">Editar</a>
                         <a class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <div class="mb-5"></div>
     </div>
 
     {# ============================================ #}

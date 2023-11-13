@@ -127,8 +127,47 @@ def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
 def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
-    pacientes = Paciente.objects.all()
-    context = {'pacientes': pacientes}
+    MostrarCantidad: int = 20
+    Pagina: int = 1
+    Busqueda: str = ""
+
+    try:
+        MostrarCantidad = int(request.GET["cantidad"])
+    except:
+        pass
+
+    try:
+        Pagina = int(request.GET["pagina"])
+    except:
+        pass
+    
+
+    try:
+        # Buscar pacientes
+        # Extraer todos los numeros de la busqueda
+        # Si existen numeros en la busqueda, buscar por rut con este formato ("SELECT * FROM paciente WHERE rut LIKE '{numero}%'")
+        # En el caso contrario, buscar por apellido paterno con este formato ("SELECT * FROM paciente WHERE apellidopaterno LIKE '{apellido}%'") ignorando los acentos
+        try:
+            Busqueda = request.GET["buscarpaciente"]
+        except:
+            pacientes = Paciente.objects.all()
+        
+        if Busqueda:
+            if Busqueda.isnumeric():
+                pacientes = Paciente.objects.filter(rut__startswith=Busqueda)
+            else:
+                pacientes = Paciente.objects.filter(apellidopaterno__startswith=Busqueda)
+    except:
+        pacientes = Paciente.objects.all()
+
+
+    # Mostrar la cantidad de pacientes especificada y la pagina especificada
+    # Si la pagina dice numero 2, se saltaran los primero 20 pacientes y se mostraran los siguientes 20
+    pacientes = pacientes[(Pagina - 1) * MostrarCantidad : (Pagina * MostrarCantidad)]
+    
+    
+    
+    context = {'pacientes': pacientes, 'configuracionanterior': { "cantidad": MostrarCantidad, "pagina": Pagina, "busqueda": Busqueda }}
     return render(request, 'lista_pacientes.html', context)
 
 def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
