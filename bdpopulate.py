@@ -25,11 +25,13 @@ from principal.models import HoraDia, Horario, DiaSemana
 
 
 
+
 # ============================================================
 #   Generador de datos
 # ============================================================
 # Zona horaria UTC-3
 
+random.seed(1337)
 Faker.seed(1337)
 fake = Faker("es_CL")
 
@@ -43,7 +45,6 @@ DiasSemana: list[str] = ["lunes", "martes", "miercoles", "jueves", "viernes", "s
 # ============================================================
 
 class GeneradorDatos:
-    
     def Rut(self, Numeros: bool = False) -> str | int:
         RUN: str = fake.person_rut()
         
@@ -61,10 +62,24 @@ class GeneradorDatos:
     def Contrasena(self, UsarFaker: bool = False) -> str:
         return make_password( fake.password() if UsarFaker else "password" )
 
+DatosGenerador: GeneradorDatos = GeneradorDatos()
+
 
 # ============================================================
 #   Funciones varias
 # ============================================================
+
+GlobalPacientes: list = []
+GlobalDoctores: list = []
+GlobalHorarios: list = []
+GlobalAreas: list = []
+GlobalEmergencias: list = []
+
+LenPacientes: int = 0
+LenDoctores: int = 0
+LenHorarios: int = 0
+LenAreas: int = 0
+LenEmergencias: int = 0
 
 
 def GenerarDatosPacientes(Cantidad: int = 10) -> None:
@@ -78,7 +93,7 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
 
     for id in range(Cantidad):
         try:
-            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            Rut, Dv = DatosGenerador.Rut(Numeros=True)
 
             NewPaciente: Paciente = Paciente(
                 rut     =   Rut,
@@ -94,6 +109,12 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
+
+    global GlobalPacientes
+    GlobalPacientes = list( Paciente.objects.all() )
+    
+    global LenPacientes
+    LenPacientes = len(GlobalPacientes) - 1
     
     Termino: float = perf_counter()
     
@@ -104,8 +125,8 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
 
 
 
-def GenerarDoctoresClave(Cantidad):
-    print(" > Generando datos DoctoresClave...                   ", end="")
+def GenerarDoctores(Cantidad):
+    print(" > Generando datos de doctores...                     ", end="")
     Fallo = False
     FalloCantidad = 0
     FalloMensaje = ""
@@ -113,7 +134,7 @@ def GenerarDoctoresClave(Cantidad):
     Inicio = perf_counter()
     for id in range(Cantidad):
         try:
-            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            Rut, Dv = DatosGenerador.Rut(Numeros=True)
             pnombre = fake.first_name()
             snombre = fake.first_name()
 
@@ -127,17 +148,24 @@ def GenerarDoctoresClave(Cantidad):
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
                 doc_cuentausuario   =   username,
-                doc_cuentacontrasena=   GeneradorDatos().Contrasena()
+                doc_cuentacontrasena=   DatosGenerador.Contrasena()
             )
 
-            doctor.doc_area_id  =   Area.objects.order_by("?").first()
-            doctor.doc_hor_id   =   Horario.objects.order_by("?").first()
+            doctor.doc_area_id  =   GlobalAreas[ random.randint(0, LenAreas) ]
+            doctor.doc_hor_id   =   GlobalHorarios[ random.randint(0, LenHorarios) ]
             doctor.save()
 
         except Exception as Error:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
+    
+    global GlobalDoctores
+    GlobalDoctores = list( Doctor.objects.all() )
+    
+    global LenDoctores
+    LenDoctores = len(GlobalDoctores) - 1
+    
     Termino = perf_counter()
 
     if Fallo:
@@ -159,25 +187,28 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
 
     for id in range(Cantidad):
             
-        try:
-            pac_id: int = Paciente.objects.order_by("?").first()
-            doc_id: int = Doctor.objects.order_by("?").first()
-            
+        try:            
             # Crea una instancia de Emergencia
             Registro = Emergencia(
                 emerg_desc      =       fake.text(max_nb_chars=50),
                 emerg_color     =       random.choice(colores_disponibles),
-                emerg_fecha     =       GeneradorDatos().Fecha()
+                emerg_fecha     =       DatosGenerador.Fecha()
             )
             
-            Registro.emerg_pac_id = pac_id
-            Registro.emerg_doc_id = doc_id
+            Registro.emerg_pac_id = GlobalPacientes[ random.randint(0, LenPacientes) ]
+            Registro.emerg_doc_id = GlobalDoctores[ random.randint(0, LenDoctores) ]
             
             Registro.save()
         except Exception as Error:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
+    
+    global GlobalEmergencias
+    GlobalEmergencias = list( Emergencia.objects.all() )
+    
+    global LenEmergencias
+    LenEmergencias = len(GlobalEmergencias) - 1
     
     Termino: float = perf_counter()
     
@@ -202,10 +233,10 @@ def GenerarHistorialEmergencia(Cantidad: int = 10) -> None:
         try:
             # Crea una instancia de HistorialEmergencia
             historial_emergencias = HistorialEmergencia(
-                hist_fecha      =   GeneradorDatos().Fecha(),
+                hist_fecha      =   DatosGenerador.Fecha(),
                 hist_detalle    =   fake.text(max_nb_chars=200)
             )
-            historial_emergencias.hist_emerg_id = Emergencia.objects.order_by("?").first()
+            historial_emergencias.hist_emerg_id = GlobalEmergencias[ random.randint(0, len(GlobalEmergencias) - 1) ]
 
             historial_emergencias.save()
         except Exception as Error:
@@ -233,9 +264,9 @@ def GenerarHistorialDoctor(Cantidad: int = 10) -> None:
 
         try:
             # Crea una instancia de HistorialEmergencia
-            historial_doctores = HistorialDoctorEmergencia( histdoct_fecha = GeneradorDatos().Fecha() )
-            historial_doctores.histdoct_emerg_id = Emergencia.objects.order_by("?").first()
-            historial_doctores.histdoct_doc_id = Doctor.objects.order_by("?").first()
+            historial_doctores = HistorialDoctorEmergencia( histdoct_fecha = DatosGenerador.Fecha() )
+            historial_doctores.histdoct_emerg_id = GlobalEmergencias[ random.randint(0, len(GlobalEmergencias) - 1) ]
+            historial_doctores.histdoct_doc_id = GlobalDoctores[ random.randint(0, len(GlobalDoctores) - 1) ]
 
             historial_doctores.save()
         except Exception as Error:
@@ -282,7 +313,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
     for id in range(Cantidad):
         
         try:
-            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            Rut, Dv = DatosGenerador.Rut(Numeros=True)
             pnombre = fake.first_name()
             snombre = fake.first_name()
             
@@ -297,11 +328,11 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
                 adm_cuentausuario       =   username,
-                adm_cuentacontrasena    =   GeneradorDatos().Contrasena()
+                adm_cuentacontrasena    =   DatosGenerador.Contrasena()
             )
             
             # Encripta la contraseña ficticia antes de guardarla
-            administrador.SetContrasena( GeneradorDatos().Contrasena() )
+            administrador.SetContrasena( DatosGenerador.Contrasena() )
             administrador.save()
         except Exception as Error:
             Fallo = True
@@ -327,7 +358,7 @@ def GenerarSecretarios(Cantidad):
     for id in range(Cantidad):
         
         try: 
-            Rut, Dv = GeneradorDatos().Rut(Numeros=True)
+            Rut, Dv = DatosGenerador.Rut(Numeros=True)
             pnombre = fake.first_name()
             snombre = fake.first_name()
             
@@ -341,7 +372,7 @@ def GenerarSecretarios(Cantidad):
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
                 sec_cuentausuario   =   username,
-                sec_cuentacontrasena =  GeneradorDatos().Contrasena()
+                sec_cuentacontrasena =  DatosGenerador.Contrasena()
             )
             secretario.save()
         except Exception as Error:
@@ -451,6 +482,12 @@ def GenerarHorarios(Cantidad: int = 10) -> None:
             FalloCantidad += 1
             FalloMensaje = Error
     
+    global GlobalHorarios
+    GlobalHorarios = list( Horario.objects.all() )
+    
+    global LenHorarios
+    LenHorarios = len(GlobalHorarios) - 1
+    
     Termino: float = perf_counter()
     
     if Fallo:
@@ -482,6 +519,12 @@ def GenerarAreas(Cantidad: int = 10) -> None:
             FalloCantidad += 1
             FalloMensaje = Error
     
+    global GlobalAreas
+    GlobalAreas = list( Area.objects.all() )
+    
+    global LenAreas
+    LenAreas = len(GlobalAreas) - 1
+    
     Termino: float = perf_counter()
     
     if Fallo:
@@ -502,23 +545,28 @@ print("=====================================")
 
 Inicio: float = perf_counter()
 
-# Valores fijos
-GenerarDiasSemana()
-GenerarAreas()
+if True:
+    # Valores fijos
+    GenerarDiasSemana()
+    GenerarAreas()
 
-# Valores ficticios
-GenerarHorasDias(100)
-GenerarHorarios(100)
+    # Valores ficticios
+    GenerarHorasDias(100)
+    GenerarHorarios(20)
 
-GenerarDatosPacientes(1500)
-GenerarDoctoresClave(500)
-GenerarEmergencias(3000)
-GenerarHistorialEmergencia(1000)
-GenerarHistorialDoctor(1000)
+    GenerarDatosPacientes(1000)
+    GenerarDoctores(500)
+    GenerarEmergencias(3000)
+    GenerarHistorialEmergencia(1000)
+    GenerarHistorialDoctor(1000)
 
-# Extra
-GenerarAdministradores(50)
-GenerarSecretarios(100)
+    # Extra
+    GenerarAdministradores(10)
+    GenerarSecretarios(20)
+else:
+    PacienteRandom: int = fake.random.randint(0, Paciente.objects.values("pac_id").count())
+    
+    print( Paciente.objects.values("pac_id")[PacienteRandom]["pac_id"] )
 
 Termino: float = perf_counter()
 
