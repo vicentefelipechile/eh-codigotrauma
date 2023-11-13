@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
 from django.db import models
 from django.db.models import Model
+from django.db.models import QuerySet
 import json
 
 from django.db.models import TextField, IntegerField, DateTimeField, CharField
@@ -114,6 +115,10 @@ class Persona(Model):
 
 class Paciente(Persona):
     pac_id = models.AutoField(primary_key=True)
+    
+    # Obtener los registros de emergencias asociados al paciente
+    def GetEmergencias(self) -> QuerySet:
+        return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
 
 
 

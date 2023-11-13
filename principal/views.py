@@ -126,9 +126,9 @@ def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
-def PaginaPacientes(request):
+def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     pacientes = Paciente.objects.all()
-    context = {'Pacientes': pacientes}
+    context = {'pacientes': pacientes}
     return render(request, 'lista_pacientes.html', context)
 
 # ============================================================

@@ -45,15 +45,34 @@
 
         
 
-        <!-- Lista de Pacientes en cajas -->
-        <div class="patient-boxes" id="patient-boxes">
-            {% for paciente in Pacientes %}
-                <div class="patient-box">
-                    <p>{{paciente.Rut}} - {{paciente.Dv}} {{ paciente.PrimerNombre }} {{ paciente.SegundoNombre }} {{ paciente.ApellidoPaterno }} {{ paciente.ApellidoMaterno }}</p>
-                    <!-- Agregar más datos del paciente según sea necesario -->
-                </div>
+        <!-- <p> <h1>{{paciente.pac_id}}</h1> {{paciente.rut}} - {{paciente.dv}} {{ paciente.primernombre }} {{ paciente.segundonombre }} {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</p> -->
+        <!-- Listado de Pacientes utilizando tablas, si la pagina supera las 20 personas, se agrega un boton para ver la siguiente pagina -->
+        <table>
+            <tr>
+                <th>Rut</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Sexo</th>
+                <th>Telefono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{paciente.rut}}-{{paciente.dv}}</td>
+                <td>{{paciente.primernombre}} {{paciente.segundonombre}}</td>
+                <td>{{paciente.apellidopaterno}} {{paciente.apellidomaterno}}</td>
+                <td>{{paciente.fechanacimiento}}</td>
+                <td>{{paciente.sexo}}</td>
+                <td>{{paciente.telefono}}</td>
+                <td>{{paciente.correo}}</td>
+                <td> <a>Ver</a> 
+                    <a>Editar</a>
+                </td>
+            </tr>
             {% endfor %}
-        </div>
+        </table>
     </div>
 
     {# ============================================ #}
