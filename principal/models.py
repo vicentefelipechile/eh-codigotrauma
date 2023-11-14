@@ -118,10 +118,14 @@ class Paciente(Persona):
     pac_id = models.AutoField(primary_key=True)
     anio_nacimiento = models.IntegerField()
     
-    # Obtener los registros de emergencias asociados al paciente
     def GetEmergencias(self) -> QuerySet:
         return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
 
+    def GetHistorialEmergencias(self) -> QuerySet:
+        return HistorialEmergencia.objects.filter(hist_emerg_id__emerg_pac_id=self.pac_id)
+
+    def GetHistorialDoctores(self) -> QuerySet:
+        return HistorialDoctorEmergencia.objects.filter(histdoct_emerg_id__emerg_pac_id=self.pac_id)
 
 
 class Secretario(Persona):

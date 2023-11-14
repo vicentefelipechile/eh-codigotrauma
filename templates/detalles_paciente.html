@@ -1,38 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
+{# ============================================ #}
+{# ============= Cargar Variables ============= #}
+{# ============================================ #}
+
+{% load static %}
+{% include "html_templates/_head.html" %}
+
+{# ============================================ #}
+{# ============== Inicio de HTML ============== #}
+{# ============================================ #}
 
 <div class="container">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                    <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp" height="15" alt="MDB Logo"
-                        loading="lazy" />
-                </a>
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Team</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Projects</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Detalles del Paciente</title>
-</head>
-<body>
     <h1>Detalles del Paciente</h1>
 
     <ul>
@@ -44,11 +21,34 @@
         <!-- Otros detalles según sea necesario -->
     </ul>
 
+    <h2>Emergencias del Paciente</h2>
+    <ul>
+        {% for emergencia in emergencias %}
+            <li>{{ emergencia.emerg_desc }} - Atendida por: {{ emergencia.emerg_doc_id }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Historial de emergencias del paciente -->
+    <h2>Historial de Emergencias del Paciente</h2>
+    <ul>
+        {% for historial_emergencia in historial_emergencias %}
+            <li>Fecha: {{ historial_emergencia.hist_fecha }} - Detalle: {{ historial_emergencia.hist_detalle }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Historial de doctores del paciente -->
+    <h2>Historial de Doctores del Paciente</h2>
+    <ul>
+        {% for historial_doctor in historial_doctores %}
+            <li>Fecha: {{ historial_doctor.histdoct_fecha }} - Doctor: {{ historial_doctor.histdoct_doc_id }}</li>
+        {% endfor %}
+    </ul>
+
     <a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
+</div>
 
-    {% include "html_templates/_footer_no.html" %}
+{# ============================================ #}
+{# ================ Pie de HTML =============== #}
+{# ============================================ #}
 
-    <script src="{% static 'script.js' %}"></script>
-</body>
-</html>
-
+{% include "html_templates/_footer.html" %}
