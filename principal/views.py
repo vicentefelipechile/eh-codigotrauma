@@ -8,11 +8,14 @@ from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from principal.models import Paciente
 from pathlib import Path
+from datetime import datetime
+
 
 from django.http import HttpResponse, JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django.template.backends.django import Template
 from django.db.models.query import QuerySet
+from django.urls import reverse
 
 
 from principal.models import Administrador, Doctor, Secretario, Paciente
@@ -121,10 +124,7 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
 
 
 
-def PaginaEmpleados(request: WSGIRequest) -> HttpResponse:
-    HTML: Template = loader.get_template("empleados.html")
 
-    return HttpResponse( HTML.render(CONTEXTO, request) )
 
 def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     MostrarCantidad: int = 20
@@ -174,9 +174,12 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     doctores = Doctor.objects.all()
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
+
 def detalles_paciente(request, pac_id):
     
     paciente = get_object_or_404(Paciente, pk=pac_id)
+    anio_actual = datetime.now().year
+    paciente.edad = anio_actual - paciente.anio_nacimiento
     return render(request, 'detalles_paciente.html', {'paciente': paciente})
 # ============================================================
 # ====================== Peticiones HTTP =====================

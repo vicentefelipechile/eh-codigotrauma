@@ -35,6 +35,9 @@ random.seed(1337)
 Faker.seed(1337)
 fake = Faker("es_CL")
 
+def generar_anio_nacimiento():
+    return random.randint(1950, 2005)
+
 colores_disponibles = ["Rojo", "Amarillo", "Verde", "Negro", "Blanco"]
 
 AreasLista: list[str] = ["Cardiología", "Dermatología", "Ginecología", "Neurología", "Ortopedia"]
@@ -102,6 +105,7 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
                 segundonombre   =   fake.first_name(),
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
+                anio_nacimiento = generar_anio_nacimiento()
             )
             
             NewPaciente.save()
@@ -147,6 +151,7 @@ def GenerarDoctores(Cantidad):
                 segundonombre   =   snombre,
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
+                anio_nacimiento = generar_anio_nacimiento(),
                 doc_cuentausuario   =   username,
                 doc_cuentacontrasena=   DatosGenerador.Contrasena()
             )
@@ -327,6 +332,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
                 segundonombre   =   snombre,
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
+                anio_nacimiento = generar_anio_nacimiento(),
                 adm_cuentausuario       =   username,
                 adm_cuentacontrasena    =   DatosGenerador.Contrasena()
             )

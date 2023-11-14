@@ -1,18 +1,54 @@
-<!-- detalles_paciente.html -->
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
+<div class="container">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp" height="15" alt="MDB Logo"
+                        loading="lazy" />
+                </a>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Team</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Projects</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Detalles del Paciente</title>
 </head>
 <body>
+    <h1>Detalles del Paciente</h1>
 
-<h2>Detalles del Paciente</h2>
+    <ul>
+        <li><strong>RUT:</strong> {{ paciente.rut }}-{{ paciente.dv }}</li>
+        <li><strong>Nombres:</strong> {{ paciente.primernombre }} {{ paciente.segundonombre }}</li>
+        <li><strong>Apellidos:</strong> {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</li>
+        <li><strong>Año de Nacimiento:</strong> {{ paciente.anio_nacimiento }}</li>
+        <li><strong>Edad:</strong> {{ paciente.edad }}</li>
+        <!-- Otros detalles según sea necesario -->
+    </ul>
 
-<th scope="row">{{ paciente.pac_id }}-{{ paciente.dv }}</th>
-<td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
-<td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
-<td>
-<!-- Otros campos del paciente según sea necesario -->
+    <a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
 
+    {% include "html_templates/_footer_no.html" %}
+
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>
+

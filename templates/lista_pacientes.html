@@ -69,11 +69,11 @@
             <tbody>
                 {% for paciente in pacientes %}
                 <tr>
-                    <th scope="row">{{ paciente.rut }}-{{ paciente.dv }}</th>
+                    <th scope="row">{{paciente.pac_id}}-{{ paciente.rut }}-{{ paciente.dv }}</th>
                     <td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
                     <td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
                     <td>
-                        <a href="{% url 'detalles_paciente' paciente.rut %}" class="btn btn-primary">Ver</a>
+                        <a href="{% url 'detalles_paciente' paciente.pac_id %}" class="btn btn-primary">Ver</a>
                         <a class="btn btn-warning">Editar</a>
                         <a class="btn btn-danger">Eliminar</a>
                     </td>
