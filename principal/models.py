@@ -90,7 +90,11 @@ class Persona(Model):
     segundonombre: TextField = models.TextField(max_length=20, null=True)
     apellidopaterno: TextField = models.TextField(max_length=20)
     apellidomaterno: TextField = models.TextField(max_length=20, null=True)
-    anio_nacimiento: models.IntegerField()
+    anio_nacimiento = models.IntegerField()
+    direccion: TextField = models.TextField()
+    ciudad: TextField = models.TextField()
+    estado: TextField = models.TextField()
+    codigo_postal = models.CharField(max_length=10)
 
     def GetAllAttributes(self, AtributosExtra: list = None) -> list:
         AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
@@ -116,7 +120,6 @@ class Persona(Model):
 
 class Paciente(Persona):
     pac_id = models.AutoField(primary_key=True)
-    anio_nacimiento = models.IntegerField()
     
     def GetEmergencias(self) -> QuerySet:
         return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
@@ -153,7 +156,6 @@ class Administrador(Persona):
     adm_id = models.AutoField(primary_key=True)
     adm_cuentausuario = models.TextField(max_length=20)
     adm_cuentacontrasena = models.TextField(max_length=64)
-    anio_nacimiento = models.IntegerField()
     
     def __str__(self):
         return str(self.rut)
@@ -174,7 +176,6 @@ class Doctor(Persona):
     doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True, to_field="hor_id", name="doc_hor_id")
     doc_cuentausuario = models.TextField(max_length=20)
     doc_cuentacontrasena = models.TextField(max_length=64)
-    anio_nacimiento = models.IntegerField()
 
     def __str__(self):
         return str(self.rut)

@@ -105,7 +105,10 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
                 segundonombre   =   fake.first_name(),
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
-                anio_nacimiento = generar_anio_nacimiento()
+                anio_nacimiento = generar_anio_nacimiento(),
+                direccion = fake.street_address(),
+                ciudad = fake.city(),
+          
             )
             
             NewPaciente.save()
@@ -152,6 +155,8 @@ def GenerarDoctores(Cantidad):
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
                 anio_nacimiento = generar_anio_nacimiento(),
+                direccion = fake.street_address(),
+                ciudad = fake.city(),
                 doc_cuentausuario   =   username,
                 doc_cuentacontrasena=   DatosGenerador.Contrasena()
             )
@@ -333,6 +338,8 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
                 anio_nacimiento = generar_anio_nacimiento(),
+                direccion = fake.street_address(),
+                ciudad = fake.city(),
                 adm_cuentausuario       =   username,
                 adm_cuentacontrasena    =   DatosGenerador.Contrasena()
             )
@@ -377,6 +384,9 @@ def GenerarSecretarios(Cantidad):
                 segundonombre   =   snombre,
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
+                anio_nacimiento = generar_anio_nacimiento(),
+                direccion = fake.street_address(),
+                ciudad = fake.city(),
                 sec_cuentausuario   =   username,
                 sec_cuentacontrasena =  DatosGenerador.Contrasena()
             )
