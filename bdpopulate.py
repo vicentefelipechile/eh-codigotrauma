@@ -246,7 +246,7 @@ def GenerarHistorialEmergencia(Cantidad: int = 10) -> None:
                 hist_fecha      =   DatosGenerador.Fecha(),
                 hist_detalle    =   fake.text(max_nb_chars=200)
             )
-            historial_emergencias.hist_emerg_id = GlobalEmergencias[ random.randint(0, len(GlobalEmergencias) - 1) ]
+            historial_emergencias.hist_emerg_id = GlobalEmergencias[ random.randint(0, LenEmergencias) ]
 
             historial_emergencias.save()
         except Exception as Error:
@@ -275,8 +275,8 @@ def GenerarHistorialDoctor(Cantidad: int = 10) -> None:
         try:
             # Crea una instancia de HistorialEmergencia
             historial_doctores = HistorialDoctorEmergencia( histdoct_fecha = DatosGenerador.Fecha() )
-            historial_doctores.histdoct_emerg_id = GlobalEmergencias[ random.randint(0, len(GlobalEmergencias) - 1) ]
-            historial_doctores.histdoct_doc_id = GlobalDoctores[ random.randint(0, len(GlobalDoctores) - 1) ]
+            historial_doctores.histdoct_emerg_id = GlobalEmergencias[ random.randint(0, LenEmergencias) ]
+            historial_doctores.histdoct_doc_id = GlobalDoctores[ random.randint(0, LenDoctores) ]
 
             historial_doctores.save()
         except Exception as Error:
@@ -570,9 +570,9 @@ if True:
     GenerarHorasDias(100)
     GenerarHorarios(20)
 
-    GenerarDatosPacientes(1000)
+    GenerarDatosPacientes(10000)
     GenerarDoctores(500)
-    GenerarEmergencias(3000)
+    GenerarEmergencias(30000)
     GenerarHistorialEmergencia(1000)
     GenerarHistorialDoctor(1000)
 
