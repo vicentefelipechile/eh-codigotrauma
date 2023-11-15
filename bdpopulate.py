@@ -570,9 +570,9 @@ if True:
     GenerarHorasDias(100)
     GenerarHorarios(20)
 
-    GenerarDatosPacientes(10000)
+    GenerarDatosPacientes(1000)
     GenerarDoctores(500)
-    GenerarEmergencias(30000)
+    GenerarEmergencias(3000)
     GenerarHistorialEmergencia(1000)
     GenerarHistorialDoctor(1000)
 
