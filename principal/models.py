@@ -51,7 +51,7 @@ class Emergencia(Model):
 
 class AtencionPaciente(Model):
     atenc_id = models.AutoField(primary_key = True)
-    atenc_descripcion = models.TextField(maxlength=50)
+    atenc_descripcion = models.TextField(max_length=50)
 
     atenc_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
     atenc_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")

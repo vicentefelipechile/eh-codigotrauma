@@ -6,7 +6,6 @@ import os, random, django
 from time import perf_counter
 from faker import Faker
 from datetime import datetime, timedelta
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "codigotrauma.settings")
 django.setup()
 
