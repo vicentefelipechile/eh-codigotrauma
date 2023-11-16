@@ -33,37 +33,37 @@
 
 {% endif %}
 
-<section class="vh-100">
-    <div class="container py-5 h-100">
-        <div class="row d-flex align-items-center justify-content-center h-100">
-            <div class="col-md-8 col-lg-7 col-xl-6">
-            <img src="{% static 'img/iniciarsesion.jfif' %}" class="img-fluid rounded shadow-lg" alt="Phone image">
-            </div>
-            <div class="col-md-7 col-lg-5 offset-xl-1">
-                <div class="text-center bg-light">
-                    <h3>Iniciar Sesión</h3>
-                </div>
-                <form method="POST" action="/iniciarsesion/">
-                    {% csrf_token %}
+<section class="vh-50">
+    <div class="container py-5 h-50">
+        <div class="row d-flex align-items-center justify-content-center h-50">
+                <!-- Iniciar sesion
+                - Nombre de usuario
+                - Contraseña
+                - Metodo POST
+                -->
 
-                    <!-- Email input -->
-                    <div class="form-outline mb-4">
-                        <input name="username" type="text" class="form-control form-control-lg" />
-                        <label class="form-label">Nombre de Usuario</label>
-                    </div>
-        
-                    <!-- Password input -->
-                    <div class="form-outline mb-4">
-                        <input name="password" type="password" id="form1Example23" class="form-control form-control-lg" />
-                        <label class="form-label" for="form1Example23">Contraseña</label>
-                    </div>
-        
-                    <div class="d-flex justify-content-around align-items-center mb-4">
-        
-                    <!-- Iniciar sesion -->
-                    <button type="submit" class="btn btn-primary btn-lg">Iniciar Sesion</button>
-        
-                </form>
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <img src="{% static 'img/logo.png' %}" class="img-fluid" alt="Responsive image">
+                </div>
+
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <form class="text-center border border-light p-5" action="{% url 'PaginaIniciarSesion' %}" method="POST">
+
+                        {% csrf_token %}
+
+                        <p class="h4 mb-4">Iniciar Sesión</p>
+
+                        <input type="text" id="nombre_usuario" name="nombre_usuario" class="form-control mb-4" placeholder="Nombre de usuario">
+
+                        <input type="password" id="contrasena" name="contrasena" class="form-control mb-4" placeholder="Contraseña">
+
+                        <button class="btn btn-info btn-block my-4" type="submit">Iniciar Sesión</button>
+
+                        <p>¿No tienes cuenta?
+                            <a href="#">Registrate</a>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
