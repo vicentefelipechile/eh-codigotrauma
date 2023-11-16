@@ -57,12 +57,15 @@ class Emergencia(Model):
 class AtencionPaciente(Model):
     atenc_id = models.AutoField(primary_key = True)
     atenc_descripcion = models.TextField(max_length=50)
+    atenc_diagnostico = models.TextField(max_length=50)
+    atenc_fecha = models.DateTimeField(max_length=30, default=timezone.now)
+
 
     atenc_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
     atenc_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["atenc_id", "atenc_descripcion", "atenc_pac_id", "atenc_doc_id"])
+        return GetJson(self, ["atenc_id", "atenc_descripcion", "atenc_diagnostico", "atenc_fecha","atenc_pac_id", "atenc_doc_id"])
 
 
 

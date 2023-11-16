@@ -19,7 +19,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
 
-from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia
+from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia, AtencionPaciente
 
 
 # ============================================================
@@ -190,5 +190,13 @@ def detalles_paciente(request, pac_id):
     num_emergencias = paciente.cantidad_emergencias()
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.anio_nacimiento
-    context=  {'paciente': paciente, 'num_emergencias': num_emergencias}
+    ultimas_emergencias = Emergencia.objects.filter(emerg_pac_id=paciente).order_by('-emerg_fecha')[:3]
+    ultima_atencion = AtencionPaciente.objects.filter(atenc_pac_id=paciente).order_by('-atenc_fecha').first()
+
+    context=  {'paciente': paciente,
+                'num_emergencias': num_emergencias,
+                'ultimas_emergencias': ultimas_emergencias,
+                'ultima_atencion': ultima_atencion}
+
+
     return render(request,'detalles_paciente.html', context)

@@ -493,6 +493,7 @@ def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
             # Crea una instancia de AtencionPaciente
             atencion = AtencionPaciente(
                 atenc_descripcion = fake.text(max_nb_chars=50),
+                atenc_diagnostico = fake.sentence(nb_words=20)
             )
             
             # Asigna un paciente y un doctor aleatorio

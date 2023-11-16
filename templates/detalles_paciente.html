@@ -71,6 +71,25 @@
     <a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
 </div>
 
+<form method="post" action="{% url 'detalles_paciente' paciente.pac_id %}">
+    {% csrf_token %}
+    
+    <button type="submit">Ver últimas emergencias</button>
+    
+    <select>
+        {% for emergencia in ultimas_emergencias %}
+            <option>{{emergencia.emerg_id}-}{{ emergencia.emerg_descripcion }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Ver datos última atención</button>
+    <select>
+        <option>Fecha: {{ ultima_atencion.atenc_fecha}}</option>
+        <option>Doctor: {{ultima_atencion.atenc_id_doctor}}</option>
+        <option>Diagnotico: {{ultima_atencion.atenc_diagnostico}}</option>
+        <!-- Agrega más opciones según sea necesario -->
+    </select>
+</form>
+
 {# ============================================ #}
 {# ================ Pie de HTML =============== #}
 {# ============================================ #}
