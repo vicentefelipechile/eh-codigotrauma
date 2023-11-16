@@ -1,27 +1,73 @@
-{# ============================================ #}
-{# ============= Cargar Variables ============= #}
-{# ============================================ #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalles del paciente</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 
-{% load static %}
-{% include "html_templates/_head.html" %}
+</head>
+<body>
 
-{# ============================================ #}
-{# ============== Inicio de HTML ============== #}
-{# ============================================ #}
+    {# ============================================ #}
+    {# ============= Cargar Variables ============= #}
+    {# ============================================ #}
+
+    {% load static %}
+    {% include "html_templates/_head_empleados.html" %}
+
+    {# ============================================ #}
+    {# ============== Inicio de HTML ============== #}
+    {# ============================================ #}
+
+    <div class="container">
+
+        <!-- Navbar (Gadgets) -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                        <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp" height="15" alt="MDB Logo" loading="lazy" />
+                    </a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Team</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Projects</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<div class="container">
 
 <div class="container">
     <h1>Detalles del Paciente</h1>
-
-    <ul>
-        <li><strong>RUT:</strong> {{ paciente.rut }}-{{ paciente.dv }}</li>
-        <li><strong>Nombres:</strong> {{ paciente.primernombre }} {{ paciente.segundonombre }}</li>
-        <li><strong>Apellidos:</strong> {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</li>
-        <li><strong>Año de Nacimiento:</strong> {{ paciente.anio_nacimiento }}</li>
-        <li><strong>Edad:</strong> {{ paciente.edad }}</li>
-        <li><strong>Cantidad de emergencias: {{num_emergencias}}</strong></li>
-        <!-- Otros detalles según sea necesario -->
-    </ul>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Nombres</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Año de Nacimiento</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Número de Emergencias</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
+                <td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
+                <td>{{ paciente.anio_nacimiento }}</td>
+                <td>{{ paciente.edad }}</td>
+                <td>{{ num_emergencias }}</td>
+            </tr>
+        </tbody>
+    </table>
     
+
     <a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
 </div>
 
@@ -29,4 +75,6 @@
 {# ================ Pie de HTML =============== #}
 {# ============================================ #}
 
-{% include "html_templates/_footer.html" %}
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

@@ -180,7 +180,8 @@ def detalles_paciente(request, pac_id):
     num_emergencias = paciente.cantidad_emergencias()
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.anio_nacimiento
-    return render(request, 'detalles_paciente.html', {'paciente': paciente}, {'num_emergencias': num_emergencias})
+    context=  {'paciente': paciente, 'num_emergencias': num_emergencias}
+    return render(request,'detalles_paciente.html', context)
 
 # ============================================================
 # ====================== Peticiones HTTP =====================
