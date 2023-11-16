@@ -35,9 +35,5 @@ class TwilioClass():
                 to = number
             )
 
-
-
-
-if __name__ == "__main__":
-    Twilio = TwilioClass()
-    Twilio.SendMessage("+56990187115", "Hola, soy mrbeast y ando viajando a chile, si no me crees, mira por la ventana a tu derecha", "SMS")
+def send_sms():
+    ...
