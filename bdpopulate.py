@@ -145,15 +145,15 @@ def GenerarDoctores(Cantidad):
             username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
 
             doctor = Doctor.objects.create_user(username, (username + "@gmail.com"), DatosGenerador.Contrasena())
-            doctor.rut = Rut
-            doctor.dv = Dv
-            doctor.primernombre = pnombre
-            doctor.segundonombre = snombre
-            doctor.apellidopaterno = fake.last_name()
-            doctor.apellidomaterno = fake.last_name()
-            doctor.anio_nacimiento = generar_anio_nacimiento()
-            doctor.direccion = fake.street_address()
-            doctor.ciudad = fake.city()
+            doctor.pers_rut = Rut
+            doctor.pers_dv = Dv
+            doctor.pers_primernombre = pnombre
+            doctor.pers_segundonombre = snombre
+            doctor.pers_apellidopaterno = fake.last_name()
+            doctor.pers_apellidomaterno = fake.last_name()
+            doctor.pers_anio_nacimiento = generar_anio_nacimiento()
+            doctor.pers_direccion = fake.street_address()
+            doctor.pers_ciudad = fake.city()
 
             doctor.doc_area_id  =   GlobalAreas[ random.randint(0, LenAreas) ]
             doctor.doc_hor_id   =   GlobalHorarios[ random.randint(0, LenHorarios) ]

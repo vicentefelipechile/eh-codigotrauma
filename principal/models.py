@@ -4,6 +4,7 @@
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required
 
 from django.utils import timezone
 from django.db import models
@@ -11,6 +12,41 @@ from django.db.models import Model
 
 from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
 from django.db.models import ForeignKey
+
+
+
+# ===========================================
+# ============== Modelos Base ===============
+# ===========================================
+
+
+# Utilizado como Base para todos los modelos que usen a una persona, ademas de añadir un inicio de sesion
+class Persona(Model):
+    pers_rut:               IntegerField = models.IntegerField(unique=True)
+    pers_dv:                CharField = CharField(max_length=1)
+    pers_primernombre:      TextField = TextField(max_length=24)
+    pers_segundonombre:     TextField = TextField(max_length=24, null=True)
+    pers_apellidopaterno:   TextField = TextField(max_length=24)
+    pers_apellidomaterno:   TextField = TextField(max_length=24, null=True)
+    pers_nacimiento:        IntegerField = IntegerField()
+    pers_direccion:         TextField = TextField()
+    pers_ciudad:            TextField = TextField()
+    pers_estado:            TextField = TextField()
+    pers_codigopostal:      IntegerField = IntegerField()
+
+
+    # Tipos de roles que puede tener una persona
+    class Roles(models.TextChoices):
+        ADMIN = "ADMINISTRADOR", "Administrador"
+        SECRETARIO = "SECRETARIO", "Secretario"
+        DOCTOR = "DOCTOR", "Doctor"
+
+    pers_rolbasico:         CharField = CharField(max_length=30, choices=Roles.choices, default=Roles.DOCTOR)
+
+    def save(self, *args, **kwargs):
+        self.pers_rolbasico = self.Roles.DOCTOR
+        super(Persona, self).save(*args, **kwargs)
+
 
 
 # ===========================================
@@ -46,35 +82,6 @@ class Horario(Model):
 
 
 # ===========================================
-# ============== Modelos Base ===============
-# ===========================================
-
-
-# Utilizado como Base para todos los modelos que usen a una persona, ademas de añadir un inicio de sesion
-class Persona(Model):
-    pers_rut:               IntegerField = models.IntegerField(unique=True)
-    pers_dv:                CharField = CharField(max_length=1)
-    pers_primernombre:      TextField = TextField(max_length=24)
-    pers_segundonombre:     TextField = TextField(max_length=24, null=True)
-    pers_apellidopaterno:   TextField = TextField(max_length=24)
-    pers_apellidomaterno:   TextField = TextField(max_length=24, null=True)
-    pers_nacimiento:        IntegerField = IntegerField()
-    pers_direccion:         TextField = TextField()
-    pers_ciudad:            TextField = TextField()
-    pers_estado:            TextField = TextField()
-    pers_codigopostal:      IntegerField = IntegerField()
-    
-    pers_usuario = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, name="pers_usuario")
-    pers_grupo = models.ForeignKey(Group, on_delete=models.SET_NULL, to_field="name", null=True, name="pers_grupo")
-    
-    # Definir el modelo como Abstracto
-    class Meta:
-        ...
-        # abstract = True
-
-
-
-# ===========================================
 # ============= Modelos Persona =============
 # ===========================================
 
@@ -95,6 +102,7 @@ class Paciente(Model):
 
 
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
+@login_required(login_url="/iniciarsesion/")
 class Doctor(Persona):
     doc_id:             AutoField = AutoField(primary_key=True)
     doc_especialidad:   TextField = TextField(max_length=30)
@@ -103,11 +111,13 @@ class Doctor(Persona):
 
 
 # El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
+@login_required(login_url="/iniciarsesion/")
 class Secretario(Persona):
     sec_id:             AutoField = AutoField(primary_key=True)
 
 
 # El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
+@login_required(login_url="/iniciarsesion/")
 class Administrador(Persona):
     adm_id:             AutoField = AutoField(primary_key=True)
 
