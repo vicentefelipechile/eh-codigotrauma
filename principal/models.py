@@ -49,33 +49,18 @@ class Emergencia(Model):
     def JsonResponse(self) -> str:
         return GetJson(self, ["emerg_id", "emerg_desc", "emerg_color", "emerg_fecha", "emerg_pac_id", "emerg_doc_id"])
 
+class AtencionPaciente(Model):
+    atenc_id = models.AutoField(primary_key = True)
+    atenc_descripcion = models.TextField(maxlength=50)
 
-
-class HistorialEmergencia(Model):
-    hist_id = models.AutoField(primary_key=True)
-    hist_emerg_id = models.ForeignKey('Emergencia', on_delete=models.CASCADE, null=True,to_field="emerg_id")
-    hist_fecha = models.DateTimeField(default=timezone.now)
-    hist_detalle = models.TextField()
-
-    def __str__(self) -> str:
-        return f"Historial de Emergencia: {self.Emergencia}, Fecha de Registro: {self.FechaRegistro}"
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["hist_emerg_id", "hist_fecha", "hist_detalle"])
-
-
-
-class HistorialDoctorEmergencia(Model):
-    histdoct_id = models.AutoField(primary_key=True)
-    histdoct_emerg_id = models.ForeignKey('Emergencia', on_delete=models.SET_NULL, null=True, to_field="emerg_id", name="histdoct_emerg_id")
-    histdoct_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, null=True, to_field="doc_id", name="histdoct_doc_id")
-    histdoct_fecha = models.DateTimeField(default=timezone.now)
+    atenc_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
+    atenc_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
 
     def __str__(self):
-        return f"Historial - Emergencia: {self.histdoct_emerg_id}, Doctor: {self.histdoct_doc_id}, Fecha: {self.histdoct_fecha}"
+        return self.atenc_id
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["histdoct_emerg_id", "histdoct_doc_id", "histdoct_fecha"])
+        return GetJson(self, ["atenc_id", "atenc_descripcion", "atenc_pac_id", "atenc_doc_id"])
 
 
 
@@ -123,13 +108,6 @@ class Paciente(Persona):
     
     def GetEmergencias(self) -> QuerySet:
         return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
-
-    def GetHistorialEmergencias(self) -> QuerySet:
-        return HistorialEmergencia.objects.filter(hist_emerg_id__emerg_pac_id=self.pac_id)
-
-    def GetHistorialDoctores(self) -> QuerySet:
-        return HistorialDoctorEmergencia.objects.filter(histdoct_emerg_id__emerg_pac_id=self.pac_id)
-
 
 class Secretario(Persona):
     sec_id = models.AutoField(primary_key=True)

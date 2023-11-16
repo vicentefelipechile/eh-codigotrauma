@@ -15,11 +15,9 @@ from django.contrib.auth.hashers import make_password
 
 from principal.models import Paciente
 from principal.models import Emergencia
-from principal.models import HistorialEmergencia
 from principal.models import Administrador
 from principal.models import Secretario
 from principal.models import Doctor
-from principal.models import HistorialDoctorEmergencia
 from principal.models import Area
 from principal.models import HoraDia, Horario, DiaSemana
 
@@ -226,73 +224,6 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
         print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
-
-
-
-def GenerarHistorialEmergencia(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de emergencias...     ", end="")
-    
-    Fallo: bool = False
-    FalloCantidad: int = 0
-    FalloMensaje: str = ""
-
-    Inicio: float = perf_counter()
-
-    for id in range(Cantidad):
-
-        try:
-            # Crea una instancia de HistorialEmergencia
-            historial_emergencias = HistorialEmergencia(
-                hist_fecha      =   DatosGenerador.Fecha(),
-                hist_detalle    =   fake.text(max_nb_chars=200)
-            )
-            historial_emergencias.hist_emerg_id = GlobalEmergencias[ random.randint(0, LenEmergencias) ]
-
-            historial_emergencias.save()
-        except Exception as Error:
-            Fallo = True
-            FalloCantidad += 1
-            FalloMensaje = Error
-    
-    Termino: float = perf_counter()
-    
-    if Fallo:
-        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
-    else:
-        print(f"OK ({round(Termino - Inicio, 2)}s)")
-
-def GenerarHistorialDoctor(Cantidad: int = 10) -> None:
-    print(" > Generando datos de historial de doctores clave...  ", end="")
-    
-    Fallo: bool = False
-    FalloCantidad: int = 0
-    FalloMensaje: str = ""
-
-    Inicio: float = perf_counter()
-
-    for id in range(Cantidad):
-
-        try:
-            # Crea una instancia de HistorialEmergencia
-            historial_doctores = HistorialDoctorEmergencia( histdoct_fecha = DatosGenerador.Fecha() )
-            historial_doctores.histdoct_emerg_id = GlobalEmergencias[ random.randint(0, LenEmergencias) ]
-            historial_doctores.histdoct_doc_id = GlobalDoctores[ random.randint(0, LenDoctores) ]
-
-            historial_doctores.save()
-        except Exception as Error:
-            Fallo = True
-            FalloCantidad += 1
-            FalloMensaje = Error
-    
-    Termino: float = perf_counter()
-    
-    if Fallo:
-        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
-    else:
-        print(f"OK ({round(Termino - Inicio, 2)}s)")
-
-
-
 
 def GenerarAdministradores(Cantidad: int = 10) -> None:
     print(" > Generando datos de administradores...              ", end="")
@@ -573,8 +504,6 @@ if True:
     GenerarDatosPacientes(1000)
     GenerarDoctores(500)
     GenerarEmergencias(3000)
-    GenerarHistorialEmergencia(1000)
-    GenerarHistorialDoctor(1000)
 
     # Extra
     GenerarAdministradores(10)
