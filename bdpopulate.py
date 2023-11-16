@@ -18,6 +18,7 @@ from principal.models import Administrador
 from principal.models import Secretario
 from principal.models import Doctor
 from principal.models import Area
+from principal.models import AtencionPaciente
 from principal.models import HoraDia, Horario, DiaSemana
 
 
@@ -478,6 +479,44 @@ def GenerarAreas(Cantidad: int = 10) -> None:
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
+def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
+    print(" > Generando datos de atenciones a pacientes...      ", end="")
+    
+    Fallo: bool = False
+    FalloCantidad: int = 0
+    FalloMensaje: str = ""
+
+    Inicio: float = perf_counter()
+
+    for _ in range(Cantidad):
+        try:            
+            # Crea una instancia de AtencionPaciente
+            atencion = AtencionPaciente(
+                atenc_descripcion = fake.text(max_nb_chars=50),
+            )
+            
+            # Asigna un paciente y un doctor aleatorio
+            atencion.atenc_pac_id = GlobalPacientes[random.randint(0, LenPacientes)]
+            atencion.atenc_doc_id = GlobalDoctores[random.randint(0, LenDoctores)]
+            
+            atencion.save()
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    global GlobalAtenciones
+    GlobalAtenciones = list(AtencionPaciente.objects.all())
+    
+    global LenAtenciones
+    LenAtenciones = len(GlobalAtenciones) - 1
+    
+    Termino: float = perf_counter()
+    
+    if Fallo:
+        print(f"ERROR ({FalloCantidad} fallos) - {FalloMensaje}")
+    else:
+        print(f"OK ({round(Termino - Inicio, 2)}s)")
 
     
     
@@ -507,6 +546,7 @@ if True:
     # Extra
     GenerarAdministradores(10)
     GenerarSecretarios(20)
+    GenerarAtencionesPacientes(1000)
 else:
     PacienteRandom: int = fake.random.randint(0, Paciente.objects.values("pac_id").count())
     
