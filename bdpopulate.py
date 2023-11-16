@@ -103,10 +103,9 @@ def GenerarDatosPacientes(Cantidad: int = 10) -> None:
                 segundonombre   =   fake.first_name(),
                 apellidopaterno =   fake.last_name(),
                 apellidomaterno =   fake.last_name(),
-                anio_nacimiento = generar_anio_nacimiento(),
-                direccion = fake.street_address(),
-                ciudad = fake.city(),
-          
+                anio_nacimiento =   generar_anio_nacimiento(),
+                direccion       =   fake.street_address(),
+                ciudad          =   fake.city()
             )
             
             NewPaciente.save()
@@ -145,19 +144,16 @@ def GenerarDoctores(Cantidad):
 
             username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
 
-            doctor = Doctor(
-                rut     =   Rut,
-                dv      =   Dv,
-                primernombre    =   pnombre,
-                segundonombre   =   snombre,
-                apellidopaterno =   fake.last_name(),
-                apellidomaterno =   fake.last_name(),
-                anio_nacimiento = generar_anio_nacimiento(),
-                direccion = fake.street_address(),
-                ciudad = fake.city(),
-                doc_cuentausuario   =   username,
-                doc_cuentacontrasena=   DatosGenerador.Contrasena()
-            )
+            doctor = Doctor.objects.create_user(username, (username + "@gmail.com"), DatosGenerador.Contrasena())
+            doctor.rut = Rut
+            doctor.dv = Dv
+            doctor.primernombre = pnombre
+            doctor.segundonombre = snombre
+            doctor.apellidopaterno = fake.last_name()
+            doctor.apellidomaterno = fake.last_name()
+            doctor.anio_nacimiento = generar_anio_nacimiento()
+            doctor.direccion = fake.street_address()
+            doctor.ciudad = fake.city()
 
             doctor.doc_area_id  =   GlobalAreas[ random.randint(0, LenAreas) ]
             doctor.doc_hor_id   =   GlobalHorarios[ random.randint(0, LenHorarios) ]
