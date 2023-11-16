@@ -16,6 +16,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.template.backends.django import Template
 from django.db.models.query import QuerySet
 from django.urls import reverse
+from django.contrib.auth import login
 
 
 from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia
@@ -80,43 +81,42 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
     
     
     if request.method == "POST":
-
+        # Añadir un contexto para el formulario
         RegistroContext: dict = FORMULARIO.copy()
-
-        if not request.POST["username"]:
+        
+        # Si el POST no contiene el usuario o la contraseña, mostrar un error
+        if not request.POST["username"] or not request.POST["password"]:
             RegistroContext["error"] = True
-            RegistroContext["error_mensaje"] = "No se ha especificado el usuario"
-            
-            return HttpResponse( HTML.render(RegistroContext, request) )
-
-
-        if not request.POST["password"]:
-            RegistroContext["error"] = True
-            RegistroContext["error_mensaje"] = "No se ha especificado la contraseña"
+            RegistroContext["error_mensaje"] = "No se ha especificado el usuario o la contraseña"
             
             return HttpResponse( HTML.render(RegistroContext, request) )
         
-        # Buscar usuario y verificar contraseña
-        # Si no existe, mostrar error
-
+        # Buscar el usuario en la base de datos
+        # Si no existe, mostrar un error
+        usuario = None
         try:
-            User: Administrador = Administrador.objects.get(CuentaUsuario=request.POST["username"])
-            
-            if User.ComprobarContrasena(request.POST["password"]):
-                
-                RegistroContext["success"] = True
-                RegistroContext["success_mensaje"] = "Usuario encontrado"
-                
-                # Redireccionar a "/empleados/"
-                return redirect("/empleados/")
-            else:
-                RegistroContext["error"] = True
-                RegistroContext["error_mensaje"] = "Contraseña incorrecta"
-                
-                return HttpResponse( HTML.render(RegistroContext, request) )
-                
-        except Exception as Error:
-            print("Ai un error")
+            usuario = Administrador.objects.get(adm_cuentausuario=request.POST["username"])
+        except:
+            try:
+                usuario = Doctor.objects.get(doc_cuentausuario=request.POST["username"])
+            except:
+                try:
+                    usuario = Secretario.objects.get(sec_cuentausuario=request.POST["username"])
+                except:
+                    RegistroContext["error"] = True
+                    RegistroContext["error_mensaje"] = "El usuario no existe"
+                    
+                    return HttpResponse( HTML.render(RegistroContext, request) )
+        
+        # Si la contraseña no coincide, mostrar un error
+        if not usuario.ComprobarContrasena(request.POST["password"]):
+            RegistroContext["error"] = True
+            RegistroContext["error_mensaje"] = "La contraseña no coincide"
+        
+        
+        # Si el usuario es un administrador, redirigir a la pagina de administrador
+        if isinstance(usuario, Administrador):
+            return redirect(reverse("PaginaAdministrador"))
         
         return HttpResponse( HTML.render(RegistroContext, request) )
 
