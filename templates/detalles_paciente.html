@@ -18,32 +18,10 @@
         <li><strong>Apellidos:</strong> {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</li>
         <li><strong>Año de Nacimiento:</strong> {{ paciente.anio_nacimiento }}</li>
         <li><strong>Edad:</strong> {{ paciente.edad }}</li>
+        <li><strong>Cantidad de emergencias: {{num_emergencias}}</strong></li>
         <!-- Otros detalles según sea necesario -->
     </ul>
-
-    <h2>Emergencias del Paciente</h2>
-    <ul>
-        {% for emergencia in emergencias %}
-            <li>{{ emergencia.emerg_desc }} - Atendida por: {{ emergencia.emerg_doc_id }}</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Historial de emergencias del paciente -->
-    <h2>Historial de Emergencias del Paciente</h2>
-    <ul>
-        {% for historial_emergencia in historial_emergencias %}
-            <li>Fecha: {{ historial_emergencia.hist_fecha }} - Detalle: {{ historial_emergencia.hist_detalle }}</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Historial de doctores del paciente -->
-    <h2>Historial de Doctores del Paciente</h2>
-    <ul>
-        {% for historial_doctor in historial_doctores %}
-            <li>Fecha: {{ historial_doctor.histdoct_fecha }} - Doctor: {{ historial_doctor.histdoct_doc_id }}</li>
-        {% endfor %}
-    </ul>
-
+    
     <a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
 </div>
 

@@ -18,7 +18,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse
 
 
-from principal.models import Administrador, Doctor, Secretario, Paciente
+from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia
 
 
 # ============================================================
@@ -177,10 +177,10 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
 
 def detalles_paciente(request, pac_id):
     paciente = get_object_or_404(Paciente, pk=pac_id)
-    emergencias = paciente.GetEmergencias()
+    num_emergencias = paciente.cantidad_emergencias()
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.anio_nacimiento
-    return render(request, 'detalles_paciente.html', {'paciente': paciente})
+    return render(request, 'detalles_paciente.html', {'paciente': paciente}, {'num_emergencias': num_emergencias})
 
 # ============================================================
 # ====================== Peticiones HTTP =====================

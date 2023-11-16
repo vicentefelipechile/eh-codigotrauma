@@ -108,6 +108,9 @@ class Paciente(Persona):
     
     def GetEmergencias(self) -> QuerySet:
         return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
+    
+    def cantidad_emergencias(self) -> int:
+        return Emergencia.objects.filter(emerg_pac_id=self.pk).count()
 
 class Secretario(Persona):
     sec_id = models.AutoField(primary_key=True)
@@ -127,6 +130,8 @@ class Secretario(Persona):
     # Se comprueba que la contraseña ingresada sea la misma que la guardada en la base de datos.
     def ComprobarContrasena(self, Contrasena: str) -> bool:
         return check_password(Contrasena, self.sec_cuentacontrasena)
+    
+ 
 
 
 
