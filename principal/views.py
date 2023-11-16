@@ -2,11 +2,9 @@
 # ==================== Librerias y Clases ====================
 # ============================================================
 
-from django.shortcuts import render, redirect,  get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.conf import settings
-from django.contrib.auth.forms import UserCreationForm
-from principal.models import Paciente
 from pathlib import Path
 from datetime import datetime
 
@@ -16,6 +14,8 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.template.backends.django import Template
 from django.db.models.query import QuerySet
 from django.urls import reverse
+
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
 
@@ -36,6 +36,15 @@ CONTEXTO: dict = {
 
 FORMULARIO: dict = CONTEXTO.copy()
 FORMULARIO["form"] = UserCreationForm
+
+
+
+# ============================================================
+# ====================== Peticiones HTTP =====================
+# ============================================================
+
+def RespuestaCorta(EsError: bool = True, Mensaje: str = "Error", Codigo: int = 400) -> JsonResponse:
+    return JsonResponse({ "error": EsError, "mensaje": Mensaje }, status=Codigo)
 
 
 
@@ -74,6 +83,7 @@ def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
         return HttpResponse( HTML.render(RegistroContext, request) )
 
     return HttpResponse( HTML.render(FORMULARIO, request) )
+
 
 
 def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
@@ -124,8 +134,6 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
 
 
 
-
-
 def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     MostrarCantidad: int = 20
     Pagina: int = 1
@@ -164,16 +172,18 @@ def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     # Mostrar la cantidad de pacientes especificada y la pagina especificada
     # Si la pagina dice numero 2, se saltaran los primero 20 pacientes y se mostraran los siguientes 20
     pacientes = pacientes[(Pagina - 1) * MostrarCantidad : (Pagina * MostrarCantidad)]
-    
-    
-    
+
     context = {'pacientes': pacientes, 'configuracionanterior': { "cantidad": MostrarCantidad, "pagina": Pagina, "busqueda": Busqueda }}
     return render(request, 'lista_pacientes.html', context)
+
+
 
 def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     doctores = Doctor.objects.all()
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
+
+
 
 def detalles_paciente(request, pac_id):
     paciente = get_object_or_404(Paciente, pk=pac_id)
@@ -182,10 +192,3 @@ def detalles_paciente(request, pac_id):
     paciente.edad = anio_actual - paciente.anio_nacimiento
     context=  {'paciente': paciente, 'num_emergencias': num_emergencias}
     return render(request,'detalles_paciente.html', context)
-
-# ============================================================
-# ====================== Peticiones HTTP =====================
-# ============================================================
-
-def RespuestaCorta(EsError: bool = True, Mensaje: str = "Error", Codigo: int = 400) -> JsonResponse:
-    return JsonResponse({ "error": EsError, "mensaje": Mensaje }, status=Codigo)
