@@ -18,7 +18,7 @@ from principal.models import Administrador
 from principal.models import Secretario
 from principal.models import Doctor
 from principal.models import Area
-from principal.models import AtencionPaciente
+from principal.models import Atencion
 from principal.models import HoraDia, Horario, DiaSemana
 
 
@@ -486,8 +486,8 @@ def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
 
     for _ in range(Cantidad):
         try:            
-            # Crea una instancia de AtencionPaciente
-            atencion = AtencionPaciente(
+            # Crea una instancia de Atencion
+            atencion = Atencion(
                 atenc_descripcion = fake.text(max_nb_chars=50),
                 atenc_diagnostico = fake.sentence(nb_words=20)
             )
@@ -503,7 +503,7 @@ def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
             FalloMensaje = Error
     
     global GlobalAtenciones
-    GlobalAtenciones = list(AtencionPaciente.objects.all())
+    GlobalAtenciones = list(Atencion.objects.all())
     
     global LenAtenciones
     LenAtenciones = len(GlobalAtenciones) - 1
