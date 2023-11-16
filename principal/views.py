@@ -178,8 +178,6 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
 def detalles_paciente(request, pac_id):
     paciente = get_object_or_404(Paciente, pk=pac_id)
     emergencias = paciente.GetEmergencias()
-    historial_emergencias = paciente.GetHistorialEmergencias()
-    historial_doctores = paciente.GetHistorialDoctores()
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.anio_nacimiento
     return render(request, 'detalles_paciente.html', {'paciente': paciente})
