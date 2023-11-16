@@ -9,168 +9,129 @@ from django.utils import timezone
 from django.db import models
 from django.db.models import Model
 from django.db.models import QuerySet
-import json
 
-from django.db.models import TextField, IntegerField, DateTimeField, CharField
+from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
 from django.db.models import ForeignKey
 
-# ===========================================
-# ==== Funcion Json para todas las clases ===
-# ===========================================
-
-def GetJson(self: Model = None, Atributos: list = None) -> str:
-    if not Atributos:
-        Atributos = []
-
-    JsonResponse: dict = {}
-
-    for Atributo in Atributos:
-        JsonResponse[Atributo] = self.__dict__[Atributo]
-
-    return json.dumps(JsonResponse)
-
-
 
 # ===========================================
-# ==== Clases de Registros de Emergencia ====
+# ============== Modelos Varios =============
 # ===========================================
 
 
+# Utilizado por "Doctor" para definir a que area pertenece
 class Area(Model):
-    area_id = models.AutoField(primary_key=True)
-    area_nombre = models.TextField(max_length=30)
+    area_id:        AutoField = AutoField(primary_key=True)
+    area_nombre:    TextField = TextField(max_length=30)
 
 
-
-class Emergencia(Model):
-    emerg_id = models.AutoField(primary_key=True)
-    emerg_desc = models.TextField(max_length=50)
-    emerg_color = models.TextField(max_length=20)
-    emerg_fecha = models.DateTimeField(max_length=30, default=timezone.now)
-
-    emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
-    emerg_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["emerg_id", "emerg_desc", "emerg_color", "emerg_fecha", "emerg_pac_id", "emerg_doc_id"])
-
-class AtencionPaciente(Model):
-    atenc_id = models.AutoField(primary_key = True)
-    atenc_descripcion = models.TextField(max_length=50)
-    atenc_diagnostico = models.TextField(max_length=50)
-    atenc_fecha = models.DateTimeField(max_length=30, default=timezone.now)
+# Utilizado por "Horario" para los turnos
+class HoraDia(Model):
+    hordia_id:      AutoField = AutoField(primary_key=True)
+    hordia_inicio:  TimeField = TimeField(default=timezone.now)
+    hordia_fin:     TimeField = TimeField(default=timezone.now)
 
 
-    atenc_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
-    atenc_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["atenc_id", "atenc_descripcion", "atenc_diagnostico", "atenc_fecha","atenc_pac_id", "atenc_doc_id"])
+# Utilizado por "Horario" para los dias de la semana
+class DiaSemana(Model):
+    diasem_id:      AutoField = AutoField(primary_key=True)
+    diasem_nombre:  TextField = TextField(max_length=30)
+
+
+# Utilizado por "Doctor" para definir su horario
+class Horario(Model):
+    horario_id:     AutoField = AutoField(primary_key=True)
+    horario_hora:   TextField = TextField(max_length=30)
+    horario_dia:    TextField = TextField(max_length=30)
 
 
 
 # ===========================================
-# ============== Clases Persona =============
+# ============== Modelos Base ===============
 # ===========================================
 
+
+# Utilizado como Base para todos los modelos que usen a una persona, ademas de añadir un inicio de sesion
 class Persona(User):
-    rut:                IntegerField = models.IntegerField(unique=True)
-    dv:                 CharField = models.CharField(max_length=1)
-    primernombre:       TextField = models.TextField(max_length=20)
-    segundonombre:      TextField = models.TextField(max_length=20, null=True)
-    apellidopaterno:    TextField = models.TextField(max_length=20)
-    apellidomaterno:    TextField = models.TextField(max_length=20, null=True)
-    anio_nacimiento:    IntegerField = models.IntegerField()
-    direccion:          TextField = models.TextField()
-    ciudad:             TextField = models.TextField()
-    estado:             TextField = models.TextField()
-    codigo_postal:      CharField = models.CharField(max_length=10)
-
-    def GetAllAttributes(self, AtributosExtra: list = None) -> list:
-        AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
-
-        if not AtributosExtra:
-            AtributosExtra = []
-        
-        for Atributo in AtributosExtra:
-            AllAttributes.append(Atributo)
-
-        return AllAttributes
-
-    def JsonResponse(self) -> str:
-        return GetJson(self, self.GetAllAttributes())
-
+    pers_rut:               IntegerField = models.IntegerField(unique=True)
+    pers_dv:                CharField = CharField(max_length=1)
+    pers_primernombre:      TextField = TextField(max_length=24)
+    pers_segundonombre:     TextField = TextField(max_length=24, null=True)
+    pers_apellidopaterno:   TextField = TextField(max_length=24)
+    pers_apellidomaterno:   TextField = TextField(max_length=24, null=True)
+    pers_nacimiento:        IntegerField = IntegerField()
+    pers_direccion:         TextField = TextField()
+    pers_ciudad:            TextField = TextField()
+    pers_estado:            TextField = TextField()
+    pers_codigopostal:      IntegerField = IntegerField()
+    
+    pers_usuario = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, name="pers_usuario")
+    
+    # Definir el modelo como Abstracto
     class Meta:
         abstract = True
 
 
 
+# ===========================================
+# ============= Modelos Persona =============
+# ===========================================
+
+# El modelo "Paciente" utiliza como base a "Model" debido a que no es un usuario recurrente en el sistema, solo existe para el registro de emergencias
 class Paciente(Model):
-    pac_id = models.AutoField(primary_key=True)
-    
-    def GetEmergencias(self) -> QuerySet:
-        return Emergencia.objects.filter(emerg_pac_id=self.pac_id)
-    
-    def cantidad_emergencias(self) -> int:
-        return Emergencia.objects.filter(emerg_pac_id=self.pk).count()
+    pac_id:                 AutoField = AutoField(primary_key=True)
+    pac_rut:                IntegerField = IntegerField(unique=True)
+    pac_dv:                 CharField = CharField(max_length=1)
+    pac_primernombre:       TextField = TextField(max_length=24, null=True)
+    pac_segundonombre:      TextField = TextField(max_length=24, null=True)
+    pac_apellidopaterno:    TextField = TextField(max_length=24, null=True)
+    pac_apellidomaterno:    TextField = TextField(max_length=24, null=True)
+    pac_nacimiento:         IntegerField = IntegerField()
+    pac_direccion:          TextField = TextField()
+    pac_ciudad:             TextField = TextField()
+    pac_estado:             TextField = TextField()
+    pac_codigopostal:       IntegerField = IntegerField()
 
 
-
-class Secretario(Persona):
-    sec_id = models.AutoField(primary_key=True)
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["sec_id"])
-
-
-
-class Administrador(Persona):
-    adm_id = models.AutoField(primary_key=True)
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["adm_id"])
-
-
+# El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
 class Doctor(Persona):
-    doc_id = models.AutoField(primary_key=True)
-    doc_area_id = models.ForeignKey('Area', on_delete=models.SET_NULL, null=True, to_field="area_id", name="doc_area_id")
-    doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True, to_field="hor_id", name="doc_hor_id")
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, self.GetAllAttributes(["doc_area_id", "doc_hor_id"]))
+    doc_id:             AutoField = AutoField(primary_key=True)
+    doc_especialidad:   TextField = TextField(max_length=30)
+    doc_area:           ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
+    doc_horario:        ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
+
+
+# El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
+class Secretario(Persona):
+    sec_id:             AutoField = AutoField(primary_key=True)
+
+
+# El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
+class Administrador(Persona):
+    adm_id:             AutoField = AutoField(primary_key=True)
+
 
 
 
 # ===========================================
-# ============== Clases Fechas ==============
+# ============= Modelos Registro ============
 # ===========================================
 
-class Horario(Model):
-    hor_id = models.AutoField(primary_key=True)
-    hor_sem_id = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True, to_field="sem_id", name="hor_sem_id")
-    hor_horadia_id = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True, to_field="hordia_id", name="hor_horadia_id")
-
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["DiaSemana", "DiaHora", "Clase"])
-
-
-
-class DiaSemana(Model):
-    sem_id = models.AutoField(primary_key=True)
-    sem_nombre = models.CharField(max_length=20)
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["sem_id", "sem_nombre"])
+# El modelo "Emergencia" utilizara como modelo base a "Model" y tendra asociado a un "Doctor" y a un "Paciente"
+class Emergencia(Model):
+    emerg_id:           AutoField = AutoField(primary_key=True)
+    emerg_desc:         TextField = TextField(max_length=50)
+    emerg_color:        TextField = TextField(max_length=20)
+    emerg_fecha:        TextField = TextField(max_length=30, default=timezone.now)
+    emerg_pac_id:       ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
+    emerg_doc_id:       ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
 
 
-
-class HoraDia(Model):
-    hordia_id = models.AutoField(primary_key=True)
-    hordia_inicio = models.TimeField(default=timezone.now)
-    hordia_fin = models.TimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.hordia_inicio.strftime('%H:%M')} - {self.hordia_fin.strftime('%H:%M')}"
-    
-    def JsonResponse(self) -> str:
-        return GetJson(self, ["hordia_inicio", "hordia_fin"])
+# El modelo "Atencion" utilizara como modelo base a "Model" y estara asociado a un "Doctor" y a un "Paciente" ya que el doctor le dara un diagnóstico al paciente
+class Atencion(Model):
+    atenc_id:           AutoField = AutoField(primary_key=True)
+    atenc_descripcion:  TextField = TextField(max_length=50)
+    atenc_diagnostico:  TextField = TextField(max_length=50)
+    atenc_fecha:        TextField = TextField(max_length=30, default=timezone.now)
+    atenc_pac_id:       ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
+    atenc_doc_id:       ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
