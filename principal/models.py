@@ -69,7 +69,7 @@ class Persona(User):
     
     # Definir el modelo como Abstracto
     class Meta:
-        abstract = True
+        proxy = True
 
 
 
@@ -100,15 +100,25 @@ class Doctor(Persona):
     doc_area:           ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
     doc_horario:        ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
 
+    # Adaptar el model User para que sea compatible con el modelo Doctor
+    class Meta:
+        proxy = True
+
 
 # El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
 class Secretario(Persona):
     sec_id:             AutoField = AutoField(primary_key=True)
 
+    class Meta:
+        proxy = True
+
 
 # El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
 class Administrador(Persona):
     adm_id:             AutoField = AutoField(primary_key=True)
+
+    class Meta:
+        proxy = True
 
 
 
