@@ -3,12 +3,11 @@
 # ====================================================
 
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from django.utils import timezone
 from django.db import models
 from django.db.models import Model
-from django.db.models import QuerySet
 
 from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
 from django.db.models import ForeignKey
@@ -52,7 +51,7 @@ class Horario(Model):
 
 
 # Utilizado como Base para todos los modelos que usen a una persona, ademas de añadir un inicio de sesion
-class Persona(User):
+class Persona(Model):
     pers_rut:               IntegerField = models.IntegerField(unique=True)
     pers_dv:                CharField = CharField(max_length=1)
     pers_primernombre:      TextField = TextField(max_length=24)
@@ -66,10 +65,12 @@ class Persona(User):
     pers_codigopostal:      IntegerField = IntegerField()
     
     pers_usuario = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, name="pers_usuario")
+    pers_grupo = models.ForeignKey(Group, on_delete=models.SET_NULL, to_field="name", null=True, name="pers_grupo")
     
     # Definir el modelo como Abstracto
     class Meta:
-        proxy = True
+        ...
+        # abstract = True
 
 
 
@@ -100,25 +101,15 @@ class Doctor(Persona):
     doc_area:           ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
     doc_horario:        ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
 
-    # Adaptar el model User para que sea compatible con el modelo Doctor
-    class Meta:
-        proxy = True
-
 
 # El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
 class Secretario(Persona):
     sec_id:             AutoField = AutoField(primary_key=True)
 
-    class Meta:
-        proxy = True
-
 
 # El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
 class Administrador(Persona):
     adm_id:             AutoField = AutoField(primary_key=True)
-
-    class Meta:
-        proxy = True
 
 
 
