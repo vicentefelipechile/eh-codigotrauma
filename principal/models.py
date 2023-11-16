@@ -3,8 +3,6 @@
 # ====================================================
 
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required
 
 from django.utils import timezone
 from django.db import models
@@ -13,7 +11,7 @@ from django.db.models import Model
 from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
 from django.db.models import ForeignKey
 
-
+from .sms import send_sms
 
 # ===========================================
 # ============== Modelos Base ===============
@@ -33,19 +31,41 @@ class Persona(Model):
     pers_ciudad:            TextField = TextField()
     pers_estado:            TextField = TextField()
     pers_codigopostal:      IntegerField = IntegerField()
+    
+    # Codigo para la creacion de un usuario
+    username:               CharField = CharField(max_length=30, unique=True)
+    password:               CharField = CharField(max_length=128)
+    
+    def crear_usuario(self) -> None:
+        self.password = make_password(self.password)
+        self.save()
+    
+    def borrado_usuario(self) -> None:
+        self.delete()
+    
+    def modificar_usuario(self, datos: dict = None) -> None:
+        if not datos:
+            return
 
-
-    # Tipos de roles que puede tener una persona
-    class Roles(models.TextChoices):
-        ADMIN = "ADMINISTRADOR", "Administrador"
-        SECRETARIO = "SECRETARIO", "Secretario"
-        DOCTOR = "DOCTOR", "Doctor"
-
-    pers_rolbasico:         CharField = CharField(max_length=30, choices=Roles.choices, default=Roles.DOCTOR)
-
-    def save(self, *args, **kwargs):
-        self.pers_rolbasico = self.Roles.DOCTOR
-        super(Persona, self).save(*args, **kwargs)
+        # Eliminar datos que no se pueden modificar
+        datos["pers_rut"] = None
+        datos["pers_dv"] = None
+        
+        password = datos.pop("password", None)
+        
+        # Modificar datos
+        for key, value in datos.items():
+            setattr(self, key, value)
+        
+        # Modificar contraseña
+        if password:
+            self.password = make_password(password)
+            
+        self.save()
+    
+    # Codigo para el inicio de sesion
+    def comprobar_contrasena(self, password: str) -> bool:
+        return check_password(password, self.password)
 
 
 
@@ -102,7 +122,6 @@ class Paciente(Model):
 
 
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
-@login_required(login_url="/iniciarsesion/")
 class Doctor(Persona):
     doc_id:             AutoField = AutoField(primary_key=True)
     doc_especialidad:   TextField = TextField(max_length=30)
@@ -110,18 +129,19 @@ class Doctor(Persona):
     doc_horario:        ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
 
 
+
 # El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
-@login_required(login_url="/iniciarsesion/")
 class Secretario(Persona):
     sec_id:             AutoField = AutoField(primary_key=True)
 
+    sec_usuario = models.OneToOneField(Persona, on_delete=models.CASCADE, null=True, name="sec_usuario")
+
 
 # El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
-@login_required(login_url="/iniciarsesion/")
 class Administrador(Persona):
     adm_id:             AutoField = AutoField(primary_key=True)
 
-
+    adm_usuario = models.OneToOneField(Persona, on_delete=models.CASCADE, null=True, name="adm_usuario")
 
 
 # ===========================================
