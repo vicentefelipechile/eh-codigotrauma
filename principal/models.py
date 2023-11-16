@@ -3,6 +3,7 @@
 # ====================================================
 
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
 
 from django.utils import timezone
 from django.db import models
@@ -34,6 +35,13 @@ def GetJson(self: Model = None, Atributos: list = None) -> str:
 # ==== Clases de Registros de Emergencia ====
 # ===========================================
 
+
+class Area(Model):
+    area_id = models.AutoField(primary_key=True)
+    area_nombre = models.TextField(max_length=30)
+
+
+
 class Emergencia(Model):
     emerg_id = models.AutoField(primary_key=True)
     emerg_desc = models.TextField(max_length=50)
@@ -42,9 +50,6 @@ class Emergencia(Model):
 
     emerg_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
     emerg_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
-
-    def __str__(self):
-        return self.emerg_id
     
     def JsonResponse(self) -> str:
         return GetJson(self, ["emerg_id", "emerg_desc", "emerg_color", "emerg_fecha", "emerg_pac_id", "emerg_doc_id"])
@@ -55,9 +60,6 @@ class AtencionPaciente(Model):
 
     atenc_pac_id = models.ForeignKey('Paciente', on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
     atenc_doc_id = models.ForeignKey('Doctor', on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
-
-    def __str__(self):
-        return self.atenc_id
     
     def JsonResponse(self) -> str:
         return GetJson(self, ["atenc_id", "atenc_descripcion", "atenc_pac_id", "atenc_doc_id"])
@@ -68,18 +70,18 @@ class AtencionPaciente(Model):
 # ============== Clases Persona =============
 # ===========================================
 
-class Persona(Model):
-    rut: IntegerField = models.IntegerField(unique=True)
-    dv: CharField = models.CharField(max_length=1)
-    primernombre: TextField = models.TextField(max_length=20)
-    segundonombre: TextField = models.TextField(max_length=20, null=True)
-    apellidopaterno: TextField = models.TextField(max_length=20)
-    apellidomaterno: TextField = models.TextField(max_length=20, null=True)
-    anio_nacimiento = models.IntegerField()
-    direccion: TextField = models.TextField()
-    ciudad: TextField = models.TextField()
-    estado: TextField = models.TextField()
-    codigo_postal = models.CharField(max_length=10)
+class Persona(User):
+    rut:                IntegerField = models.IntegerField(unique=True)
+    dv:                 CharField = models.CharField(max_length=1)
+    primernombre:       TextField = models.TextField(max_length=20)
+    segundonombre:      TextField = models.TextField(max_length=20, null=True)
+    apellidopaterno:    TextField = models.TextField(max_length=20)
+    apellidomaterno:    TextField = models.TextField(max_length=20, null=True)
+    anio_nacimiento:    IntegerField = models.IntegerField()
+    direccion:          TextField = models.TextField()
+    ciudad:             TextField = models.TextField()
+    estado:             TextField = models.TextField()
+    codigo_postal:      CharField = models.CharField(max_length=10)
 
     def GetAllAttributes(self, AtributosExtra: list = None) -> list:
         AllAttributes: list = [Atributo for Atributo in self.__dict__.keys() if not Atributo.startswith("_")]
@@ -95,15 +97,12 @@ class Persona(Model):
     def JsonResponse(self) -> str:
         return GetJson(self, self.GetAllAttributes())
 
-    def __str__(self):
-        return f"Primer Nombre: {self.primernombre}, Apellido Paterno: {self.apellidopaterno}, Rut: {self.rut}-{self.dv}"
-
     class Meta:
         abstract = True
 
 
 
-class Paciente(Persona):
+class Paciente(Model):
     pac_id = models.AutoField(primary_key=True)
     
     def GetEmergencias(self) -> QuerySet:
@@ -112,73 +111,30 @@ class Paciente(Persona):
     def cantidad_emergencias(self) -> int:
         return Emergencia.objects.filter(emerg_pac_id=self.pk).count()
 
+
+
 class Secretario(Persona):
     sec_id = models.AutoField(primary_key=True)
-    sec_cuentausuario = models.TextField(max_length=20)
-    sec_cuentacontrasena = models.TextField(max_length=64)
-    
-    def __str__(self):
-        return str(self.rut)
     
     def JsonResponse(self) -> str:
         return GetJson(self, ["sec_id"])
-
-    # La contraseña se guarda encriptada en la base de datos.
-    def SetContrasena(self, Contrasena: str) -> None:
-        self.sec_cuentacontrasena = make_password(Contrasena)
-
-    # Se comprueba que la contraseña ingresada sea la misma que la guardada en la base de datos.
-    def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.sec_cuentacontrasena)
-    
- 
 
 
 
 class Administrador(Persona):
     adm_id = models.AutoField(primary_key=True)
-    adm_cuentausuario = models.TextField(max_length=20)
-    adm_cuentacontrasena = models.TextField(max_length=64)
-    
-    def __str__(self):
-        return str(self.rut)
     
     def JsonResponse(self) -> str:
-        return GetJson(self, ["adm_id", "adm_cuentausuario", "adm_cuentacontrasena"])
-
-    def SetContrasena(self, Contrasena: str) -> None:
-        self.adm_cuentacontrasena = make_password(Contrasena)
-
-    def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.adm_cuentacontrasena)
+        return GetJson(self, ["adm_id"])
 
 
 class Doctor(Persona):
     doc_id = models.AutoField(primary_key=True)
     doc_area_id = models.ForeignKey('Area', on_delete=models.SET_NULL, null=True, to_field="area_id", name="doc_area_id")
     doc_hor_id = models.ForeignKey('Horario', on_delete=models.SET_NULL, null=True, to_field="hor_id", name="doc_hor_id")
-    doc_cuentausuario = models.TextField(max_length=20)
-    doc_cuentacontrasena = models.TextField(max_length=64)
-
-    def __str__(self):
-        return str(self.rut)
     
     def JsonResponse(self) -> str:
-        return GetJson(self, self.GetAllAttributes(["doct_area", "doct_horario"]))
-
-    def SetContrasena(self, Contrasena: str) -> None:
-        self.doct_cuentacontrasena = make_password(Contrasena)
-
-    def ComprobarContrasena(self, Contrasena: str) -> bool:
-        return check_password(Contrasena, self.doct_cuentacontrasena)
-
-
-class Area(Model):
-    area_id = models.AutoField(primary_key=True)
-    area_nombre = models.TextField(max_length=30)
-
-    def __str__(self):
-        return self.area_nombre
+        return GetJson(self, self.GetAllAttributes(["doc_area_id", "doc_hor_id"]))
 
 
 
@@ -191,10 +147,6 @@ class Horario(Model):
     hor_sem_id = models.ForeignKey('DiaSemana', on_delete=models.SET_NULL, null=True, to_field="sem_id", name="hor_sem_id")
     hor_horadia_id = models.ForeignKey('HoraDia', on_delete=models.SET_NULL, null=True, to_field="hordia_id", name="hor_horadia_id")
 
-
-    def __str__(self):
-        return f"{self.DiaSemana.Nombre} - {str(self.DiaHora)}: {self.Clase}"
-
     def JsonResponse(self) -> str:
         return GetJson(self, ["DiaSemana", "DiaHora", "Clase"])
 
@@ -203,9 +155,6 @@ class Horario(Model):
 class DiaSemana(Model):
     sem_id = models.AutoField(primary_key=True)
     sem_nombre = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f"{self.sem_id} - {self.sem_nombre}"
     
     def JsonResponse(self) -> str:
         return GetJson(self, ["sem_id", "sem_nombre"])
