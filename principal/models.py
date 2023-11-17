@@ -55,8 +55,8 @@ class DiaSemana(Model):
 # Utilizado por "Doctor" para definir su horario
 class Horario(Model):
     horario_id:     AutoField = AutoField(primary_key=True)
-    horario_hora:   TextField = TextField(max_length=30)
-    horario_dia:    TextField = TextField(max_length=30)
+    horario_hora:   ForeignKey = ForeignKey(HoraDia, on_delete=models.SET_NULL, to_field="hordia_id", null=True, name="horario_hora")
+    horario_dia:    ForeignKey = ForeignKey(DiaSemana, on_delete=models.SET_NULL, to_field="diasem_id", null=True, name="horario_dia")
 
 
 
@@ -68,7 +68,6 @@ class Horario(Model):
 class Usuario(Model):
     user_name:              CharField = CharField(max_length=30, unique=True)
     user_password:          CharField = CharField(max_length=128)
-    user_permisos:          ForeignKey = ForeignKey(Permisos, on_delete=models.SET_NULL, to_field="permiso_id", null=True, name="user_permisos")
     
     # ===== CRUD =====
     def crear_usuario(self) -> None:
@@ -126,9 +125,10 @@ class Persona(Usuario):
     pers_direccion:         TextField = TextField()
     pers_ciudad:            TextField = TextField()
     pers_estado:            TextField = TextField()
-    pers_codigopostal:      IntegerField = IntegerField()
+    pers_codigopostal:      IntegerField = IntegerField(null=True)
     
-    
+    class Meta:
+        abstract = True
 
 
 
@@ -154,21 +154,22 @@ class Paciente(Model):
 
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
 class Doctor(Persona):
-    doc_id:             AutoField = AutoField(primary_key=True)
-    doc_especialidad:   TextField = TextField(max_length=30)
-    doc_area:           ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
-    doc_horario:        ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
+    doc_id:                 AutoField = AutoField(primary_key=True)
+    doc_especialidad:       TextField = TextField(max_length=30)
+    doc_area:               ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
+    doc_horario:            ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
 
 
 
 # El modelo "Secretario" utiliza como base a "Persona" ya que es quien se encarga de administrar las emergencias
 class Secretario(Persona):
-    sec_id:             AutoField = AutoField(primary_key=True)
+    sec_id:                 AutoField = AutoField(primary_key=True)
 
 
 # El modelo "Administrador" utiliza como base a "Persona" ya que es quien se encarga de administrar todos los usuarios
 class Administrador(Persona):
-    adm_id:             AutoField = AutoField(primary_key=True)
+    adm_id:                 AutoField = AutoField(primary_key=True)
+
 
 
 # ===========================================
@@ -177,19 +178,19 @@ class Administrador(Persona):
 
 # El modelo "Emergencia" utilizara como modelo base a "Model" y tendra asociado a un "Doctor" y a un "Paciente"
 class Emergencia(Model):
-    emerg_id:           AutoField = AutoField(primary_key=True)
-    emerg_desc:         TextField = TextField(max_length=50)
-    emerg_color:        TextField = TextField(max_length=20)
-    emerg_fecha:        TextField = TextField(max_length=30, default=timezone.now)
-    emerg_pac_id:       ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
-    emerg_doc_id:       ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
+    emerg_id:               AutoField = AutoField(primary_key=True)
+    emerg_desc:             TextField = TextField(max_length=50)
+    emerg_color:            TextField = TextField(max_length=20)
+    emerg_fecha:            TextField = TextField(max_length=30, default=timezone.now)
+    emerg_pac_id:           ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
+    emerg_doc_id:           ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
 
 
 # El modelo "Atencion" utilizara como modelo base a "Model" y estara asociado a un "Doctor" y a un "Paciente" ya que el doctor le dara un diagnóstico al paciente
 class Atencion(Model):
-    atenc_id:           AutoField = AutoField(primary_key=True)
-    atenc_descripcion:  TextField = TextField(max_length=50)
-    atenc_diagnostico:  TextField = TextField(max_length=50)
-    atenc_fecha:        TextField = TextField(max_length=30, default=timezone.now)
-    atenc_pac_id:       ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
-    atenc_doc_id:       ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
+    atenc_id:               AutoField = AutoField(primary_key=True)
+    atenc_descripcion:      TextField = TextField(max_length=50)
+    atenc_diagnostico:      TextField = TextField(max_length=50)
+    atenc_fecha:            TextField = TextField(max_length=30, default=timezone.now)
+    atenc_pac_id:           ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="atenc_pac_id")
+    atenc_doc_id:           ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="atenc_doc_id")
