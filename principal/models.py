@@ -9,7 +9,8 @@ from django.utils import timezone
 from django.db import models
 from django.db.models import Model
 
-from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField, BooleanField
+from django.forms import ChoiceField
+from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
 from django.db.models import ForeignKey
 
 from .sms import send_sms
@@ -66,12 +67,47 @@ class Horario(Model):
 
 # Utilizado como Base para la administracion de usuarios y contraseñas en el sistema, con esto se puede mantener un listado de usuarios y el rol que tienen (Paciente, Doctor, Secretario, Administrador)
 class Usuario(Model):
+    
+    # Enumeracion de tipos de usuario
+    ROOT:       int = 0
+    ADMIN:      int = 1
+    SECRETARIO: int = 2
+    DOCTOR:     int = 3
+    PACIENTE:   int = 4
+    
+    USER_TYPE_CHOICES: list[ tuple[int | str] ] = [
+        (ROOT,          "Root"),
+        (ADMIN,         "Administrador"),
+        (SECRETARIO,    "Secretario"),
+        (DOCTOR,        "Doctor"),
+        (PACIENTE,      "Paciente"),
+    ]
+
+    # Establecer tipo de usuario por defecto a "Usuario" utilizando el metodo "UsuarioTipo"
+    user_type:              IntegerField = IntegerField(choices=USER_TYPE_CHOICES, default=PACIENTE)
+
     user_name:              CharField = CharField(max_length=30, unique=True)
     user_password:          CharField = CharField(max_length=128)
     
     # ===== CRUD =====
-    def crear_usuario(self) -> None:
-        self.save()
+    def crear_usuario(self, username: str = None, password: str = None, datos: dict = None) -> object | None:
+        if not username:
+            raise Exception("No se ha especificado un nombre de usuario")
+        
+        if not password:
+            raise Exception("No se ha especificado una contraseña")
+        
+        if not datos:
+            datos = {}
+        
+        # Crear usuario
+        user = self.create(user_name=username, user_password=make_password(password))
+        
+        # Crear datos
+        for key, value in datos.items():
+            setattr(user, key, value)
+        
+        return user
     
     def borrado_usuario(self) -> None:
         self.delete()
@@ -95,7 +131,12 @@ class Usuario(Model):
             self.password = make_password(password)
             
         self.save()
-
+        
+    def obtenertipo_usuario(self, tostring: bool = False) -> int | str:
+        if tostring:
+            return self.USER_TYPE_CHOICES[self.user_type][1]
+        
+        return self.user_type
 
     def obtenerdatos_usuario(self, target: list = None) -> dict:
         datos: dict = {}
@@ -158,6 +199,8 @@ class Doctor(Persona):
     doc_especialidad:       TextField = TextField(max_length=30)
     doc_area:               ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
     doc_horario:            ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
+    
+    # Establecer tipo de usuario por defecto a "Doctor" utilizando el metodo "UsuarioTipo"
 
 
 
