@@ -19,7 +19,7 @@ from principal.models import DiaSemana
 from principal.models import Horario
 
 # Modelos Base
-# from principal.models import Usuario
+from principal.models import Usuario
 # from principal.models import Persona
 
 # Modelos Personas
@@ -106,9 +106,9 @@ def GenerarArea() -> None:
 
     for area in AreasLista:
         try:
-            area                    = Area()
-            area.area_nombre        = area
-            area.save()
+            areaNueva                    = Area()
+            areaNueva.area_nombre        = area
+            areaNueva.save()
 
         except Exception as Error:
             Fallo                   = True
@@ -295,6 +295,7 @@ def GenerarDoctores(Cantidad: int = 10) -> None:
             doctor.pers_direccion           = fake.street_address()
             doctor.pers_ciudad              = fake.city()
 
+            doctor.user_type                = Usuario.USER_TYPE_CHOICES[3][0]
             doctor.user_name                = username
             doctor.user_password            = DatosGenerador.Contrasena()
             doctor.doc_area                 = Area.objects.get(area_id=random.randint(1, LenAreas))
@@ -345,6 +346,7 @@ def GenerarSecretarios(Cantidad: int = 10) -> None:
             secretario.pers_direccion           = fake.street_address()
             secretario.pers_ciudad              = fake.city()
 
+            secretario.user_type                = Usuario.USER_TYPE_CHOICES[2][0]
             secretario.user_name                = username
             secretario.user_password            = DatosGenerador.Contrasena()
             secretario.save()
@@ -390,6 +392,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             administrador.pers_direccion            = fake.street_address()
             administrador.pers_ciudad               = fake.city()
 
+            administrador.user_type                 = Usuario.USER_TYPE_CHOICES[1][0]
             administrador.user_name                 = username
             administrador.user_password             = DatosGenerador.Contrasena()
             administrador.save()
@@ -437,6 +440,9 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
             FalloCantidad += 1
             FalloMensaje = Error
     
+    global LenEmergencias
+    LenEmergencias = Emergencia.objects.all().count()
+    
     Termino: float = perf_counter()
     
     if Fallo:
@@ -457,10 +463,14 @@ def GenerarAtenciones(Cantidad: int = 10) -> None:
     
     for id in range(Cantidad):
         try:
+            emergenciaAzar = Emergencia.objects.get(emerg_id=random.randint(1, LenEmergencias))
+            
             atencion = Atencion()
-            atencion.aten_fecha                     = DatosGenerador.Fecha()
-            atencion.aten_pac_id                    = Paciente.objects.get(pac_id=random.randint(1, LenPacientes))
-            atencion.aten_doc_id                    = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
+            atencion.atenc_descripcion             = fake.text(max_nb_chars=50)
+            atencion.atenc_diagnostico             = fake.text(max_nb_chars=16)
+            atencion.atenc_fecha                   = DatosGenerador.Fecha()
+            atencion.atenc_pac_id                  = Paciente.objects.get(pac_id=emergenciaAzar.emerg_pac_id)
+            atencion.atenc_doc_id                  = Doctor.objects.get(doc_id=emergenciaAzar.emerg_doc_id)
             
             atencion.save()
         
