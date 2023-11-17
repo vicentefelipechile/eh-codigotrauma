@@ -380,18 +380,18 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
 
             administrador = Administrador()
-            administrador.pers_rut                 = Rut
-            administrador.pers_dv                  = Dv
-            administrador.pers_primernombre        = pnombre
-            administrador.pers_segundonombre       = snombre
-            administrador.pers_apellidopaterno     = fake.last_name()
-            administrador.pers_apellidomaterno     = fake.last_name()
-            administrador.pers_nacimiento          = DatosGenerador.AnioNacimiento()
-            administrador.pers_direccion           = fake.street_address()
-            administrador.pers_ciudad              = fake.city()
+            administrador.pers_rut                  = Rut
+            administrador.pers_dv                   = Dv
+            administrador.pers_primernombre         = pnombre
+            administrador.pers_segundonombre        = snombre
+            administrador.pers_apellidopaterno      = fake.last_name()
+            administrador.pers_apellidomaterno      = fake.last_name()
+            administrador.pers_nacimiento           = DatosGenerador.AnioNacimiento()
+            administrador.pers_direccion            = fake.street_address()
+            administrador.pers_ciudad               = fake.city()
 
-            administrador.user_name                = username
-            administrador.user_password            = DatosGenerador.Contrasena()
+            administrador.user_name                 = username
+            administrador.user_password             = DatosGenerador.Contrasena()
             administrador.save()
 
         except Exception as Error:
@@ -407,50 +407,35 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
 
-# ============================================================
-#   Funciones varias
-# ============================================================
 
-
-
-
-
-
-
+# ===========================================
+# ============ Modelos Registros ============
+# ===========================================
 
 def GenerarEmergencias(Cantidad: int = 10) -> None:
     print(" > Generando datos de registros de emergencias...     ", end="")
     
-    Fallo: bool = False
-    FalloCantidad: int = 0
-    FalloMensaje: str = ""
-
+    Fallo:              bool    = False
+    FalloCantidad:      int     = 0
+    FalloMensaje:       str     = ""
+    
     Inicio: float = perf_counter()
-
+    
     for id in range(Cantidad):
+        try:
+            emergencia = Emergencia()
+            emergencia.emerg_desc                   = fake.text(max_nb_chars=50)
+            emergencia.emerg_color                  = random.choice(colores_disponibles)
+            emergencia.emerg_fecha                  = DatosGenerador.Fecha()
+            emergencia.emerg_pac_id                 = Paciente.objects.get(pac_id=random.randint(1, LenPacientes))
+            emergencia.emerg_doc_id                 = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
             
-        try:            
-            # Crea una instancia de Emergencia
-            Registro = Emergencia(
-                emerg_desc      =       fake.text(max_nb_chars=50),
-                emerg_color     =       random.choice(colores_disponibles),
-                emerg_fecha     =       DatosGenerador.Fecha()
-            )
-            
-            Registro.emerg_pac_id = GlobalPacientes[ random.randint(0, LenPacientes) ]
-            Registro.emerg_doc_id = GlobalDoctores[ random.randint(0, LenDoctores) ]
-            
-            Registro.save()
+            emergencia.save()
+        
         except Exception as Error:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
-    
-    global GlobalEmergencias
-    GlobalEmergencias = list( Emergencia.objects.all() )
-    
-    global LenEmergencias
-    LenEmergencias = len(GlobalEmergencias) - 1
     
     Termino: float = perf_counter()
     
@@ -461,43 +446,28 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
 
 
 
-
-
-
-
-
-def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
-    print(" > Generando datos de atenciones a pacientes...      ", end="")
+def GenerarAtenciones(Cantidad: int = 10) -> None:
+    print(" > Generando datos de registros de atenciones...      ", end="")
     
-    Fallo: bool = False
-    FalloCantidad: int = 0
-    FalloMensaje: str = ""
-
+    Fallo:              bool    = False
+    FalloCantidad:      int     = 0
+    FalloMensaje:       str     = ""
+    
     Inicio: float = perf_counter()
-
-    for _ in range(Cantidad):
-        try:            
-            # Crea una instancia de Atencion
-            atencion = Atencion(
-                atenc_descripcion = fake.text(max_nb_chars=50),
-                atenc_diagnostico = fake.sentence(nb_words=20)
-            )
-            
-            # Asigna un paciente y un doctor aleatorio
-            atencion.atenc_pac_id = GlobalPacientes[random.randint(0, LenPacientes)]
-            atencion.atenc_doc_id = GlobalDoctores[random.randint(0, LenDoctores)]
+    
+    for id in range(Cantidad):
+        try:
+            atencion = Atencion()
+            atencion.aten_fecha                     = DatosGenerador.Fecha()
+            atencion.aten_pac_id                    = Paciente.objects.get(pac_id=random.randint(1, LenPacientes))
+            atencion.aten_doc_id                    = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
             
             atencion.save()
+        
         except Exception as Error:
             Fallo = True
             FalloCantidad += 1
             FalloMensaje = Error
-    
-    global GlobalAtenciones
-    GlobalAtenciones = list(Atencion.objects.all())
-    
-    global LenAtenciones
-    LenAtenciones = len(GlobalAtenciones) - 1
     
     Termino: float = perf_counter()
     
@@ -506,8 +476,10 @@ def GenerarAtencionesPacientes(Cantidad: int = 10) -> None:
     else:
         print(f"OK ({round(Termino - Inicio, 2)}s)")
 
-    
-    
+
+
+
+
 # ============================================================
 #   Ejecución
 # ============================================================
@@ -525,10 +497,14 @@ GenerarDiaSemana()
 GenerarHorario(50)
 
 # Modelos Personas
-GenerarPacientes(100)
-GenerarDoctores(40)
+GenerarPacientes(400)
+GenerarDoctores(50)
 GenerarSecretarios(10)
 GenerarAdministradores(5)
+
+# Modelos Registros
+GenerarEmergencias(100)
+GenerarAtenciones(600)
 
 Termino: float = perf_counter()
 
