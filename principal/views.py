@@ -30,8 +30,7 @@ MAIN_PATH: str = str(Path(__file__).parent.parent.absolute()) + "/templates"
 
 CONTEXTO: dict = {
     "PaginaNombre": settings.DOMAIN_NAME,
-    "PaginaNombreCorto": settings.DOMAIN_SHORTNAME,
-    "ContrasenaRegex": settings.PASSWORD_REGEX,
+    "PaginaNombreCorto": settings.DOMAIN_SHORTNAME
 }
 
 FORMULARIO: dict = CONTEXTO.copy()
