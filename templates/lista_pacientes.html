@@ -60,7 +60,6 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th scope="col">RUT</th>
                     <th scope="col">Nombres</th>
                     <th scope="col">Apellidos</th>
                     <th scope="col">Acciones</th>
@@ -69,9 +68,9 @@
             <tbody>
                 {% for paciente in pacientes %}
                 <tr>
-                    <th scope="row">{{paciente.pac_id}}-{{ paciente.rut }}-{{ paciente.dv }}</th>
-                    <td>{{ paciente.primernombre }} {{ paciente.segundonombre }}</td>
-                    <td>{{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</td>
+                    
+                    <td>{{ paciente.pac_primernombre }} {{ paciente.pac_segundonombre }}</td>
+                    <td>{{ paciente.pac_apellidopaterno }} {{ paciente.pac_apellidomaterno }}</td>
                     <td>
                         <a href="{% url 'detalles_paciente' paciente.pac_id %}" class="btn btn-primary">Ver</a>
                         <a class="btn btn-warning">Editar</a>

@@ -194,6 +194,9 @@ class Paciente(Model):
     pac_estado:             TextField = TextField()
     pac_codigopostal:       IntegerField = IntegerField()
 
+    def cantidad_emergencias(self) -> int:
+        return Emergencia.objects.filter(emerg_pac_id=self.pk).count()
+
 
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
 class Doctor(Persona):
