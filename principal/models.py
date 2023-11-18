@@ -2,6 +2,7 @@
 # ================ Librerias y Clases ================
 # ====================================================
 
+from typing import Any
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import Permission
 
@@ -90,6 +91,7 @@ class Usuario(Model):
     user_password:          CharField = CharField(max_length=128)
     
     # ===== CRUD =====
+    
     def crear_usuario(self, username: str = None, password: str = None, datos: dict = None) -> object | None:
         if not username:
             raise Exception("No se ha especificado un nombre de usuario")
@@ -109,7 +111,7 @@ class Usuario(Model):
         
         return user
     
-    def borrado_usuario(self) -> None:
+    def borrar_usuario(self) -> None:
         self.delete()
     
     def modificar_usuario(self, datos: dict = None) -> None:
