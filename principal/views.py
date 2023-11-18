@@ -182,7 +182,11 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
 
+def detalles_doctores(request, doc_id):
+    doctor= get_object_or_404(Doctor, pk=doc_id)
+    context=  {'doctor': doctor}
 
+    return render(request,'detalles_doctores.html', context)
 
 def detalles_paciente(request, pac_id):
     paciente = get_object_or_404(Paciente, pk=pac_id)

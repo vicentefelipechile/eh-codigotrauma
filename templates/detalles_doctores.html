@@ -59,12 +59,12 @@
         </thead>
         <tbody>
             <tr>
-                <td> {{paciente.pac_rut}} - {{paciente.pac_dv}}</td>
-                <td>{{ paciente.pac_primernombre }} {{ paciente.pac_segundonombre }}</td>
-                <td>{{ paciente.pac_apellidopaterno }} {{ paciente.pac_apellidomaterno }}</td>
-                <td>{{ paciente.pac_nacimiento }}</td>
-                <td>{{ paciente.edad }}</td>
-                <td>{{ num_emergencias }}</td>
+                <td> {{doctor.pers_rut}} - {{doctor.pers_dv}}</td>
+                <td>{{ doctor.pers_primernombre }} {{ doctor.pers_segundonombre }}</td>
+                <td>{{ doctor.pers_apellidopaterno }} {{ doctor.pers_apellidomaterno }}</td>
+                <td>{{ doctor.pers_nacimiento }}</td>
+                <td>{{ doctor.doc_especialidad }}</td>
+                <td>{{ doctor.doc_area }}</td>
             </tr>
         </tbody>
     </table>
@@ -73,7 +73,7 @@
 </div>
 {% if num_emergencias|length > 0 %}
 
-<form method="post" action="{% url 'detalles_paciente' paciente.pac_id %}">
+<form method="post" action="{% url 'detalles_doctores' doctor.doc_id %}">
     {% csrf_token %}
 
     <button type="submit" class="btn btn-primary" style="background-color: white; color: blue;">Ver últimas emergencias</button>
@@ -98,7 +98,7 @@
     <p>No hay emergencias registradas para este paciente.</p>
 {% endif %}
 
-<a href="{% url 'PaginaPacientes' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
+<a href="{% url 'PaginaDoctores' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
 
 {# ============================================ #}
 {# ================ Pie de HTML =============== #}

@@ -27,6 +27,7 @@ urlpatterns = [
     path("lista_pacientes/", Principal.PaginaPacientes, name="PaginaPacientes"),
     path("empleados/", Principal.PaginaDoctores, name="PaginaDoctores"),
     path('detalles_paciente/<int:pac_id>/', Principal.detalles_paciente, name='detalles_paciente'),
+    path('detalles_doctores/<int:doc_id>/', Principal.detalles_doctores, name="detalles_doctores")
    
 
        
