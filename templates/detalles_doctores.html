@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Detalles del paciente</title>
+    <title>Detalles del doctor</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 
@@ -45,7 +45,7 @@
 <div class="container">
 
 <div class="container">
-    <h1>Detalles del Paciente</h1>
+    <h1>Detalles del Doctor</h1>
     <table class="table table-striped table-hover">
         <thead>
             <tr>
@@ -95,10 +95,10 @@
 </form>
 
 {% else %}
-    <p>No hay emergencias registradas para este paciente.</p>
+    <p>No hay emergencias registradas para este doctor.</p>
 {% endif %}
 
-<a href="{% url 'PaginaDoctores' %}" class="btn btn-primary">Volver a la Lista de Pacientes</a>
+<a href="{% url 'PaginaDoctores' %}" class="btn btn-primary">Volver a la Lista de Doctores</a>
 
 {# ============================================ #}
 {# ================ Pie de HTML =============== #}
