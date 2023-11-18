@@ -469,8 +469,8 @@ def GenerarAtenciones(Cantidad: int = 10) -> None:
             atencion.atenc_descripcion             = fake.text(max_nb_chars=50)
             atencion.atenc_diagnostico             = fake.text(max_nb_chars=16)
             atencion.atenc_fecha                   = DatosGenerador.Fecha()
-            atencion.atenc_pac_id                  = Paciente.objects.get(pac_id=emergenciaAzar.emerg_pac_id)
-            atencion.atenc_doc_id                  = Doctor.objects.get(doc_id=emergenciaAzar.emerg_doc_id)
+            atencion.atenc_pac_id                  = emergenciaAzar.emerg_pac_id
+            atencion.atenc_doc_id                  = emergenciaAzar.emerg_doc_id
             
             atencion.save()
         
