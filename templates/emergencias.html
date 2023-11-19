@@ -43,7 +43,7 @@
             </div>
         </nav>
 
-        <h1>Lista de Emergencias</h1>
+        <h3>Lista de Emergencias</h3>
         <form class="d-flex" method="GET">
             <input class="form-control me-2" type="search" placeholder="Buscar emergencia por característica" name="buscaremergencia" autocorrect="off" aria-label="Search" value="{{ configuracionanterior.busqueda }}">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -52,6 +52,7 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
+                    <th scope="col">Id</th>
                     <th scope="col">Descripción</th>
                     <th scope="col">Color</th>
                     <th scope="col">Fecha</th>
@@ -63,6 +64,7 @@
             <tbody>
                 {% for emergencia in emergencias %}
                 <tr>
+                    <td>{{emergencia.emerg_id}}</td>
                     <td>{{ emergencia.emerg_desc }}</td>
                     <td>{{ emergencia.emerg_color }}</td>
                     <td>{{ emergencia.emerg_fecha }}</td>
