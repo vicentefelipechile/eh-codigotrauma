@@ -9,64 +9,36 @@
 {# ============== Inicio de HTML ============== #}
 {# ============================================ #}
 
-<div class="container">
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                    <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp" height="15" alt="MDB Logo"
-                        loading="lazy" />
-                </a>
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Team</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Projects</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-       <!-- <p> <h1>{{paciente.pac_id}}</h1> {{paciente.rut}} - {{paciente.dv}} {{ paciente.primernombre }} {{ paciente.segundonombre }} {{ paciente.apellidopaterno }} {{ paciente.apellidomaterno }}</p> -->
-        <!-- Listado de Pacientes utilizando tablas -->
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                  
-                    <th scope="col">Nombres</th>
-                    <th scope="col">Apellidos</th>
-                    <th scope="col">Acciones</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                {% for doctor in doctores %}
-                <tr>
-                    <td>{{ doctor.pers_primernombre }} {{ doctor.pers_segundonombre }}</td>
-                    <td>{{ doctor.pers_apellidopaterno }} {{ doctor.pers_apellidomaterno }}</td>
-                    <td>
-                        <a href= "{% url 'detalles_doctores' doctor.doc_id %}"class="btn btn-primary">Ver</a>
-                        <a class="btn btn-warning">Editar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="container mt-4">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+            
+                <th scope="col">Nombres</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">Acciones</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in doctores %}
+            <tr>
+                <td>{{ doctor.pers_primernombre }} {{ doctor.pers_segundonombre }}</td>
+                <td>{{ doctor.pers_apellidopaterno }} {{ doctor.pers_apellidomaterno }}</td>
+                <td>
+                    <a href= "{% url 'detalles_doctores' doctor.doc_id %}"class="btn btn-primary">Ver</a>
+                    <a class="btn btn-warning">Editar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="mb-4"></div>
+</div>
 
 
-    {# ============================================ #}
-    {# ================ Pie de HTML =============== #}
-    {# ============================================ #}
+{# ============================================ #}
+{# ================ Pie de HTML =============== #}
+{# ============================================ #}
 
-    {% include "html_templates/_footer_no.html" %}
-
-    <script src="{% static 'script.js' %}"></script>
-</body>
-</html>
+{% include "html_templates/_footer_no.html" %}
