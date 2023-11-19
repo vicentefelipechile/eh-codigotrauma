@@ -194,6 +194,7 @@ class Paciente(Model):
     pac_estado:             TextField = TextField()
     pac_codigopostal:       IntegerField = IntegerField()
 
+    # Mostrar el total de emergencias que ha tenido el paciente
     def total_emergencias(self) -> int:
         return Emergencia.objects.filter(emerg_pac_id=self.pac_id).count()
 
@@ -205,7 +206,8 @@ class Doctor(Persona):
     doc_area:               ForeignKey = ForeignKey(Area, on_delete=models.SET_NULL, to_field="area_id", null=True, name="doc_area")
     doc_horario:            ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
     
-    # Establecer tipo de usuario por defecto a "Doctor" utilizando el metodo "UsuarioTipo"
+    def total_emergencias(self) -> int:
+        return Emergencia.objects.filter(emerg_doc_id=self.doc_id).count()
 
 
 
