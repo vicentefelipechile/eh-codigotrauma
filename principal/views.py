@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.core.handlers.wsgi import WSGIRequest
 from django.template.backends.django import Template
 from django.db.models.query import QuerySet
@@ -104,29 +104,34 @@ def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
 
 
 
-def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse:
+def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse | HttpResponseRedirect:
     HTML: Template = loader.get_template("iniciar-sesion.html")
     
     
     if request.method == "POST":
-        print(request.POST)
+        print("=====================================")
         # Añadir un contexto para el formulario
-        RegistroContext: dict = FORMULARIO.copy()
+        FormularioContext: dict = FORMULARIO.copy()
 
         if not request.POST["username"]:                               return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_NOUSER)
         if not request.POST["password"]:                               return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_NOPASS)
         
         # Buscar el usuario en la base de datos
-        UsuarioEncontrado: QuerySet = Usuario.objects.filter(user_name=request.POST["username"])
+        UsuarioEncontrado: QuerySet = Usuario.objects.filter(user_name=request.POST["username"]).first()
         if not UsuarioEncontrado:                                      return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_USERDOESNTEXIST)
-        
-        print(UsuarioEncontrado)
-        print(UsuarioEncontrado.__dict__)
+
         # Verificar la contraseña
-        if not check_password(request.POST["password"], UsuarioEncontrado[0].password): return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_WRONGPASS)
+        if not check_password(request.POST["password"], UsuarioEncontrado.user_password): return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_WRONGPASS)
         
-        
-        return HttpResponse( HTML.render(RegistroContext, request) )
+        # Si el usuario es un administrador (1), redirigir a la pagina de administrador
+        # Si el usuario es un secretario (2), redirigir a la pagina de secretario
+        # Si el usuario es un doctor (3), redirigir a la pagina de doctor
+        if UsuarioEncontrado.user_type == 1:
+            return redirect("/empleados/")
+        elif UsuarioEncontrado.user_type == 2:
+            return redirect("/empleados/")
+        elif UsuarioEncontrado.user_type == 3:
+            return redirect("/emergencias/")
 
     return HttpResponse( HTML.render(CONTEXTO, request) )
 
@@ -171,8 +176,16 @@ def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
     # Si la pagina dice numero 2, se saltaran los primero 20 pacientes y se mostraran los siguientes 20
     pacientes = pacientes[(Pagina - 1) * MostrarCantidad : (Pagina * MostrarCantidad)]
 
-    context = {'pacientes': pacientes, 'configuracionanterior': { "cantidad": MostrarCantidad, "pagina": Pagina, "busqueda": Busqueda }}
-    return render(request, 'lista_pacientes.html', context)
+    context: dict = {
+        "pacientes":        pacientes,
+        "configuracionanterior": {
+            "cantidad":     MostrarCantidad,
+            "pagina":       Pagina,
+            "busqueda":     Busqueda
+            }
+        }
+
+    return render(request, "lista_pacientes.html", context)
 
 
 
