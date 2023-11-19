@@ -12,7 +12,7 @@ from django.db.models import Model
 
 from django.forms import ChoiceField
 from django.db.models import TextField, IntegerField, CharField, AutoField, TimeField
-from django.db.models import ForeignKey
+from django.db.models import ForeignKey, ManyToManyField
 
 from .sms import send_sms
 
@@ -66,7 +66,9 @@ class Horario(Model):
 # ============== Modelos Base ===============
 # ===========================================
 
-# Utilizado como Base para la administracion de usuarios y contraseñas en el sistema, con esto se puede mantener un listado de usuarios y el rol que tienen (Paciente, Doctor, Secretario, Administrador)
+# Utilizado como Base para la administracion de usuarios y contraseñas en el sistema,
+# con esto se puede mantener un listado de usuarios y el rol que tienen.
+# (Paciente, Doctor, Secretario, Administrador)
 class Usuario(Model):
     
     # Enumeracion de tipos de usuario
@@ -199,10 +201,12 @@ class Paciente(Model):
         num_emergencias = Emergencia.objects.filter(emerg_pac_id=self).count()
         print(f"DEBUG: Número de emergencias para {self.pac_primernombre}: {num_emergencias}")
         return num_emergencias
+
     def total_atenciones(self) -> int:
         num_atenciones = Atencion.objects.filter(atenc_pac_id = self).count()
         return num_atenciones
-    
+
+
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
 class Doctor(Persona):
     doc_id:                 AutoField = AutoField(primary_key=True)
@@ -238,7 +242,9 @@ class Emergencia(Model):
     emerg_desc:             TextField = TextField(max_length=50)
     emerg_color:            TextField = TextField(max_length=20)
     emerg_fecha:            TextField = TextField(max_length=30, default=timezone.now)
-    emerg_pac_id = models.ManyToManyField(Paciente, null=True, name="emerg_pac_id")
+    
+    # Una emergencia puede tener muchos pacientes, hacer una relacion muchos a muchos a los Pacientes (pac_id)
+    emerg_pac_id:           ManyToManyField = models.ManyToManyField(Paciente, related_name="emerg_pac_id", )
     emerg_doc_id:           ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
     
     def __str__(self):

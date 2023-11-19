@@ -431,10 +431,10 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
             emergencia.emerg_desc                   = fake.text(max_nb_chars=50)
             emergencia.emerg_color                  = random.choice(colores_disponibles)
             emergencia.emerg_fecha                  = DatosGenerador.Fecha()
-            emergencia.emerg_pac_id                 = paciente
             emergencia.emerg_doc_id                 = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
-            
             emergencia.save()
+            
+            emergencia.emerg_pac_id.add(paciente)
         
         except Exception as Error:
             Fallo = True
@@ -449,10 +449,13 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
             emergencia.emerg_desc                   = fake.text(max_nb_chars=50)
             emergencia.emerg_color                  = random.choice(colores_disponibles)
             emergencia.emerg_fecha                  = DatosGenerador.Fecha()
-            emergencia.emerg_pac_id                 = Paciente.objects.get(pac_id=random.randint(1, LenPacientes))
             emergencia.emerg_doc_id                 = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
-            
             emergencia.save()
+            
+            # Asignar entre 1 a 4 pacientes al azar
+            for id in range(random.randint(1, 4)):
+                emergencia.emerg_pac_id.add( Paciente.objects.get(pac_id=random.randint(1, LenPacientes)) )
+            
         
         except Exception as Error:
             Fallo = True
@@ -471,7 +474,7 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
 
 
 
-def GenerarAtenciones(Cantidad: int = 10) -> None:
+def GenerarAtenciones(*args, **kwargs) -> None:
     print(" > Generando datos de registros de atenciones...      ", end="")
     
     Fallo:              bool    = False
@@ -483,33 +486,15 @@ def GenerarAtenciones(Cantidad: int = 10) -> None:
     # Generar una atencion por cada emergencia existente
     for emergencia in Emergencia.objects.all():
         try:
-            atencion = Atencion()
-            atencion.atenc_descripcion             = fake.text(max_nb_chars=50)
-            atencion.atenc_diagnostico             = fake.text(max_nb_chars=16)
-            atencion.atenc_fecha                   = DatosGenerador.Fecha()
-            atencion.atenc_pac_id                  = emergencia.emerg_pac_id
-            atencion.atenc_doc_id                  = emergencia.emerg_doc_id
-            
-            atencion.save()
-        
-        except Exception as Error:
-            Fallo = True
-            FalloCantidad += 1
-            FalloMensaje = Error
-    
-    # Generar atenciones extras
-    for id in range(Cantidad):
-        try:
-            emergenciaAzar = Emergencia.objects.get(emerg_id=random.randint(1, LenEmergencias))
-            
-            atencion = Atencion()
-            atencion.atenc_descripcion             = fake.text(max_nb_chars=50)
-            atencion.atenc_diagnostico             = fake.text(max_nb_chars=16)
-            atencion.atenc_fecha                   = DatosGenerador.Fecha()
-            atencion.atenc_pac_id                  = emergenciaAzar.emerg_pac_id
-            atencion.atenc_doc_id                  = emergenciaAzar.emerg_doc_id
-            
-            atencion.save()
+            # Generar una atencion por cada paciente de la emergencia
+            for paciente in emergencia.emerg_pac_id.all():
+                atencion = Atencion()
+                atencion.atenc_descripcion          = fake.text(max_nb_chars=50)
+                atencion.atenc_diagnostico          = fake.text(max_nb_chars=50)
+                atencion.atenc_fecha                = DatosGenerador.Fecha()
+                atencion.atenc_pac_id               = paciente
+                atencion.atenc_doc_id               = emergencia.emerg_doc_id
+                atencion.save()
         
         except Exception as Error:
             Fallo = True
