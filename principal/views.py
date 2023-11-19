@@ -191,6 +191,8 @@ def detalles_doctores(request, doc_id):
 def detalles_paciente(request, pac_id):
     paciente = get_object_or_404(Paciente, pk=pac_id)
     num_emergencias = paciente.total_emergencias()
+    num_atenciones = paciente.total_atenciones()
+    print(f"DEBUG: Número total de emergencias para el paciente {paciente.pac_primernombre}: {num_emergencias}")
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.pac_nacimiento
     ultimas_emergencias = Emergencia.objects.filter(emerg_pac_id=paciente).order_by('-emerg_fecha')[:3]
@@ -198,6 +200,7 @@ def detalles_paciente(request, pac_id):
 
     context=  {'paciente': paciente,
                 'num_emergencias': num_emergencias,
+                'num_atenciones' : num_atenciones,
                 'ultimas_emergencias': ultimas_emergencias,
                 'ultima_atencion': ultima_atencion}
 

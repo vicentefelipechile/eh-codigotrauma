@@ -196,9 +196,13 @@ class Paciente(Model):
 
     # Mostrar el total de emergencias que ha tenido el paciente
     def total_emergencias(self) -> int:
-        return Emergencia.objects.filter(emerg_pac_id=self.pac_id).count()
-
-
+        num_emergencias = Emergencia.objects.filter(emerg_pac_id=self).count()
+        print(f"DEBUG: Número de emergencias para {self.pac_primernombre}: {num_emergencias}")
+        return num_emergencias
+    def total_atenciones(self) -> int:
+        num_atenciones = Atencion.objects.filter(atenc_pac_id = self).count()
+        return num_atenciones
+    
 # El modelo "Doctor" utiliza como base a "Persona" debido a que es un usuario recurrente en el sistema
 class Doctor(Persona):
     doc_id:                 AutoField = AutoField(primary_key=True)
