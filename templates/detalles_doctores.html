@@ -53,7 +53,6 @@
                 <th scope="col">Nombres</th>
                 <th scope="col">Apellidos</th>
                 <th scope="col">Año de Nacimiento</th>
-                <th scope="col">Edad</th>
                 <th scope="col">Número de Emergencias</th>
             </tr>
         </thead>
@@ -63,39 +62,38 @@
                 <td>{{ doctor.pers_primernombre }} {{ doctor.pers_segundonombre }}</td>
                 <td>{{ doctor.pers_apellidopaterno }} {{ doctor.pers_apellidomaterno }}</td>
                 <td>{{ doctor.pers_nacimiento }}</td>
-                <td>{{ doctor.doc_especialidad }}</td>
-                <td>{{ doctor.doc_area }}</td>
+                <td> {{num_emergencias}}</td>
             </tr>
         </tbody>
     </table>
     
 
 </div>
-{% if num_emergencias|length > 0 %}
 
-<form method="post" action="{% url 'detalles_doctores' doctor.doc_id %}">
-    {% csrf_token %}
-
-    <button type="submit" class="btn btn-primary" style="background-color: white; color: blue;">Ver últimas emergencias</button>
-
-    <select>
-        {% for emergencia in ultimas_emergencias %}
-            <option>Fecha: {{emergencia.emerg_fecha}} </option>
-            <option>Tipo de emergencia: {{emergencia.emerg_color }}</option>
-            <option>Descripción: {{emergencia.emerg_desc}}</option>
-        {% endfor %}
-    </select>
-    <button type="submit" class="btn btn-primary" style="background-color: white; color: blue;">Ver datos última atención</button>
-    <select>
-        <option>Fecha: {{ ultima_atencion.atenc_fecha}}</option>
-        <option>Descripción {{ultima_atencion.atenc_descripcion}}</option>
-        <option>Doctor: {{ultima_atencion.atenc_id_doctor}}</option>
-        <option>Diagnóstico: {{ultima_atencion.atenc_diagnostico}}</option>
-    </select>
-</form>
-
-{% else %}
-    <p>No hay emergencias registradas para este doctor.</p>
+{% if num_emergencias > 0 %}
+<div class="accordion" id="emergenciasAccordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="emergenciasHeading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmergencias" aria-expanded="true" aria-controls="collapseEmergencias">
+                Últimas Emergencias
+            </button>
+        </h2>
+        <div id="collapseEmergencias" class="accordion-collapse collapse show" aria-labelledby="emergenciasHeading" data-bs-parent="#emergenciasAccordion">
+            <div class="accordion-body">
+                <ul>
+                    {% for emergencia in ultimas_emergencias %}
+                        <li>
+                            <strong>Fecha:</strong> {{ emergencia.emerg_fecha }}<br>
+                            <strong>Tipo de emergencia:</strong> {{ emergencia.emerg_color }}<br>
+                            <strong>Descripción:</strong> {{ emergencia.emerg_desc }}
+                        </li>
+                        <p>---------------------------------------------------------------------------------------</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 <a href="{% url 'PaginaDoctores' %}" class="btn btn-primary">Volver a la Lista de Doctores</a>

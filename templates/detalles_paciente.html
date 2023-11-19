@@ -86,6 +86,7 @@
                                             <strong>Tipo de emergencia:</strong> {{ emergencia.emerg_color }}<br>
                                             <strong>Descripción:</strong> {{ emergencia.emerg_desc }}
                                         </li>
+                                        <p>---------------------------------------------------------------------------------------</p>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -109,9 +110,9 @@
                                         <li>
                                             <strong>Fecha:</strong> {{ ultima_atencion.atenc_fecha }}<br>
                                             <strong>Descripción:</strong> {{ ultima_atencion.atenc_descripcion }}<br>
-                                            <strong>Doctor:</strong> {{ ultima_atencion.atenc_id_doctor }}<br>
                                             <strong>Diagnóstico:</strong> {{ ultima_atencion.atenc_diagnostico }}
                                         </li>
+                                        <p>---------------------------------------------------------------------------------------</p>
                                     </ul>
                                 {% else %}
                                     <p>No hay detalles de la última atención registrada para este paciente.</p>

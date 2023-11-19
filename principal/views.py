@@ -184,7 +184,13 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
 
 def detalles_doctores(request, doc_id):
     doctor= get_object_or_404(Doctor, pk=doc_id)
-    context=  {'doctor': doctor}
+    num_emergencias = doctor.total_emergencias()
+    ultimas_emergencias = Emergencia.objects.filter(emerg_doc_id=doctor).order_by('-emerg_fecha')[:3]
+
+
+    context=  {'doctor': doctor,
+               'num_emergencias': num_emergencias,
+               'ultimas_emergencias' : ultimas_emergencias}
 
     return render(request,'detalles_doctores.html', context)
 
@@ -196,7 +202,7 @@ def detalles_paciente(request, pac_id):
     anio_actual = datetime.now().year
     paciente.edad = anio_actual - paciente.pac_nacimiento
     ultimas_emergencias = Emergencia.objects.filter(emerg_pac_id=paciente).order_by('-emerg_fecha')[:3]
-    ultima_atencion = Atencion.objects.filter(atenc_pac_id=paciente).order_by('-atenc_fecha').first()
+    ultima_atencion = Atencion.objects.filter(atenc_pac_id=paciente).order_by('-atenc_fecha').last()
 
     context=  {'paciente': paciente,
                 'num_emergencias': num_emergencias,
@@ -207,9 +213,9 @@ def detalles_paciente(request, pac_id):
 
     return render(request,'detalles_paciente.html', context)
 
-
 def horario_doctor(request, doc_id):
-    doctor = get_object_or_404(Doctor, pk=doc_id)
-    context = {'doctor': doctor}
-    return render(request, 'horario_doctor.html', context )
+    doctor = Doctor.objects.get(pk=doc_id)
+    context = {'doctor': doctor, 'dias_semana': ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']}
+    return render(request, 'horario_doctor.html', context)
+
 

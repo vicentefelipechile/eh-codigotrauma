@@ -1,4 +1,3 @@
-<!-- en tu horario_doctor.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,16 +40,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for hora in doctor.doc_horario.all.0 %}
-                <tr>
-                    <td>{{ hora.hordia_inicio }}</td>
-                    {% for horario in doctor.doc_horario.all %}
-                        <td>{{ horario.horario_dia.diasem_nombre }}</td>
-                        <td>{{ horario.horario_hora.hordia_fin }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
+            {% for hora in doctor.doc_horario.all %}
+            <tr>
+                <td>{{ hora.horario_hora.hordia_inicio }}</td>
+                {% for dia in doctor.doc_horario.all %}
+                    {% if dia.horario_hora == hora.horario_hora %}
+                        <td>{{ dia.horario_dia.diasem_nombre }}</td>
+                        <td>{{ dia.horario_hora.hordia_fin }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </body>
 </html>
+

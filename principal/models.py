@@ -211,7 +211,9 @@ class Doctor(Persona):
     doc_horario:            ForeignKey = ForeignKey(Horario, on_delete=models.SET_NULL, to_field="horario_id", null=True, name="doc_horario")
     
     def total_emergencias(self) -> int:
-        return Emergencia.objects.filter(emerg_doc_id=self.doc_id).count()
+        num_emergencias = Emergencia.objects.filter(emerg_doc_id=self).count()
+        print(f"DEBUG: Número de emergencias para {self.pers_primernombre}: {num_emergencias}")
+        return num_emergencias
 
 
 
