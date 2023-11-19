@@ -1,17 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
     <title>Nueva Emergencia</title>
 </head>
 <body>
-    <h1>Nueva Emergencia</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar Emergencia</button>
-    </form>
+    {# ============================================ #}
+    {# ============= Cargar Variables ============= #}
+    {# ============================================ #}
 
-    <a href="{% url 'emergencias' %}" class="btn btn-primary">Volver a la Lista de Emergencias</a>
+    {% load static %}
+    {% include "html_templates/_head_empleados.html" %}
+
+    {# ============================================ #}
+    {# ============== Inicio de HTML ============== #}
+    {# ============================================ #}
+
+    <div class="container">
+
+        <!-- Navbar (Gadgets) -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                        <img src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp" height="15" alt="MDB Logo" loading="lazy" />
+                    </a>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Team</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Projects</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <h3>Nueva Emergencia</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                {{ form.emerg_desc.label_tag }}
+                {{ form.emerg_desc}}
+            </div>
+
+            <div class="mb-3">
+                {{ form.emerg_color.label_tag }}
+                {{ form.emerg_color }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.emerg_fecha.label_tag }}
+                {{ form.emerg_fecha }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.emerg_pac_id.label_tag }}
+                {{ form.emerg_pac_id }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.emerg_doc_id.label_tag }}
+                {{ form.emerg_doc_id }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.num_pacientes.label_tag }}
+                {{ form.num_pacientes }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar Emergencia</button>
+        </form>
+
+        <a href="{% url 'emergencias' %}" class="btn btn-primary mt-3">Volver a la Lista de Emergencias</a>
+
+        {# ============================================ #}
+        {# ================ Pie de HTML =============== #}
+        {# ============================================ #}
+
+        {% include "html_templates/_footer_no.html" %}
+
+        <script src="{% static 'script.js' %}"></script>
+    </div>
 </body>
 </html>

@@ -43,7 +43,11 @@
             </div>
         </nav>
 
-        <h3>Lista de Emergencias</h3>
+        <h3>Lista de Emergencias</h3> 
+        <div class="mt-4 mb-4">
+            <a href="{% url 'nueva_emergencia' %}" class="btn btn-primary">Crear</a>
+        <div class="mt-4 mb-4">
+
         <form class="d-flex" method="GET">
             <input class="form-control me-2" type="search" placeholder="Buscar emergencia por característica" name="buscaremergencia" autocorrect="off" aria-label="Search" value="{{ configuracionanterior.busqueda }}">
             <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -71,7 +75,7 @@
                     <td>{{ emergencia.emerg_pac_id.pac_primernombre }} {{ emergencia.emerg_pac_id.pac_segundonombre }}</td>
                     <td>{{ emergencia.emerg_doc_id.pers_primernombre }} {{ emergencia.emerg_doc_id.pers_apellidopaterno }}</td>
                     <td>
-                        <a href="{% url 'nueva_emergencia' %}" class="btn btn-primary">Crear</a>
+                        
                         <a class="btn btn-warning">Editar</a>
                     </td>
                 </tr>
