@@ -423,7 +423,26 @@ def GenerarEmergencias(Cantidad: int = 10) -> None:
     FalloMensaje:       str     = ""
     
     Inicio: float = perf_counter()
+
+    # Generar una emergencia por cada paciente existente y asignarle un doctor al azar
+    for paciente in Paciente.objects.all():
+        try:
+            emergencia = Emergencia()
+            emergencia.emerg_desc                   = fake.text(max_nb_chars=50)
+            emergencia.emerg_color                  = random.choice(colores_disponibles)
+            emergencia.emerg_fecha                  = DatosGenerador.Fecha()
+            emergencia.emerg_pac_id                 = paciente
+            emergencia.emerg_doc_id                 = Doctor.objects.get(doc_id=random.randint(1, LenDoctores))
+            
+            emergencia.save()
+        
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
     
+    
+    # Generar emergencias extras
     for id in range(Cantidad):
         try:
             emergencia = Emergencia()
@@ -461,6 +480,24 @@ def GenerarAtenciones(Cantidad: int = 10) -> None:
     
     Inicio: float = perf_counter()
     
+    # Generar una atencion por cada emergencia existente
+    for emergencia in Emergencia.objects.all():
+        try:
+            atencion = Atencion()
+            atencion.atenc_descripcion             = fake.text(max_nb_chars=50)
+            atencion.atenc_diagnostico             = fake.text(max_nb_chars=16)
+            atencion.atenc_fecha                   = DatosGenerador.Fecha()
+            atencion.atenc_pac_id                  = emergencia.emerg_pac_id
+            atencion.atenc_doc_id                  = emergencia.emerg_doc_id
+            
+            atencion.save()
+        
+        except Exception as Error:
+            Fallo = True
+            FalloCantidad += 1
+            FalloMensaje = Error
+    
+    # Generar atenciones extras
     for id in range(Cantidad):
         try:
             emergenciaAzar = Emergencia.objects.get(emerg_id=random.randint(1, LenEmergencias))
@@ -500,21 +537,28 @@ print("=====================================")
 
 Inicio: float = perf_counter()
 
-# Modelos Varios
-GenerarArea()
-GenerarHoraDia(100)
-GenerarDiaSemana()
-GenerarHorario(50)
+if False:
+    # Modelos Varios
+    GenerarArea()
+    GenerarHoraDia(100)
+    GenerarDiaSemana()
+    GenerarHorario(50)
 
-# Modelos Personas
-GenerarPacientes(400)
-GenerarDoctores(50)
-GenerarSecretarios(10)
-GenerarAdministradores(5)
+    # Modelos Personas
+    GenerarPacientes(400)
+    GenerarDoctores(50)
+    GenerarSecretarios(10)
+    GenerarAdministradores(5)
 
-# Modelos Registros
-GenerarEmergencias(100)
-GenerarAtenciones(600)
+    # Modelos Registros
+    GenerarEmergencias(100)
+    GenerarAtenciones(600)
+else:
+    # Obtener un paciente al azar
+    pacienteAzar = Paciente.objects.get(pac_id=random.randint(1, 400))
+
+    # imprimir la cantidad de emergencias que tiene
+    print(f"El paciente {pacienteAzar.pac_primernombre} {pacienteAzar.pac_apellidopaterno} tiene {pacienteAzar.total_emergencias()} emergencias")
 
 Termino: float = perf_counter()
 
