@@ -165,9 +165,9 @@ class Persona(Usuario):
     pers_apellidopaterno:   TextField = TextField(max_length=24)
     pers_apellidomaterno:   TextField = TextField(max_length=24, null=True)
     pers_nacimiento:        IntegerField = IntegerField()
-    pers_direccion:         TextField = TextField()
-    pers_ciudad:            TextField = TextField()
-    pers_estado:            TextField = TextField()
+    pers_direccion:         TextField = TextField(null=True)
+    pers_ciudad:            TextField = TextField(null=True)
+    pers_estado:            TextField = TextField(null=True)
     pers_codigopostal:      IntegerField = IntegerField(null=True)
     
     class Meta:

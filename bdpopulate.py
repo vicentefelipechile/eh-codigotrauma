@@ -538,6 +538,18 @@ print("=====================================")
 Inicio: float = perf_counter()
 
 if True:
+    # Generar un usuario administrador con contraseña y nombre "admin"
+    root = Administrador()
+    root.pers_rut                  = "1"
+    root.pers_dv                   = "1"
+    root.pers_primernombre         = "root"
+    root.pers_apellidopaterno      = "root"
+    root.pers_nacimiento           = 2000
+    root.user_type                 = Usuario.USER_TYPE_CHOICES[1][0]
+    root.user_name                 = "root"
+    root.user_password             = make_password("root")
+    root.save()
+    
     # Modelos Varios
     GenerarArea()
     GenerarHoraDia(100)
