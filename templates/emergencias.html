@@ -71,6 +71,7 @@
                     <td>{{ emergencia.emerg_pac_id.pac_primernombre }} {{ emergencia.emerg_pac_id.pac_segundonombre }}</td>
                     <td>{{ emergencia.emerg_doc_id.pers_primernombre }} {{ emergencia.emerg_doc_id.pers_apellidopaterno }}</td>
                     <td>
+                        <a href="{% url 'nueva_emergencia' %}" class="btn btn-primary">Crear</a>
                         <a class="btn btn-warning">Editar</a>
                     </td>
                 </tr>

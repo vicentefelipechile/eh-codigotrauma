@@ -29,8 +29,10 @@ urlpatterns = [
     path('detalles_paciente/<int:pac_id>/', Principal.detalles_paciente, name='detalles_paciente'),
     path('detalles_doctores/<int:doc_id>/', Principal.detalles_doctores, name="detalles_doctores"),
     path('horario_doctor/<int:doc_id>/', Principal.horario_doctor, name='horario_doctor'),
-    path('emergencias/', Principal.PaginaEmergencias, name="PaginaEmergencias"),
-    path('atenciones/', Principal.PaginaAtenciones, name="PaginaAtenciones"),
+    path('emergencias/', Principal.PaginaEmergencias, name="emergencias"),
+    path('atenciones/', Principal.PaginaAtenciones, name="atenciones"),
+    path('nueva_emergencia/', Principal.nueva_emergencia, name='nueva_emergencia'),
+
 
    
 

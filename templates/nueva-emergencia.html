@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nueva Emergencia</title>
+</head>
+<body>
+    <h1>Nueva Emergencia</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar Emergencia</button>
+    </form>
+
+    <a href="{% url 'emergencias' %}" class="btn btn-primary">Volver a la Lista de Emergencias</a>
+</body>
+</html>

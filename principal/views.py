@@ -19,7 +19,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-
+from principal.forms import NuevaEmergenciaForm
 from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia, Atencion
 from principal.models import Usuario
 
@@ -227,3 +227,18 @@ def horario_doctor(request, doc_id):
     return render(request, 'horario_doctor.html', context)
 
 
+
+def nueva_emergencia(request):
+    if request.method == 'POST':
+        # Si el formulario ha sido enviado
+        form = NuevaEmergenciaForm(request.POST)
+
+        if form.is_valid():
+            # Si el formulario es válido, guarda la nueva emergencia
+            nueva_emergencia = form.save()
+            return redirect('lista_emergencias')
+    else:
+        # Si es una solicitud GET, muestra el formulario vacío
+        form = NuevaEmergenciaForm()
+    context = {'form': form}
+    return render(request, 'nueva-emergencia.html', context)
