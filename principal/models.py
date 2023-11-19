@@ -238,8 +238,16 @@ class Emergencia(Model):
     emerg_desc:             TextField = TextField(max_length=50)
     emerg_color:            TextField = TextField(max_length=20)
     emerg_fecha:            TextField = TextField(max_length=30, default=timezone.now)
-    emerg_pac_id:           ForeignKey = ForeignKey(Paciente, on_delete=models.SET_NULL, to_field="pac_id", null=True, name="emerg_pac_id")
+    emerg_pac_id = models.ManyToManyField(Paciente, null=True, name="emerg_pac_id")
     emerg_doc_id:           ForeignKey = ForeignKey(Doctor, on_delete=models.SET_NULL, to_field="doc_id", null=True, name="emerg_doc_id")
+    
+    def __str__(self):
+        return self.emerg_desc
+    
+    def total_pacientes(self) -> int:
+        num_pacientes = Paciente.objects.filter(emergencia=self).count()
+        return num_pacientes
+    
 
 
 # El modelo "Atencion" utilizara como modelo base a "Model" y estara asociado a un "Doctor" y a un "Paciente" ya que el doctor le dara un diagnóstico al paciente

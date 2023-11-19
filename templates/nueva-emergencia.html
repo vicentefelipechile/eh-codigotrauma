@@ -49,34 +49,38 @@
             {% csrf_token %}
             
             <div class="mb-3">
-                {{ form.emerg_desc.label_tag }}
+                {{ form.Descripcion.label_tag }}
                 {{ form.emerg_desc}}
             </div>
 
             <div class="mb-3">
-                {{ form.emerg_color.label_tag }}
+                {{ form.Color.label_tag }}
                 {{ form.emerg_color }}
             </div>
 
             <div class="mb-3">
-                {{ form.emerg_fecha.label_tag }}
+                {{ form.Fecha.label_tag }}
                 {{ form.emerg_fecha }}
             </div>
 
             <div class="mb-3">
-                {{ form.emerg_pac_id.label_tag }}
+                {{ form.Paciente.label_tag }}
                 {{ form.emerg_pac_id }}
             </div>
 
             <div class="mb-3">
-                {{ form.emerg_doc_id.label_tag }}
+                {{ form.Doctor.label_tag }}
                 {{ form.emerg_doc_id }}
             </div>
 
             <div class="mb-3">
-                {{ form.num_pacientes.label_tag }}
+                {{ form.Numero_Pacientes.label_tag }}
                 {{ form.num_pacientes }}
             </div>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
 
             <button type="submit" class="btn btn-primary">Guardar Emergencia</button>
         </form>

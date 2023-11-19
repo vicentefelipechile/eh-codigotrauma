@@ -22,6 +22,7 @@ from django.contrib.auth import login
 from principal.forms import NuevaEmergenciaForm
 from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia, Atencion
 from principal.models import Usuario
+from principal.forms import NuevaEmergenciaForm, PacienteForm
 
 
 # ============================================================
@@ -181,9 +182,21 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     return render(request, 'empleados.html', context)
 
 def PaginaEmergencias(request: WSGIRequest) -> HttpResponse:
-    emergencia = Emergencia.objects.all()
-    context = {'emergencias': emergencia}
+    emergencias = Emergencia.objects.all()
+
+    # Crear una lista para almacenar el número de pacientes para cada emergencia
+    num_pacientes_por_emergencia = []
+
+    for emergencia in emergencias:
+        num_pacientes = emergencia.total_pacientes()
+        num_pacientes_por_emergencia.append(num_pacientes)
+
+    context = {'emergencias': emergencias, 'num_pacientes_por_emergencia': num_pacientes_por_emergencia}
     return render(request, 'emergencias.html', context)
+
+
+
+
 
 def PaginaAtenciones(request: WSGIRequest) -> HttpResponse:
     atencion = Atencion.objects.all()
@@ -227,18 +240,25 @@ def horario_doctor(request, doc_id):
     return render(request, 'horario_doctor.html', context)
 
 
-
 def nueva_emergencia(request):
     if request.method == 'POST':
-        # Si el formulario ha sido enviado
         form = NuevaEmergenciaForm(request.POST)
-
         if form.is_valid():
-            # Si el formulario es válido, guarda la nueva emergencia
-            nueva_emergencia = form.save()
-            return redirect('lista_emergencias')
+            emergencia = form.save(commit=False)
+            num_pacientes = emergencia.num_pacientes
+            emergencia.save()
+
+            for _ in range(num_pacientes):
+                paciente_form = PacienteForm(request.POST)
+                if paciente_form.is_valid():
+                    paciente = paciente_form.save()
+                    emergencia.pacientes.add(paciente)
+
+            return redirect('emergencias')
     else:
-        # Si es una solicitud GET, muestra el formulario vacío
         form = NuevaEmergenciaForm()
+
     context = {'form': form}
-    return render(request, 'nueva-emergencia.html', context)
+    return render(request, 'nueva_emergencia.html', context)
+
+

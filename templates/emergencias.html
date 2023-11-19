@@ -60,7 +60,7 @@
                     <th scope="col">Descripción</th>
                     <th scope="col">Color</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Paciente</th>
+                    <th scope="col">Numero Paciente</th>
                     <th scope="col">Doctor</th>
                     <th scope="col">Acciones</th>
                 </tr>
@@ -72,7 +72,7 @@
                     <td>{{ emergencia.emerg_desc }}</td>
                     <td>{{ emergencia.emerg_color }}</td>
                     <td>{{ emergencia.emerg_fecha }}</td>
-                    <td>{{ emergencia.emerg_pac_id.pac_primernombre }} {{ emergencia.emerg_pac_id.pac_segundonombre }}</td>
+                    <td>{{ emergencia.total_pacientes}}</td>
                     <td>{{ emergencia.emerg_doc_id.pers_primernombre }} {{ emergencia.emerg_doc_id.pers_apellidopaterno }}</td>
                     <td>
                         
