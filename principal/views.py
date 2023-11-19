@@ -181,6 +181,10 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
 
+def PaginaEmergencias(request: WSGIRequest) -> HttpResponse:
+    emergencia = Emergencia.objects.all()
+    context = {'emergencias': emergencia}
+    return render(request, 'emergencias.html', context)
 def detalles_doctores(request, doc_id):
     doctor= get_object_or_404(Doctor, pk=doc_id)
     num_emergencias = doctor.total_emergencias()
