@@ -24,7 +24,6 @@ from principal.models import Administrador, Doctor, Secretario, Paciente, Emerge
 from principal.models import Usuario
 from principal.forms import NuevaEmergenciaForm, PacienteForm
 
-
 # ============================================================
 # =================== Directorio Principal ===================
 # ============================================================
@@ -181,6 +180,22 @@ def PaginaDoctores(request: WSGIRequest) -> HttpResponse:
     context = {'doctores': doctores}
     return render(request, 'empleados.html', context)
 
+
+def PaginaInicioSecretario(request: WSGIRequest) -> HttpResponse:
+    secretario = Secretario.objects.all()
+    ultimas_emergencias = Emergencia.objects.all().order_by('-emerg_fecha')[:5] 
+    print(ultimas_emergencias)
+    context = {'secretario': secretario,'ultimas_emergencias': ultimas_emergencias}
+    return render(request, 'inicio_secretario.html', context)
+
+def PaginaInicioDoctor(request: WSGIRequest) -> HttpResponse:
+    doctor = Doctor.objects.all()
+    ultimas_emergencias = Emergencia.objects.all().order_by('-emerg_fecha')[:5] 
+    print(ultimas_emergencias)
+    context = {'secretario': doctor,'ultimas_emergencias': ultimas_emergencias}
+    return render(request, 'inicio_doctor.html', context)
+
+
 def PaginaEmergencias(request: WSGIRequest) -> HttpResponse:
     emergencias = Emergencia.objects.all()
 
@@ -193,9 +208,6 @@ def PaginaEmergencias(request: WSGIRequest) -> HttpResponse:
 
     context = {'emergencias': emergencias, 'num_pacientes_por_emergencia': num_pacientes_por_emergencia}
     return render(request, 'emergencias.html', context)
-
-
-
 
 
 def PaginaAtenciones(request: WSGIRequest) -> HttpResponse:

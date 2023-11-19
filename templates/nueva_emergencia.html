@@ -50,7 +50,7 @@
             
             <div class="mb-3">
                 {{ form.Descripcion.label_tag }}
-                {{ form.emerg_desc}}
+                {{ form.emerg_desc }}
             </div>
 
             <div class="mb-3">
@@ -77,10 +77,6 @@
                 {{ form.Numero_Pacientes.label_tag }}
                 {{ form.num_pacientes }}
             </div>
-
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
 
             <button type="submit" class="btn btn-primary">Guardar Emergencia</button>
         </form>

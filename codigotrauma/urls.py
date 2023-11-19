@@ -32,8 +32,8 @@ urlpatterns = [
     path('emergencias/', Principal.PaginaEmergencias, name="emergencias"),
     path('atenciones/', Principal.PaginaAtenciones, name="atenciones"),
     path('nueva_emergencia/', Principal.nueva_emergencia, name='nueva_emergencia'),
-
-
+    path('inicio_secretario/', Principal.PaginaInicioSecretario, name='inicio_secretario'),
+    path('inicio_doctor/', Principal.PaginaInicioDoctor, name='inicio_doctor'),
    
 
        
