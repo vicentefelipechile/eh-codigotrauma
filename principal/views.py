@@ -138,39 +138,21 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse | HttpResponseRedi
 
 
 def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
-    MostrarCantidad: int = 20
-    Pagina: int = 1
-    Busqueda: str = ""
+    MostrarCantidad:    int = int( request.GET.get("cantidad", 20) )
+    Pagina:             int = int( request.GET.get("pagina", 1) )
+    Busqueda:           str = request.GET.get("buscarpaciente", "").strip()
 
-    try:
-        MostrarCantidad = int(request.GET["cantidad"])
-    except:
-        pass
-
-    try:
-        Pagina = int(request.GET["pagina"])
-    except:
-        pass
-    
-
-    try:
-        # Buscar pacientes
-        # Extraer todos los numeros de la busqueda
-        # Si existen numeros en la busqueda, buscar por rut con este formato ("SELECT * FROM paciente WHERE rut LIKE '{numero}%'")
-        # En el caso contrario, buscar por apellido paterno con este formato ("SELECT * FROM paciente WHERE apellidopaterno LIKE '{apellido}%'") ignorando los acentos
-        try:
-            Busqueda = request.GET["buscarpaciente"]
-        except:
-            pacientes = Paciente.objects.all()
-        
-        if Busqueda:
-            if Busqueda.isnumeric():
-                pacientes = Paciente.objects.filter(rut__startswith=Busqueda)
-            else:
-                pacientes = Paciente.objects.filter(apellidopaterno__startswith=Busqueda)
-    except:
-        pacientes = Paciente.objects.all()
-
+    if Busqueda:
+        if Busqueda.isnumeric():
+            pacientes = Paciente.objects.filter(pac_rut__startswith=Busqueda)
+        else:
+            pacientes = Paciente.objects.filter(pac_apellidopaterno__startswith=Busqueda)
+    else:
+       pacientes = Paciente.objects.all()
+       
+       
+    # Guardar la cantidad de paginas que no se mostraran debido a la cantidad de pacientes
+    CantidadPaginas: int = int( len(pacientes) / MostrarCantidad ) + 1
 
     # Mostrar la cantidad de pacientes especificada y la pagina especificada
     # Si la pagina dice numero 2, se saltaran los primero 20 pacientes y se mostraran los siguientes 20
@@ -178,12 +160,16 @@ def PaginaPacientes(request: WSGIRequest) -> HttpResponse:
 
     context: dict = {
         "pacientes":        pacientes,
+        "paginas":          range(1, CantidadPaginas + 1),
+        "paginaactual":     Pagina,
         "configuracionanterior": {
             "cantidad":     MostrarCantidad,
             "pagina":       Pagina,
             "busqueda":     Busqueda
             }
         }
+    
+    print(context)
 
     return render(request, "lista_pacientes.html", context)
 
