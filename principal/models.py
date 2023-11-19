@@ -251,7 +251,7 @@ class Emergencia(Model):
         return self.emerg_desc
     
     def total_pacientes(self) -> int:
-        num_pacientes = Paciente.objects.filter(emergencia=self).count()
+        num_pacientes = Paciente.objects.filter(emerg_pac_id=self).count()
         return num_pacientes
     
 
