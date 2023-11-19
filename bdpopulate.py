@@ -537,7 +537,7 @@ print("=====================================")
 
 Inicio: float = perf_counter()
 
-if False:
+if True:
     # Modelos Varios
     GenerarArea()
     GenerarHoraDia(100)
