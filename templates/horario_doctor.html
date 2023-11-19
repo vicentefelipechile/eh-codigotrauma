@@ -1,0 +1,56 @@
+<!-- en tu horario_doctor.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Horario del Doctor</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Horario del Dr. {{ doctor.pers_primernombre }} {{ doctor.pers_apellidopaterno }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th></th> <!-- Celda vacía para la esquina superior izquierda -->
+                <th colspan="2">Lunes</th>
+                <th colspan="2">Martes</th>
+                <th colspan="2">Miércoles</th>
+                <th colspan="2">Jueves</th>
+                <th colspan="2">Viernes</th>
+            </tr>
+            <tr>
+                <th>Hora</th>
+                {% for _ in doctor.doc_horario.all %}
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for hora in doctor.doc_horario.all.0 %}
+                <tr>
+                    <td>{{ hora.hordia_inicio }}</td>
+                    {% for horario in doctor.doc_horario.all %}
+                        <td>{{ horario.horario_dia.diasem_nombre }}</td>
+                        <td>{{ horario.horario_hora.hordia_fin }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

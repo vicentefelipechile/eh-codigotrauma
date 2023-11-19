@@ -203,3 +203,10 @@ def detalles_paciente(request, pac_id):
 
 
     return render(request,'detalles_paciente.html', context)
+
+
+def horario_doctor(request, doc_id):
+    doctor = get_object_or_404(Doctor, pk=doc_id)
+    context = {'doctor': doctor}
+    return render(request, 'horario_doctor.html', context )
+
