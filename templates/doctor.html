@@ -21,17 +21,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'horario_doctor' doctor.doc_id %}">
+                        <a href="{% url 'HorarioDoctor' 1 %}">
                             <i class="fas fa-user"></i> Horario
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'detalles_doctores'%}">
+                        <a href="{% url 'DetalleDoctor'%}">
                             <i class="fas fa-user-md"></i> Informacion 
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'PaginaPacientes'%}">
+                        <a href="{% url 'PaginaPaciente'%}">
                             <i class="fas fa-user-plus"></i> Registrar Paciente
                         </a>
                     </li>
@@ -55,7 +55,6 @@
                     {% for emergencia in ultimas_emergencias %}
                         <li class="list-group-item">{{ emergencia.emerg_id }} - {{ emergencia.emerg_desc }}</li>
                         <li class="list-group-item">{{ emergencia.emerg_color }} - {{ emergencia.emerg_fecha }}</li>
-
                     {% endfor %}
                 </ul>
             </div>

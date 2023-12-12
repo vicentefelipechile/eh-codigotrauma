@@ -26,7 +26,7 @@
                 <td>{{ doctor.pers_primernombre }} {{ doctor.pers_segundonombre }}</td>
                 <td>{{ doctor.pers_apellidopaterno }} {{ doctor.pers_apellidomaterno }}</td>
                 <td>
-                    <a href= "{% url 'detalles_doctores' doctor.doc_id %}"class="btn btn-primary">Ver</a>
+                    <a href= "{% url 'DetalleDoctorID' doctor.doc_id %}"class="btn btn-primary">Ver</a>
                     <a class="btn btn-warning">Editar</a>
                 </td>
             </tr>

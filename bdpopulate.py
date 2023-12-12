@@ -31,7 +31,7 @@ from principal.models import Administrador
 # Modelos Registros
 from principal.models import Emergencia
 from principal.models import Atencion
-
+import unicodedata
 
 
 
@@ -73,6 +73,9 @@ class GeneradorDatos:
     
     def AnioNacimiento(self) -> int:
         return random.randint(1950, 2005)
+
+    def ReemplazarAcentos(self, Texto: str) -> str:
+        return ''.join((c for c in unicodedata.normalize('NFD', Texto) if unicodedata.category(c) != 'Mn'))
 
 DatosGenerador: GeneradorDatos = GeneradorDatos()
 
@@ -282,7 +285,7 @@ def GenerarDoctores(Cantidad: int = 10) -> None:
             pnombre = fake.first_name()
             snombre = fake.first_name()
 
-            username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
+            username = DatosGenerador.ReemplazarAcentos((pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower())
 
             doctor = Doctor()
             doctor.pers_rut                 = Rut
@@ -333,7 +336,7 @@ def GenerarSecretarios(Cantidad: int = 10) -> None:
             pnombre = fake.first_name()
             snombre = fake.first_name()
 
-            username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
+            username = DatosGenerador.ReemplazarAcentos((pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower())
 
             secretario = Secretario()
             secretario.pers_rut                 = Rut
@@ -379,7 +382,7 @@ def GenerarAdministradores(Cantidad: int = 10) -> None:
             pnombre = fake.first_name()
             snombre = fake.first_name()
 
-            username = (pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower()
+            username = DatosGenerador.ReemplazarAcentos((pnombre[0:2] + "." + snombre + "." + str(Rut)[-4:]).lower())
 
             administrador = Administrador()
             administrador.pers_rut                  = Rut

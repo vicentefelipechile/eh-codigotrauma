@@ -42,7 +42,7 @@
                     <td>{{ paciente.pac_primernombre }} {{ paciente.pac_segundonombre }}</td>
                     <td>{{ paciente.pac_apellidopaterno }} {{ paciente.pac_apellidomaterno }}</td>
                     <td>
-                        <a href="{% url 'detalles_paciente' paciente.pac_id %}" class="btn btn-primary">Ver</a>
+                        <a href="{% url 'DetallePacienteID' paciente.pac_id %}" class="btn btn-primary">Ver</a>
                         <a class="btn btn-warning">Editar</a>
                         
                     </td>
@@ -60,7 +60,7 @@
                     {% elif pagina == paginaactual %}
                         <li class="page-item active" aria-current="page"><a class="page-link" href="#">{{ pagina }}</a></li>
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="{% url 'PaginaPacientes' %}?pagina={{ pagina }}">{{ pagina }}</a></li>
+                        <li class="page-item"><a class="page-link" href="{% url 'DetallePaciente' %}?pagina={{ pagina }}">{{ pagina }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>

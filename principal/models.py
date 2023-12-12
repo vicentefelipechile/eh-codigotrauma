@@ -15,7 +15,8 @@ from django.db.models import TextField, IntegerField, CharField, AutoField, Time
 from django.db.models import ForeignKey, ManyToManyField
 
 from .sms import send_sms
-
+from hashlib import sha256
+from random import randint
 
 
 # ===========================================
@@ -65,6 +66,7 @@ class Horario(Model):
 # ===========================================
 # ============== Modelos Base ===============
 # ===========================================
+
 
 # Utilizado como Base para la administracion de usuarios y contraseñas en el sistema,
 # con esto se puede mantener un listado de usuarios y el rol que tienen.
@@ -175,6 +177,36 @@ class Persona(Usuario):
     class Meta:
         abstract = True
 
+
+# Modelo utilizado para almacenar las sessiones de los usuarios, se utiliza para mantener la sesion activa
+class Session(Model):
+    session_id:     AutoField = AutoField(primary_key=True)
+    session_key:    CharField = CharField(max_length=40, null=True)
+    session_data:   TextField = TextField(null=True)
+    session_expire: IntegerField = IntegerField(default=0, null=True)
+    
+    def SetSessionUser(self, user: Usuario, ip: str = None) -> str:
+        value: str = make_password(ip + "|" + user.user_name)
+        print(value)
+        value = sha256(value.encode("utf-8")).hexdigest()
+        print(value)
+        
+        self.session_key = user.user_name
+        self.session_data = value
+        # La session expira en 1 semana
+        self.session_expire = timezone.now().timestamp() + (60 * 60 * 24 * 7)
+        
+        return value
+    
+    def GetSessionUser(self) -> str:
+        return self.session_key
+    
+    def IsSessionValid(self) -> bool:
+        return self.session_expire > timezone.now().timestamp()
+    
+    def CheckSesion(self, user: Usuario, ip: str = None) -> bool:
+        result: bool = False
+        return result
 
 
 # ===========================================
