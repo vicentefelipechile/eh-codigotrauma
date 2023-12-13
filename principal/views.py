@@ -16,7 +16,7 @@ from django.db.models.query import QuerySet
 
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.urls import reverse
 
 from principal.forms import NuevaEmergenciaForm
 from principal.models import Administrador, Doctor, Secretario, Paciente, Emergencia, Atencion
@@ -25,6 +25,9 @@ from principal.models import Session
 from principal.forms import NuevaEmergenciaForm, PacienteForm
 
 
+from .metodos.principal import *
+
+from .metodos.secretario import *
 from .metodos.paciente import *
 from .metodos.doctor import *
 
@@ -41,32 +44,6 @@ CONTEXTO: dict = {
 
 FORMULARIO: dict = CONTEXTO.copy()
 FORMULARIO["form"] = UserCreationForm
-
-
-
-# ============================================================
-# ====================== Peticiones HTTP =====================
-# ============================================================
-
-def RespuestaCorta(EsError: bool = True, Mensaje: str = "Error", Codigo: int = 400) -> JsonResponse:
-    return JsonResponse({ "error": EsError, "mensaje": Mensaje }, status=Codigo)
-
-
-def GenerarYRedireccionar(request: WSGIRequest, session_id: str = None, user_type: int = 0):
-    # Generar la cookie con la ID de sesión SUI (Session User ID)
-    response = HttpResponseRedirect("/")
-    response.set_cookie("SUI-Key", session_id)
-
-    # Redireccionar al usuario a la página correspondiente según su tipo de usuario
-    if user_type == 1:
-        response["Location"] = "/empleados/"
-    elif user_type == 2:
-        response["Location"] = "/empleados/"
-    elif user_type == 3:
-        response["Location"] = "/emergencias/"
-
-    return response
-
 
 
 # ============================================================
@@ -125,11 +102,10 @@ def PaginaRegistro(request: WSGIRequest) -> HttpResponse:
 
 
 def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse | HttpResponseRedirect:
+    # Verificar si el usuario ya ha iniciado sesión
+    if UsuarioYaInicioSesion(request):  return RedireccionarUsuario(request)
 
     if request.method == "POST":
-        # Añadir un contexto para el formulario
-        FormularioContext: dict = FORMULARIO.copy()
-
         if not request.POST["username"]:    return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_NOUSER)
         if not request.POST["password"]:    return RespuestaCortaHTTP("iniciar-sesion.html", ERROR_NOPASS)
         
@@ -142,22 +118,14 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse | HttpResponseRedi
         
         # Crear un identificador de sesión
         IdentificadorSesion: Session = Session()
-        SessionID: str = IdentificadorSesion.SetSessionUser(UsuarioEncontrado)
+        SessionID: str = IdentificadorSesion.SetSessionUser(UsuarioEncontrado, request.META["REMOTE_ADDR"])
         IdentificadorSesion.save()
         
-        Redirecion: HttpResponseRedirect = GenerarYRedireccionar(request, SessionID, UsuarioEncontrado.user_type)
-        return Redirecion
+        return GenerarYRedireccionar(request, SessionID, UsuarioEncontrado)
 
 
     HTML: Template = loader.get_template("iniciar-sesion.html")
     return HttpResponse( HTML.render(CONTEXTO, request) )
-
-
-def PaginaInicioSecretario(request: WSGIRequest) -> HttpResponse:
-    secretario = Secretario.objects.all()
-    ultimas_emergencias = Emergencia.objects.all().order_by("-emerg_fecha")[:5] 
-    context = {"secretario": secretario,"ultimas_emergencias": ultimas_emergencias}
-    return render(request, "inicio_secretario.html", context)
 
 
 def PaginaEmergencias(request: WSGIRequest) -> HttpResponse:

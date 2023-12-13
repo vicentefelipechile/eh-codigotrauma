@@ -543,6 +543,19 @@ if True:
     GenerarHoraDia(100)
     GenerarDiaSemana()
     GenerarHorario(50)
+    
+    rootdoc = Doctor()
+    rootdoc.pers_rut               = "2"
+    rootdoc.pers_dv                = "1"
+    rootdoc.pers_primernombre      = "rootdoc"
+    rootdoc.pers_apellidopaterno   = "rootdoc"
+    rootdoc.pers_nacimiento        = 2000
+    rootdoc.user_type              = Usuario.USER_TYPE_CHOICES[3][0]
+    rootdoc.user_name              = "rootdoc"
+    rootdoc.user_password          = make_password("rootdoc")
+    rootdoc.doc_area               = Area.objects.get(area_id=1)
+    rootdoc.doc_horario            = Horario.objects.get(horario_id=1)
+    rootdoc.save()
 
     # Modelos Personas
     GenerarPacientes(400)

@@ -186,15 +186,12 @@ class Session(Model):
     session_expire: IntegerField = IntegerField(default=0, null=True)
     
     def SetSessionUser(self, user: Usuario, ip: str = None) -> str:
-        value: str = make_password(ip + "|" + user.user_name)
-        print(value)
+        value: str = make_password(user.user_name, salt=ip)
         value = sha256(value.encode("utf-8")).hexdigest()
-        print(value)
         
         self.session_key = user.user_name
         self.session_data = value
-        # La session expira en 1 semana
-        self.session_expire = timezone.now().timestamp() + (60 * 60 * 24 * 7)
+        self.session_expire = timezone.now().timestamp() + (60 * 60 * 24 * 7)  # La session expira en 1 semana
         
         return value
     
@@ -204,9 +201,25 @@ class Session(Model):
     def IsSessionValid(self) -> bool:
         return self.session_expire > timezone.now().timestamp()
     
-    def CheckSesion(self, user: Usuario, ip: str = None) -> bool:
-        result: bool = False
-        return result
+    def CheckSesion(self, user: Usuario, hashsession: str = None, ip: str = None) -> bool: 
+        if not hashsession: return False
+        if not ip:          return False
+        
+        # Obtener la sesion del usuario utilizando el usuario como llave
+        session = Session.objects.get(session_key=user.user_name)
+        if not session:     return False
+        if session == "":   return False
+        
+        # Verificar que la sesion no haya expirado
+        if not session.IsSessionValid(): return False
+        
+        # Verificar que la sesion sea valida
+        value: str = make_password(user.user_name, salt=ip)
+        value = sha256(value.encode("utf-8")).hexdigest()
+        
+        if value != hashsession: return False
+        
+        return True
 
 
 # ===========================================
