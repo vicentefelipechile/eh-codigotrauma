@@ -25,12 +25,6 @@ from principal.models import Session
 from principal.forms import NuevaEmergenciaForm, PacienteForm
 
 
-from .metodos.principal import *
-
-from .metodos.secretario import *
-from .metodos.paciente import *
-from .metodos.doctor import *
-
 # ============================================================
 # =================== Directorio Principal ===================
 # ============================================================
@@ -74,8 +68,17 @@ def RespuestaCortaHTTP(Direccion: str = "iniciar-sesion.html", ErrorTipo: str = 
 
 
 # ============================================================
-# ======================== Funciones =========================
+# ========================== Vistas ==========================
 # ============================================================
+
+# Principal
+from .metodos.principal import *
+
+from .metodos.secretario import *
+from .metodos.paciente import *
+from .metodos.doctor import *
+
+
 
 def PaginaPrincipal(request: WSGIRequest) -> HttpResponse:
     IndexHtml: Template = loader.get_template("index.html")
@@ -119,7 +122,9 @@ def PaginaIniciarSesion(request: WSGIRequest) -> HttpResponse | HttpResponseRedi
         # Crear un identificador de sesión
         IdentificadorSesion: Session = Session()
         SessionID: str = IdentificadorSesion.SetSessionUser(UsuarioEncontrado, request.META["REMOTE_ADDR"])
-        IdentificadorSesion.save()
+        
+        try:    IdentificadorSesion.save()
+        except: pass
         
         return GenerarYRedireccionar(request, SessionID, UsuarioEncontrado)
 

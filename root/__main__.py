@@ -7,7 +7,6 @@ import sys
 import json
 import pathlib
 from shutil import rmtree
-from faker import Faker
 
 
 # ============================================================
@@ -75,12 +74,12 @@ class Main:
             print(f' > python {self.MAIN_PATH}manage.py migrate')
             os.system(f'python {self.MAIN_PATH}manage.py migrate')
 
+            print("")
+            print(f' > python {self.MAIN_PATH}manage.py runserver')
+
             if Configuracion["alwaysOpenBrowser"]:
                 print(f' > python -m webbrowser "http://127.0.0.1:8000"')
                 os.system(f'python -m webbrowser "http://127.0.0.1:8000"') 
-
-            print("")
-            print(f' > python {self.MAIN_PATH}manage.py runserver')
 
             print("=====================================")
             os.system(f'python {self.MAIN_PATH}manage.py runserver')
@@ -127,23 +126,11 @@ class Main:
 
 
 
-    def generardatos(self: object, Semilla: str = None) -> None:
-        if not Semilla:
-            Semilla = "1337"
-        
-        Resultado: int = 0
-        for Caracter in Semilla:
-            Resultado += ord(Caracter)
-            
-        print(f"Semilla: {Resultado}")
-        
-        Faker.seed(Semilla)
-        
+    def generardatos(self: object, Argumento: any = None) -> None:
+        # Ejecutar el script de generacion de datos
         print("Generando datos...")
-        
-        # Si no existe la carpeta sqlscript la crea
-        if not os.path.exists(self.MAIN_PATH + "root/sqlscript"):
-            os.mkdir(self.MAIN_PATH + "root/sqlscript")
+        print(f" > python {self.MAIN_PATH}bdpopulate.py")
+        os.system(f"python {self.MAIN_PATH}bdpopulate.py")
     
     
     

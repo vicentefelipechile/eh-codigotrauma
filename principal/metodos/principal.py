@@ -27,18 +27,25 @@ def GenerarYRedireccionar(request: WSGIRequest, session_id: str, user: Usuario):
     response.set_cookie("SUI-US", user.user_name)
 
     # Redireccionar al usuario a la página correspondiente según su tipo de usuario
-    if user.user_type == 1: # Administrador
-        response["Location"] = reverse("PaginaPrincipal")
-        doctor: Doctor = Doctor.objects.filter(user_name=user.user_name).first()
-        doctorid: int = doctor.doc_id
-        
-        response.set_cookie("SUI-DOC", str(doctorid))
-
-    elif user.user_type == 2: # Secretario
-        response["Location"] = reverse("inicio_secretario")
-        
-    elif user.user_type == 3: # Doctor
-        response["Location"] = reverse("PaginaDoctor")
+    match user.user_type:
+        case 0: # Root
+            response["Location"] = reverse("PaginaPrincipal")
+            
+        case 1: # Administrador
+            response["Location"] = reverse("PaginaPrincipal")
+            
+        case 2: # Secretario
+            response["Location"] = reverse("inicio_secretario")
+            
+        case 3: # Doctor
+            response["Location"] = reverse("PaginaDoctor")
+            doctor: Doctor = Doctor.objects.filter(user_name=user.user_name).first()
+            doctorid: int = doctor.doc_id
+            
+            response.set_cookie("SUI-DOC", str(doctorid))
+            
+        case 4: # Paciente
+            response["Location"] = reverse("PaginaPaciente")
 
     return response
 
@@ -70,13 +77,28 @@ def RedireccionarUsuario(request: WSGIRequest, deletecookies: bool = False) -> H
         return HttpResponseRedirect(reverse("PaginaIniciarSesion"))
     
     # Redireccionar al usuario a la página correspondiente según su tipo de usuario
-    if UsuarioClase.user_type == 1:
-        return HttpResponseRedirect(reverse("PaginaPrincipal"))
-    
-    elif UsuarioClase.user_type == 2:
-        return HttpResponseRedirect(reverse("inicio_secretario"))
-    
-    elif UsuarioClase.user_type == 3:
-        return HttpResponseRedirect(reverse("PaginaDoctor"))
+    match UsuarioClase.user_type:
+        case 0: # Root
+            return HttpResponseRedirect(reverse("PaginaPrincipal"))
+            
+        case 1: # Administrador
+            return HttpResponseRedirect(reverse("PaginaPrincipal"))
+            
+        case 2: # Secretario
+            return HttpResponseRedirect(reverse("inicio_secretario"))
+            
+        case 3: # Doctor
+            return HttpResponseRedirect(reverse("PaginaDoctor"))
+            
+        case 4: # Paciente
+            return HttpResponseRedirect(reverse("PaginaPaciente"))
     
     return HttpResponseRedirect(reverse("PaginaIniciarSesion"))
+
+
+def PaginaCerrarSesion(request: WSGIRequest) -> HttpResponseRedirect:
+    response = HttpResponseRedirect(reverse("PaginaIniciarSesion"))
+    response.delete_cookie("SUI-Key")
+    response.delete_cookie("SUI-US")
+    response.delete_cookie("SUI-DOC")
+    return response

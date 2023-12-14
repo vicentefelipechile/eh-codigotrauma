@@ -12,35 +12,36 @@
 <div class="container-fluid">
     <div class="row">
         {# Barra lateral con botones #}
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar align-items-center">
             <div class="position-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a href="{% url 'PaginaPrincipal'%}">
+                    <li class="nav-item ml-5">
+                        <a href="{% url 'PaginaPrincipal' %}">
                             <i class="fas fa-home"></i> Inicio
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'HorarioDoctor' 1 %}">
+                        <a href="{% url 'HorarioDoctor' %}">
                             <i class="fas fa-user"></i> Horario
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'DetalleDoctor'%}">
+                        <a href="{% url 'DetalleDoctor' %}">
                             <i class="fas fa-user-md"></i> Informacion 
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'PaginaPaciente'%}">
+                        <a href="{% url 'PaginaPaciente' %}">
                             <i class="fas fa-user-plus"></i> Registrar Paciente
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'nueva_emergencia'%}">
+                        <a href="{% url 'nueva_emergencia' %}">
                             <i class="fas fa-exclamation-triangle"></i> Registrar Emergencia
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{% url 'PaginaCerrarSesion' %}">
                             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                         </a>
                     </li>

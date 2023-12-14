@@ -181,7 +181,7 @@ class Persona(Usuario):
 # Modelo utilizado para almacenar las sessiones de los usuarios, se utiliza para mantener la sesion activa
 class Session(Model):
     session_id:     AutoField = AutoField(primary_key=True)
-    session_key:    CharField = CharField(max_length=40, null=True)
+    session_key:    CharField = CharField(max_length=40, unique=True)
     session_data:   TextField = TextField(null=True)
     session_expire: IntegerField = IntegerField(default=0, null=True)
     
@@ -244,7 +244,6 @@ class Paciente(Model):
     # Mostrar el total de emergencias que ha tenido el paciente
     def total_emergencias(self) -> int:
         num_emergencias = Emergencia.objects.filter(emerg_pac_id=self).count()
-        print(f"DEBUG: Número de emergencias para {self.pac_primernombre}: {num_emergencias}")
         return num_emergencias
 
     def total_atenciones(self) -> int:

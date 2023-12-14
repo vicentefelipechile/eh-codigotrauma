@@ -23,6 +23,7 @@ urlpatterns = [
     path("", Principal.PaginaPrincipal, name="PaginaPrincipal"),
     #path("registro/", Principal.PaginaRegistro, name="PaginaRegistro"),
     path("iniciarsesion/", Principal.PaginaIniciarSesion, name="PaginaIniciarSesion"),
+    path("cerrarsesion/", Principal.PaginaCerrarSesion, name="PaginaCerrarSesion"),
     path("admin/", admin.site.urls, name="PaginaAdministrador"),
     path("emergencias/", Principal.PaginaEmergencias, name="emergencias"),
     path("atenciones/", Principal.PaginaAtenciones, name="atenciones"),
@@ -34,7 +35,7 @@ urlpatterns = [
     path("paciente/detalles/", Principal.DetallePaciente, name="DetallePaciente"),
     path("paciente/detalles/<int:pac_id>/", Principal.DetallePacienteID, name="DetallePacienteID"),
     path("doctor/", Principal.PaginaDoctor, name="PaginaDoctor"),
-    path("doctor/horario/<int:doc_id>/", Principal.HorarioDoctor, name="HorarioDoctor"),
+    path("doctor/horario/", Principal.HorarioDoctor, name="HorarioDoctor"),
     path("doctor/detalles/", Principal.DetalleDoctor, name="DetalleDoctor"),
     path("doctor/detalles/<int:doc_id>/", Principal.DetalleDoctorID, name="DetalleDoctorID"),
     

@@ -29,8 +29,9 @@ def PaginaDoctor(request: WSGIRequest) -> HttpResponse:
     return render(request, "doctor.html", context)
 
 
-def HorarioDoctor(request: WSGIRequest, doc_id: int) -> HttpResponse:
+def HorarioDoctor(request: WSGIRequest) -> HttpResponse:
     if not UsuarioYaInicioSesion(request): return RedireccionarUsuario(request, True)
+    doc_id: int = request.COOKIES.get("SUI-DOC", None)
     
     doctor = Doctor.objects.get(pk=doc_id)
     context: dict[str | dict] = {

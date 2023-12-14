@@ -43,8 +43,6 @@ DOMAIN_SHORTNAME = Configuracion["DOMAIN_SHORTNAME"]
 DB_IP = Configuracion["backend"]["DB_IP"]
 DB_PORT = Configuracion["backend"]["DB_PORT"]
 
-PASSWORD_REGEX = Configuracion["passwordRegEx"]
-
 API_CONFIG = Configuracion["API"]
 
 
