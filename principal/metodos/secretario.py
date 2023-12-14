@@ -41,4 +41,4 @@ def PaginaInicioSecretario(request: WSGIRequest) -> HttpResponse:
         "secretario": secretario,
         "ultimas_emergencias": ultimas_emergencias
     }
-    return render(request, "inicio_secretario.html", context)
+    return render(request, "secretario.html", context)
